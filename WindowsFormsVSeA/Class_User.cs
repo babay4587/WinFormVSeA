@@ -9,9 +9,12 @@ using System.IO;
 using System.Windows.Forms;
 using System.Xml.Linq;
 using System.Xml.XPath;
+using System.Configuration;
+
 
 namespace WindowsFormsVSeA
 {
+    
     class Class_User
     {
 
@@ -20,7 +23,8 @@ namespace WindowsFormsVSeA
     #region //XML 文件处理
     public class XmlDo
     {
-
+         
+        
         #region 处理Shopfloor_Connections
 
         public DataTable Sfloor_Conn(string Fname)
@@ -29,7 +33,7 @@ namespace WindowsFormsVSeA
             XmlDocument XmlDoc = xmlCls.XmlReplace(Fname);
 
             XmlNodeReader Xmlnode = new XmlNodeReader(XmlDoc);// XmlDocument 转 XDocment
-
+            
             XDocument xd = XDocument.Load(Xmlnode);// XmlDocument 转 XDocment
             XElement Xele = xd.Root;
             DataTable dt = new DataTable();
@@ -99,11 +103,11 @@ namespace WindowsFormsVSeA
 
                         var SSAP = (from da in Dnod.Descendants("PARAMETERS").Descendants("SSAP")
                                     select da.Value);
-                        dr[3] = SSAP.Any() ? port.ElementAt(0) : "NOK";
+                        dr[3] = SSAP.Any() ? SSAP.ElementAt(0) : "NOK";
 
                         var TSAP = (from da in Dnod.Descendants("PARAMETERS").Descendants("TSAP")
                                     select da.Value);
-                        dr[4] = TSAP.Any() ? port.ElementAt(0) : "NOK";
+                        dr[4] = TSAP.Any() ? TSAP.ElementAt(0) : "NOK";
 
                     }
 
@@ -127,9 +131,131 @@ namespace WindowsFormsVSeA
                 return null;
             }
         }
-       
 
-        
+
+
+
+        #endregion
+
+        #region 处理Loipro Equip ID
+
+        public DataTable Get_LOIP_EQid(string Fname)
+        {
+            Form1 frm = new Form1();
+            string Yo=frm.textBox2.Text;
+            
+            XmlSerial xmlCls = new XmlSerial();
+            XmlDocument XmlDoc = xmlCls.XmlReplace(Fname);
+
+            XmlNodeReader Xmlnode = new XmlNodeReader(XmlDoc);// XmlDocument 转 XDocment
+
+            XDocument xd = XDocument.Load(Xmlnode);// XmlDocument 转 XDocment
+            XElement Xele = xd.Root;
+            DataTable dt = new DataTable();
+
+            dt.Columns.Add("OrderID", typeof(string));
+            dt.Columns.Add("OrderType", typeof(string));
+            dt.Columns.Add("CreateDate", typeof(string));
+
+            dt.Columns.Add("EntryID", typeof(string));
+            dt.Columns.Add("ObjectID", typeof(string));
+            dt.Columns.Add("ShortName", typeof(string));
+            dt.Columns.Add("EQUIPMENT_ID", typeof(string));
+            dt.Columns.Add("WorkCenter", typeof(string));
+
+            try
+            {
+                
+                var queryXml = xd.Descendants("E1AFKOL");
+                foreach (var Dnod in queryXml)
+                {
+                    DataRow dr = dt.NewRow();
+
+                    dr[0] = Dnod.Element("AUFNR").Value;
+                    dr[1] = Dnod.Element("AUART").Value;
+                    dr[2] = Dnod.Element("AUFLD").Value;
+
+                    dt.Rows.Add(dr);
+                }
+
+                var Vnr = xd.Descendants("E1AFVOL");
+                foreach(var P in Vnr)
+                {
+                    DataRow dr = dt.NewRow();
+
+                    var VORNR = (from da in P.Descendants("VORNR")
+                                 select da.Value);
+                    dr[3] = VORNR.Any() ? VORNR.ElementAt(0) : "blank";
+
+                    var Obj = (from da in P.Descendants("ARBID")
+                                 select da.Value);
+                    dr[4] = Obj.Any() ? Obj.ElementAt(0) : "blank";
+
+                    var shortNm = (from da in P.Descendants("ZE1AUSPM_EXT1")
+                                   where da.Element("ATNAM").Value == Yo
+                                   select (da.Element("ATWRT").Value));
+                    dr[5] = shortNm.Any() ? shortNm.ElementAt(0) : "blank";
+
+                    var EquipID = (from da in P.Descendants("ZE1AFDFO_TOOLS").Descendants("FHMNR")
+                                   select da.Value);
+                    dr[6] = EquipID.Any() ? EquipID.ElementAt(0) : "blank";
+
+                    var WorkCenter = (from da in P.Descendants("ARBPL")
+                               select da.Value);
+                    dr[7] = WorkCenter.Any() ? WorkCenter.ElementAt(0) : "blank";
+
+                    dt.Rows.Add(dr);
+                }
+
+                return dt;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+                return null;
+            }
+        }
+
+        #region test!!
+        public void updateTest(string Fname)
+        {
+            XmlSerial xmlCls = new XmlSerial();
+            XmlDocument XmlDoc = xmlCls.XmlReplace(Fname);
+
+            XmlNodeReader Xmlnode = new XmlNodeReader(XmlDoc);// XmlDocument 转 XDocment
+
+            XDocument xd = XDocument.Load(Xmlnode);// XmlDocument 转 XDocment
+            XElement Xele = xd.Root;
+
+            //var EquipID = (from da in xd.Descendants("ZE1AFDFO_TOOLS").Descendants("FHMNR")
+            //               select da.Value);
+            //var a = EquipID.Single<XElement>();
+
+            //获取config路径
+            string path = System.Windows.Forms.Application.ExecutablePath + ".config";
+            XDocument doc = XDocument.Load(path);
+            //查找所有节点
+            IEnumerable<XElement> element = doc.Element("configuration").Element("appSettings").Elements();
+            //遍历节点
+            foreach (XElement item in element)
+            {
+                if (item.Attribute("key") != null && item.Attribute("key").Value == "节点名称")
+                {
+                    if (item.Attribute("value") != null)
+                    {
+                        item.Attribute("value").SetValue(DateTime.Now.ToString("d"));
+                    }
+                }
+            }
+            //保存
+            doc.Save(path);
+
+            //a.ReplaceWith(new XElement("9000100"));
+            //Xele.Descendants("ZE1AFDFO_TOOLS").Descendants("FHMNR")
+            xd.Save("11.xml");
+        }
+        #endregion
+
 
         #endregion
 
@@ -662,4 +788,145 @@ namespace WindowsFormsVSeA
         }
     }
 
+    public class DoSQL
+    {
+
+        public string DBConnStr = string.Empty;
+        
+
+        public  List<string> GetConnectionStringsConfig()
+        {
+            //指定config文件读取
+            string file = System.Windows.Forms.Application.ExecutablePath;
+
+            List<string> lis = new List<string>();
+            
+            System.Configuration.Configuration config = ConfigurationManager.OpenExeConfiguration(file);
+            foreach(ConnectionStringSettings it in ConfigurationManager.ConnectionStrings)
+            {
+                lis.Add(it.Name.ToString());
+            }
+            foreach (string key in config.AppSettings.Settings.AllKeys)
+            {
+                if (key == "connectionStrings")
+                {
+                    lis.Add(config.AppSettings.Settings["connectionStrings"].Value.ToString());
+                    
+                }
+            }
+            return lis;
+        }
+
+        public string DbConn(string items)
+        {
+            try
+            {
+                DBConnStr = ConfigurationManager.ConnectionStrings[items].ConnectionString.ToString();
+                               
+                return "ok";
+            }catch(Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+                return "no connect";
+            }
+            
+        }
+
+        public SqlCommand CreateCmd(string SQL, SqlConnection Conn)
+        {
+            SqlCommand Cmd;
+            Cmd = new SqlCommand(SQL, Conn);
+            return Cmd;
+        }
+
+        public void RunProc(string sql)
+        {
+                        
+            SqlConnection conn = new SqlConnection(DBConnStr);
+            conn.Open();
+            SqlCommand cmd = CreateCmd(sql, conn);
+            try
+            {
+                cmd.ExecuteNonQuery();
+            }
+            catch
+            {
+                throw new Exception(sql);
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+        }
+
+
+        /// <summary>
+        /// 数据集查询 返回 DataTable
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <returns></returns>
+        public  DataTable SQLSet(string sql)
+        {
+            SqlConnection conn = new SqlConnection(DBConnStr);
+            conn.Open();
+
+            SqlCommand cmd = new SqlCommand(sql, conn);
+            SqlDataAdapter sda = new SqlDataAdapter(cmd);
+            DataTable dt = new DataTable();
+            try
+            {
+                sda.Fill(dt);
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    return dt;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch
+            {
+                return null;
+            }
+            finally
+            {
+                conn.Close();
+                cmd.Dispose();
+            }
+        }
+
+        public DataTable Qty_Batch_Order(string order)
+        {
+            string sql = string.Format(@"SELECT     
+                                                        POMV_ETRY.pom_order_id AS Order_ID, 
+                                                        POMV_ETRY.pom_entry_type_id AS AVO, 
+                                                        EEES.FHM_ID, 
+                                                        EEES.FHM_TYPE, 
+                                                        EEES.FHM_TEXT, 
+                                                        EEES.FHM_POS, 
+                                                        EEES.MACHINE_PROGRAM, 
+                                                        EEES.PROGRAM_VERSION, 
+                                                        EEES.RowUpdated
+                                                        FROM
+                                                        [ArchSitMesPomRTF8F959F4-452B-462E-BA33-DB852EFDA899/EC_ENTRY_EXT_SHOPFLOOR] EEES
+                                                        INNER JOIN
+                                                        POMV_ETRY ON EEES.MES_RECORD_PK = POMV_ETRY.pom_entry_pk
+                                                        where POMV_ETRY.pom_order_id like '{0}'",order);
+
+            DataTable dt = new DataTable();
+
+            try
+            {
+                dt = SQLSet(sql);
+                return dt;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+        
+    }
 }
