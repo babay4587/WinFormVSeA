@@ -10,28 +10,37 @@ using System.Windows.Forms;
 using System.Xml.Linq;
 using System.Xml.XPath;
 using System.Configuration;
-
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Rebar;
 
 namespace WindowsFormsVSeA
 {
     
-    class Class_User
+    public class Class_User
     {
+        public class UserModel
+        {
+            private string equipmentID; 
 
+            public string EquipmentID
+            {
+                set { equipmentID = value; }
+                get { return equipmentID; }
+            }
+        }
     }
 
     #region //XML 文件处理
     public class XmlDo
     {
-         
-        
+        private readonly Class_User.UserModel UModels= new Class_User.UserModel();
+       
         #region 处理Shopfloor_Connections
 
         public DataTable Sfloor_Conn(string Fname)
         {
             XmlSerial xmlCls = new XmlSerial();
             XmlDocument XmlDoc = xmlCls.XmlReplace(Fname);
-
+            
             XmlNodeReader Xmlnode = new XmlNodeReader(XmlDoc);// XmlDocument 转 XDocment
             
             XDocument xd = XDocument.Load(Xmlnode);// XmlDocument 转 XDocment
@@ -131,19 +140,24 @@ namespace WindowsFormsVSeA
                 return null;
             }
         }
-
-
-
+        
 
         #endregion
+
+        public class XList
+        {
+            public string ShortName { get; set; }
+        }
 
         #region 处理Loipro Equip ID
 
         public DataTable Get_LOIP_EQid(string Fname)
         {
-            Form1 frm = new Form1();
-            string Yo=frm.textBox2.Text;
-            
+
+            DoSQL df = new DoSQL();
+
+            string sh = df.getShortName();
+            //List<string> sh = df.GetConnectionStringsConfig();
             XmlSerial xmlCls = new XmlSerial();
             XmlDocument XmlDoc = xmlCls.XmlReplace(Fname);
 
@@ -191,17 +205,72 @@ namespace WindowsFormsVSeA
                                  select da.Value);
                     dr[4] = Obj.Any() ? Obj.ElementAt(0) : "blank";
 
-                    var shortNm = (from da in P.Descendants("ZE1AUSPM_EXT1")
-                                   where da.Element("ATNAM").Value == Yo
-                                   select (da.Element("ATWRT").Value));
-                    dr[5] = shortNm.Any() ? shortNm.ElementAt(0) : "blank";
+                    
+                    var shortNm1 = (from da1 in P.Descendants("ZE1AUSPM_EXT1")
+                                  
+                                   select (da1.Element("ATWRT").Value));
+
+                    /* XList 是public class 在XMLDo 类中定义！    */
+                    List<XList> Shorts = (from item in P.Elements("ZE1AFDFO_TOOLS")
+                                          select new XList
+                                          {
+
+                                              ShortName = item.Element("TEXT").Value
+                                          }).ToList<XList>();
+
+                    for(int i = 0; i < Shorts.Count; i++)
+                    {
+                        if (Shorts[i].ShortName.Length <= 13)
+                        {
+                            dr[5] = dr[5] + Shorts[i].ShortName + ";";
+                        }
+                    }
+                   
+                    //var ff =( from pp in P.Elements("ZE1AFDFO_TOOLS")
+                    //         where pp!=null
+                    //         where  pp.Element("EQTYP").Value == "G"
+                    //         select pp.Element("TEXT").Value).ToList();
+                    
+                    //if (ff.Any())
+                    //{
+                    //    string d = string.Empty;
+                    //    foreach (var v in ff)
+                    //    {
+                    //        d = d + ";" + v.ToString();
+
+                    //    }
+                    //    dr[5] = d;
+                    //}
+
+                   
+                    //dr[5] = shortNm.Any() ? shortNm.ElementAt(0) : "blank";
 
                     var EquipID = (from da in P.Descendants("ZE1AFDFO_TOOLS").Descendants("FHMNR")
+                                   //where da.Element("EQTYP").Value == "G"
                                    select da.Value);
-                    dr[6] = EquipID.Any() ? EquipID.ElementAt(0) : "blank";
+                   
+                    if (EquipID.Any())
+                    {
+                        foreach(var s in EquipID)
+                        {
+                            
+                            dr[6] = dr[6] + s.ToString()+";";
+                            
+                        }
+                    }
+
+                    //dr[6] = EquipID.Any() ? EquipID.ElementAt(0) : "blank";
 
                     var WorkCenter = (from da in P.Descendants("ARBPL")
                                select da.Value);
+                    if (WorkCenter.Count()>1)
+                    {
+                        for (int i=0; i<WorkCenter.Count();i++)
+                        {
+                            dr[7] = WorkCenter.ElementAt(i);
+                            dt.Rows.Add(dr);
+                        }
+                    }
                     dr[7] = WorkCenter.Any() ? WorkCenter.ElementAt(0) : "blank";
 
                     dt.Rows.Add(dr);
@@ -817,6 +886,41 @@ namespace WindowsFormsVSeA
             return lis;
         }
 
+        public string getShortName()
+        {
+
+            try
+            {
+                // string ShortName= ConfigurationManager.AppSettings[KeyNa].ToString();
+                string file = System.Windows.Forms.Application.ExecutablePath;
+               
+                List<string> lis = new List<string>();
+                string cd = string.Empty;
+                System.Configuration.Configuration config = ConfigurationManager.OpenExeConfiguration(file);
+                ////foreach (ConnectionStringSettings it in ConfigurationManager.AppSettings)
+                //{
+                //    lis.Add(it.Name.ToString());
+                //}
+
+                foreach (string key in config.AppSettings.Settings.AllKeys)
+                {
+                    if (key == "ShortName")
+                    {
+                        cd = config.AppSettings.Settings[key].Value.ToString();
+
+                    }
+                }
+
+                return cd;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+                return null;
+            }
+
+        }
+
         public string DbConn(string items)
         {
             try
@@ -827,7 +931,7 @@ namespace WindowsFormsVSeA
             }catch(Exception ex)
             {
                 MessageBox.Show(ex.ToString());
-                return "no connect";
+                return "无此连接参数";
             }
             
         }
@@ -868,6 +972,7 @@ namespace WindowsFormsVSeA
         /// <returns></returns>
         public  DataTable SQLSet(string sql)
         {
+            
             SqlConnection conn = new SqlConnection(DBConnStr);
             conn.Open();
 
@@ -927,6 +1032,56 @@ namespace WindowsFormsVSeA
                 return null;
             }
         }
-        
+
+
+        public DataTable Qty_Mat_Order(string order)
+        {
+            string sql = string.Format(@"SELECT  
+                                        (select pom_ordr.matl_def_id from [SITMesDB].[dbo].[POMV_ORDR] pom_ordr 
+	                                        where POMV_ETRY.pom_order_id=pom_ordr.pom_order_id) as FERT_MAT_ID,
+                                        (select mmlot.defname from [SitMesDB].[dbo].[MMDefinitions] mmlot
+	                                        where mmlot.DefID in (select pom_ordr.matl_def_id from [SITMesDB].[dbo].[POMV_ORDR] pom_ordr 
+		                                        where POMV_ETRY.pom_order_id=pom_ordr.pom_order_id)) as FERT_Name,
+                                        POMV_ETRY.pom_order_id as Order_ID,
+                                        ESW.MACHINE_ID as WorkOperationID,
+                                        replace(POMV_ETRY.pom_entry_id,POMV_ETRY.pom_order_id+'-','') as AVO_ID,
+                                        isnull(POMV_MATL_SPEC_ITM.def_id,'-') as Matnr,
+                                        isnull(MMwDefVers.DefName,'-') as Mat_Description,
+                                        isnull(POMV_MATL_SPEC_ITM.uom_id,'-') as UoM,
+                                        isnull(POMV_MATL_SPEC_ITM.seq,0) as Sort,
+                                        isnull(MMwDefVerPrpVals.PValue,'-') as Traceability,
+                                        isnull(pmlpv7.pom_cf_value,'-') as Dummy,
+                                        isnull(POMV_MATL_SPEC_ITM.quantity,0) as Quantity,
+                                        isnull(MMwDefVers.ClassID,'-') as CLASS,
+                                        isnull(MMwDefVers.TypeID,'-') as Mat_TYPE,
+                                        isnull(v2.PValue,'-') as ProcType
+                                        FROM 
+                                        POMV_ETRY with(nolock)
+                                        LEFT JOIN POMV_MATL_SPEC_ITM on POMV_ETRY.pom_entry_id = POMV_MATL_SPEC_ITM.pom_entry_id
+                                        LEFT JOIN MMwDefVerPrpVals on MMwDefVerPrpVals.DefID = POMV_MATL_SPEC_ITM.def_id and MMwDefVerPrpVals.PropertyName = 'TRACEABILITY_SCOPE'
+                                        LEFT JOIN MMwDefVerPrpVals v2 on v2.DefID = POMV_MATL_SPEC_ITM.def_id and v2.PropertyName = 'PROC_TYPE'
+                                        LEFT JOIN MMwDefVers on MMwDefVerPrpVals.DefVerPK = MMwDefVers.DefVerPK
+
+                                        LEFT JOIN POMV_MATL_LST_PRP_VAL pmlpv7 on POMV_MATL_SPEC_ITM.pom_entry_id = pmlpv7.pom_entry_id and POMV_MATL_SPEC_ITM.def_id = pmlpv7.def_id and POMV_MATL_SPEC_ITM.seq = pmlpv7.pom_mat_list_seq and pmlpv7.pom_custom_fld_name = 'DUMMY_COMPONENT'
+
+                                        LEFT JOIN [ArchSitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EC_SAP_WORKCENTERS] ESW on ESW.WORKCENTER_ID = POMV_ETRY.ERP_WRKCNTR
+
+                                        WHERE     
+                                        POMV_ETRY.pom_order_id = '{0}'
+                                        order by 3", order);
+
+            DataTable dt = new DataTable();
+
+            try
+            {
+                dt = SQLSet(sql);
+                return dt;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
     }
 }

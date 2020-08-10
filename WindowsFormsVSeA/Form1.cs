@@ -53,7 +53,8 @@ namespace WindowsFormsVSeA
 
                         dataGridView1.ColumnHeadersDefaultCellStyle.Font = new Font("雅黑", 10, FontStyle.Bold);
                         dataGridView1.ColumnHeadersDefaultCellStyle.ForeColor = Color.Purple;
-
+                        dataGridView1.Columns[3].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                        dataGridView1.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                         tB_RowCount.Text = dataGridView1.Rows.Count.ToString();
                     }
                 }
@@ -83,35 +84,31 @@ namespace WindowsFormsVSeA
         {
             try
             {
-                if (this.dataGridView1.Rows.Count == 0)
+                bool isDuplicate=false;
+                for(int nbRow = 0; nbRow < dataGridView1.Rows.Count-1; nbRow++)
                 {
-                    MessageBox.Show("EC ShopFloor无数据");
-                    return;
-                }
-
-                foreach (DataGridViewRow v in dataGridView1.Rows)
-                {
-                    if (v.Cells[0].Value != null)
+                    for(int NextRow = nbRow+ 1; NextRow <= dataGridView1.Rows.Count-2; NextRow++)
                     {
-                        var count = 0;
-                        foreach (DataGridViewRow v2 in dataGridView1.Rows)
+                        if (dataGridView1.Rows[nbRow].Cells[6].Value.ToString() == dataGridView1.Rows[NextRow].Cells[6].Value.ToString())
                         {
-                            if (v2.Cells[0].Value != null)
-                            {
-                                if (v.Cells[0].Value.ToString().Trim().Equals(v2.Cells[0].Value.ToString().Trim()))
-                                    count++;
-                            }
-                        }
-                        if (count > 1)
-                        {
-                            MessageBox.Show("第1列有重复，重复的内容是:【" + v.Cells[5].Value+" || "+ v.Cells[6].Value + "】");
-                            return;
+                            isDuplicate = true;
+                            dataGridView1.Rows[nbRow].Cells[6].Style.BackColor = Color.LightGreen;
+                            dataGridView1.Rows[NextRow].Cells[6].Style.BackColor = Color.LightGreen;
                         }
                     }
+                   
+
+                        if (isDuplicate)
+                        {
+                            //MessageBox.Show(dataGridView1[6, nbRow].Value.ToString());
+                            isDuplicate = false;
+                        }
+
                 }
 
+               
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
             }
@@ -124,12 +121,22 @@ namespace WindowsFormsVSeA
                 if(this.tB_Order.Text !="" || !string.IsNullOrEmpty( this.tB_Order.Text) )
                 {
                     DataTable dt = new DataTable();
-                    dt=SSQL.Qty_Batch_Order(this.tB_Order.Text);
+                    dt=SSQL.Qty_Mat_Order(this.tB_Order.Text);
 
-                    dataGridView2.DataSource = dt;
 
-                    dataGridView2.ColumnHeadersDefaultCellStyle.Font = new Font("雅黑", 9, FontStyle.Bold);
-                    dataGridView2.ColumnHeadersDefaultCellStyle.ForeColor = Color.Purple;
+                    if(dt!=null && dt.Rows.Count > 0)
+                    {
+                        dataGridView2.DataSource = dt;
+
+                        dataGridView2.ColumnHeadersDefaultCellStyle.Font = new Font("雅黑", 9, FontStyle.Bold);
+                        dataGridView2.ColumnHeadersDefaultCellStyle.ForeColor = Color.Purple;
+
+
+                    }
+                    else
+                    {
+                        MessageBox.Show("未查询到 Order 数据");
+                    }
                 }
                 else
                 {
@@ -149,26 +156,7 @@ namespace WindowsFormsVSeA
             string connStatus = SSQL.DbConn(coboSele); //根据combo选项更改数据库连接
         }
 
-        private void tabPage2_MouseClick(object sender, MouseEventArgs e)
-        {
-            try
-            {
-                List<string> Conns = SSQL.GetConnectionStringsConfig();
-
-                if (Conns.Count != 0)
-                {
-                    foreach (string i in Conns)
-                    {
-                        comboBox1.Items.Add(i);
-                    }
-
-                }
-            }catch(Exception ex)
-            {
-                MessageBox.Show(ex.ToString());
-            }
-            
-        }
+        
 
         private void button3_Click(object sender, EventArgs e)
         {
@@ -185,15 +173,7 @@ namespace WindowsFormsVSeA
                 {
                     DataTable Ddt = new DataTable();
 
-                    if(textBox2.Text != "")
-                    {
-                        tb.Text = textBox2.Text;
-                    }
-                    else
-                    {
-                        return;
-                    }
-
+                   
                     Ddt = xmlDo.Get_LOIP_EQid(Tb2.Text);
 
                     if (Ddt.Rows.Count > 0 || Ddt != null)
@@ -202,6 +182,8 @@ namespace WindowsFormsVSeA
 
                         dataGridView3.ColumnHeadersDefaultCellStyle.Font = new Font("雅黑", 10, FontStyle.Bold);
                         dataGridView3.ColumnHeadersDefaultCellStyle.ForeColor = Color.Purple;
+                        dataGridView3.Columns[5].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                        dataGridView3.Columns[6].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
 
                         //tB_RowCount.Text = dataGridView1.Rows.Count.ToString();
                     }
@@ -216,7 +198,120 @@ namespace WindowsFormsVSeA
 
         private void button4_Click(object sender, EventArgs e)
         {
-            xmlDo.updateTest(this.Tb2.Text);
+            // xmlDo.updateTest(this.Tb2.Text);
+            Class_User.UserModel Equip = new Class_User.UserModel();
+            Equip.EquipmentID = textBox2.Text;
+            dataGridView3.DefaultCellStyle.BackColor = Color.White;
+            if (dataGridView3.RowCount <= 1||textBox2.Text=="")
+            {
+                MessageBox.Show("无数据可查询 或 要查询的数据为空!");
+                return;
+            }
+
+            for(int i=0;i< dataGridView3.Rows.Count; i++)
+            {
+                for(int j = 0; j < dataGridView3.Columns.Count; j++)
+                {
+
+                    if (Convert.ToString( dataGridView3[j,i].Value).Contains(textBox2.Text))
+                    {
+                        dataGridView3.Rows[i].Cells[j].Style.BackColor = Color.LightGreen;
+                    }
+                    else
+                    {
+                        dataGridView3.Rows[i].Cells[j].Style.BackColor = Color.White;//清除上次查询的颜色
+                    }
+                }
+                
+            }
+            
+
+        }
+
+        private void dataGridView1_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        {
+
+            Dictionary<int, string> dict = dataGridView1.Rows.Cast<DataGridViewRow>()
+            .Select((x, i) => new { x = (x.Cells[0].Value ?? "").ToString(), i })
+            .ToDictionary(x => x.i + 1, x => x.x);
+            if (dict.Any(x => x.Key != e.RowIndex + 1 && x.Value == dataGridView1.Rows[e.RowIndex].Cells[0].Value.ToString()))
+            {
+                MessageBox.Show("和" + dict.First(x => x.Key != e.RowIndex + 1 && x.Value == dataGridView1.Rows[e.RowIndex].Cells[0].Value.ToString()).Key.ToString() + "行重复");
+            }
+        }
+
+      
+
+        private void comboBox1_MouseDown(object sender, MouseEventArgs e)
+        {
+            try
+            {
+                if (comboBox1.Items.Count == 0)
+                {
+                    List<string> Conns = SSQL.GetConnectionStringsConfig();
+
+                    if (Conns.Count != 0)
+                    {
+                        foreach (string i in Conns)
+                        {
+                            comboBox1.Items.Add(i);
+                        }
+
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void qSYSToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (SSQL.DbConn("Q_connString") == "ok")
+                {
+                    MessageBox.Show("Q-Sys 连接参数读取完成");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void pSYSToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (SSQL.DbConn("P_connString") == "ok")
+                {
+                    MessageBox.Show("P-Sys 连接参数读取完成");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void comboBox1_SelectedIndexChanged_1(object sender, EventArgs e)
+        {
+            try
+            {
+                List<string> Conns = SSQL.GetConnectionStringsConfig();
+
+                if (comboBox1.Text== "Q_connString")
+                {
+                    
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
         }
     }
 }
