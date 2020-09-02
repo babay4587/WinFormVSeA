@@ -25,6 +25,8 @@ namespace WindowsFormsVSeA
 
         public static string DBConnStr = string.Empty;
 
+        public static Class_User.UserModel CUModel = new Class_User.UserModel();
+
         public Form1()
         {
             InitializeComponent();
@@ -118,7 +120,12 @@ namespace WindowsFormsVSeA
         {
             try
             {
-                if(this.tB_Order.Text !="" || !string.IsNullOrEmpty( this.tB_Order.Text) )
+                if (string.IsNullOrEmpty(SSQL.DBConnStr))
+                {
+                    MessageBox.Show("数据库未连接 ！");
+                    return;
+                }
+                if (this.tB_Order.Text !="" || !string.IsNullOrEmpty( this.tB_Order.Text) )
                 {
                     DataTable dt = new DataTable();
                     dt=SSQL.Qty_Mat_Order(this.tB_Order.Text);
@@ -128,10 +135,17 @@ namespace WindowsFormsVSeA
                     {
                         dataGridView2.DataSource = dt;
 
+                        TB_Mat_Fert.Text = dataGridView2.Rows[0].Cells[0].Value.ToString();
+                        TB_MatDesc.Text = dataGridView2.Rows[0].Cells[1].Value.ToString();
+
+                        dataGridView2.Columns[0].Visible =false;
+                        dataGridView2.Columns[1].Visible = false;
+                        dataGridView2.Columns[2].Visible = false;
+
                         dataGridView2.ColumnHeadersDefaultCellStyle.Font = new Font("雅黑", 9, FontStyle.Bold);
                         dataGridView2.ColumnHeadersDefaultCellStyle.ForeColor = Color.Purple;
-
-
+                        dataGridView2.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                        dataGridView2.Columns[5].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                     }
                     else
                     {
@@ -273,7 +287,10 @@ namespace WindowsFormsVSeA
             {
                 if (SSQL.DbConn("Q_connString") == "ok")
                 {
-                    MessageBox.Show("Q-Sys 连接参数读取完成");
+                    
+                    this.tBColorQ.BackColor = Color.SpringGreen;
+                    this.tBColorP.BackColor = Color.Empty;
+                    //MessageBox.Show("Q-Sys 连接参数读取完成");
                 }
             }
             catch (Exception ex)
@@ -288,7 +305,9 @@ namespace WindowsFormsVSeA
             {
                 if (SSQL.DbConn("P_connString") == "ok")
                 {
-                    MessageBox.Show("P-Sys 连接参数读取完成");
+                    this.tBColorP.BackColor = Color.SpringGreen;
+                    this.tBColorQ.BackColor = Color.Empty;
+                    //MessageBox.Show("P-Sys 连接参数读取完成");
                 }
             }
             catch (Exception ex)
@@ -313,5 +332,91 @@ namespace WindowsFormsVSeA
                 MessageBox.Show(ex.ToString());
             }
         }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(SSQL.DBConnStr))
+                {
+                    MessageBox.Show("数据库未连接 ！");
+                    return;
+                }
+
+                if (string.IsNullOrEmpty(this.TB_UniMat.Text))
+                {
+                    MessageBox.Show("请输入要查询的唯一码 ！");
+                    return;
+                }
+                
+
+                if (this.TB_UniMat.Text != "" || !string.IsNullOrEmpty(this.TB_UniMat.Text))
+                {
+                    DataTable dt = new DataTable();
+                    dt = SSQL.Qty_UniqueMat(this.TB_UniMat.Text);
+                    
+                    if (dt != null && dt.Rows.Count > 0)
+                    {
+                        dataGridView4.DataSource = dt;
+
+                        TB_Mat_Fert.Text = dataGridView4.Rows[0].Cells[0].Value.ToString();
+                        TB_MatDesc.Text = dataGridView4.Rows[0].Cells[1].Value.ToString();
+
+                        
+                        dataGridView4.ColumnHeadersDefaultCellStyle.Font = new Font("雅黑", 9, FontStyle.Bold);
+                        dataGridView4.ColumnHeadersDefaultCellStyle.ForeColor = Color.Purple;
+                        dataGridView4.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                        dataGridView4.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                        dataGridView4.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                        dataGridView4.Columns[3].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                        dataGridView4.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+
+                    }
+                    else
+                    {
+                        MessageBox.Show("未查询到 Unique Code 数据");
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void dataGridView4_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            //string SNR = dataGridView4.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
+            //MessageBox.Show(SNR);
+        }
+
+
+       
+private void dataGridView4_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            
+        }
+
+        private void dataGridView4_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            string SNR = dataGridView4.Rows[e.RowIndex].Cells[0].Value.ToString();
+            string Unicode= dataGridView4.Rows[e.RowIndex].Cells[4].Value.ToString();
+            string MatDesc = dataGridView4.Rows[e.RowIndex].Cells[3].Value.ToString();
+
+            CUModel.TranSerialNumber = SNR;
+            CUModel.MaterialDesc = MatDesc;
+            CUModel.UniqueMatCode = Unicode;
+
+
+            new FormMatTrace().Show();
+        }
+
+        
     }
 }

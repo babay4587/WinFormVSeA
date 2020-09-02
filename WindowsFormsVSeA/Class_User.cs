@@ -19,12 +19,32 @@ namespace WindowsFormsVSeA
     {
         public class UserModel
         {
-            private string equipmentID; 
+            private string equipmentID;
+
+            private string TranSNR;
+            private string Matdescription;
+            private string UniqueCode;
 
             public string EquipmentID
             {
                 set { equipmentID = value; }
                 get { return equipmentID; }
+            }
+
+            public string TranSerialNumber
+            {
+                set { TranSNR = value; }
+                get { return TranSNR; }
+            }
+            public string MaterialDesc
+            {
+                set { Matdescription =value; }
+                get { return Matdescription; }
+            }
+            public string UniqueMatCode
+            {
+                set { UniqueCode = value; }
+                get { return UniqueCode; }
             }
         }
     }
@@ -1083,5 +1103,85 @@ namespace WindowsFormsVSeA
             }
         }
 
+        public DataTable Qty_UniqueMat(string UniqueCode)
+        {
+            string sql = string.Format(@"select TARGET_LOT as SNR,MACHINE_ID as Terminal_ID,COMPONENT_ID as MaterialNum
+                    ,(select DefName from [SitMesDB].[dbo].MMwDefVers  where DefID=Gen.COMPONENT_ID ) as MaterialName
+                    ,LOT_ID as UniqueCode,QUANTITY
+                    ,(case when ASSEMBLE_CONFIRMED=1 then N'已装配' else N'未装配' end) as Assembled,
+                    DISASSEMBLE_CONFIRMED as DisassembledCount
+                   ,(case when DISASSEMBLED=1 then N'已拆解' else N'未拆解' end) as DisassembleStatus,
+                    REUSED
+                    ,(case when REUSED=0 and DISASSEMBLED=1 then 'Scrp'
+                             when REUSED=1 and  DISASSEMBLE_CONFIRMED>0 and DISASSEMBLED=1 then 'Code Reused'
+                             when REUSED>0 and  ASSEMBLE_CONFIRMED=1 and DISASSEMBLED=0 then 'Code Un-Disassembled'
+                    end) UniqueCode_Status
+                    ,TRACEABILITY_SCOPE as TraceCategoary,RowUpdated
+                    FROM [SitMesDB].[dbo].[ARCH_T_SitMesPomRTF8F959F4-452B-462E-BA33-DB852EFDA899/EC_ENTRY_EXT_GENEALOGY_MATLABEL_$107$] Gen with(nolock)
+                    where LOT_ID like '%{0}%'", UniqueCode);
+
+            DataTable dt = new DataTable();
+
+            try
+            {
+                dt = SQLSet(sql);
+                return dt;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="UniqueCode"></param>
+        /// <returns></returns>
+        public DataTable Qty_MMlot_TargetPK2SNR(string UniqueCode)
+        {
+            string sql = string.Format(@"select snr.LotID,snr.LotName SerialNumber,uniqueID.LotName as uniqueCode
+                                                            ,snr.RowUpdated changetime
+                                                            FROM [SitMesDb].[dbo].[MMLots] snr
+                                                            with(nolock)
+                                                            inner join [SitMesDb].[dbo].[MMLots] uniqueID
+                                                            on snr.LotPK=uniqueID.TargetLotPK
+                                                            where uniqueID.LotName = '{0}'", UniqueCode);
+
+            DataTable dt = new DataTable();
+
+            try
+            {
+                dt = SQLSet(sql);
+                return dt;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// DefVerPK, DefID,DefName
+        /// </summary>
+        /// <param name="MatID"></param>
+        /// <returns></returns>
+        public DataTable Qty_MMwDefVers_MatDesc(string MatID)
+        {
+            string sql = string.Format(@"select DefVerPK, DefID,DefName from MMwDefVers
+                                                            where defid='{0}'", MatID);
+
+            DataTable dt = new DataTable();
+
+            try
+            {
+                dt = SQLSet(sql);
+                return dt;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
     }
 }
