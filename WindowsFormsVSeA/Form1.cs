@@ -19,11 +19,11 @@ namespace WindowsFormsVSeA
     {
         public WindowsFormsVSeA.XmlDo xmlDo = new XmlDo();
 
-        public WindowsFormsVSeA.DoSQL  SSQL = new DoSQL();
+        public static WindowsFormsVSeA.DoSQL  SSQL = new DoSQL();
 
         public TextBox tb = new TextBox();
 
-        public static string DBConnStr = string.Empty;
+        //public static string DBConnStr = string.Empty;
 
         public static Class_User.UserModel CUModel = new Class_User.UserModel();
 

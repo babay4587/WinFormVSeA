@@ -11,9 +11,11 @@ namespace WindowsFormsVSeA
 {
     public partial class FormMatTrace : Form
     {
-        public WindowsFormsVSeA.DoSQL SSQL = new DoSQL();
+        public WindowsFormsVSeA.DoSQL SSQL = new DoSQL(); //新申明的实例化对象 SSQL，其中DBConnStr连接参数为空！
 
         public Class_User.UserModel UserUModel = new Class_User.UserModel();
+
+        public DataTable dt = new DataTable();
         public FormMatTrace()
         {
             InitializeComponent();
@@ -25,11 +27,13 @@ namespace WindowsFormsVSeA
             TB_SNR.Text = Form1.CUModel.TranSerialNumber;
             TBunicode.Text = Form1.CUModel.UniqueMatCode;
             TBMatDesc.Text = Form1.CUModel.MaterialDesc;
+            string ddb = Form1.SSQL.DBConnStr;
 
-            if (this.TBAssembleTo.Text != "" || !string.IsNullOrEmpty(this.TBAssembleTo.Text))
+            
+            if (this.TB_SNR.Text != "" || !string.IsNullOrEmpty(this.TB_SNR.Text))
             {
-                DataTable dt = new DataTable();
-                dt = SSQL.Qty_MMlot_TargetPK2SNR(this.TBAssembleTo.Text);
+                
+                dt =Form1.SSQL.Qty_MMlot_TargetPK2SNR(this.TB_SNR.Text);
 
                 if (dt != null && dt.Rows.Count > 0)
                 {
@@ -42,8 +46,8 @@ namespace WindowsFormsVSeA
                     if ( !string.IsNullOrEmpty(MaDesc))
                     {
                         DataTable dtDefName = new DataTable();
-                        dtDefName = SSQL.Qty_MMwDefVers_MatDesc(MaDesc);
-                        this.TB_TargetMatDesc.Text = dtDefName.Rows[0][0].ToString();
+                        dtDefName = Form1.SSQL.Qty_MMwDefVers_MatDesc(MaDesc);
+                        this.TB_TargetMatDesc.Text = dtDefName.Rows[0][2].ToString();
                     }
 
                 }
@@ -53,5 +57,90 @@ namespace WindowsFormsVSeA
                 }
             }
         }
+
+        /// <summary>
+        /// 点击 操作TreeView控件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void BtnTreeAct_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                DataTable DtTre = new DataTable();
+
+                if (string.IsNullOrEmpty(TBAssembleTo.Text))
+                {
+                    MessageBox.Show("无可追溯数据");
+                    return;
+                }
+
+                TreeNode tn = new TreeNode("RootCode");
+                //tn.Name = "全部";
+                //tn.Text = "全部";
+                TreeV1.Nodes.Add(tn);
+
+                if (string.IsNullOrEmpty(TBunicode.Text.Split('_')[1].ToString()))
+                {
+                    MessageBox.Show("唯一码：物料号不存在；应该为 : MaterialNumber_UniqueCode 格式");
+                    return;
+                }
+
+                DtTre = Form1.SSQL.Qty_CTEMat(TBunicode.Text.Split('_')[1].ToString());
+
+                if (DtTre.Rows.Count > 0 || dt != null)
+                {
+                    foreach (DataRow Row in DtTre.Rows)
+                    {
+                        string strValue = Row["SerialNumber"].ToString()+";"+Row["changetime"].ToString();
+
+                        TreeNode tn1 = new TreeNode(strValue);
+                        
+                        TreeV1.Nodes.Add(tn1);
+                        //if (tn.Nodes.Count > 0)
+                        //{
+                        //    if (!tn.Nodes.ContainsKey(strValue))
+                        //    {
+                        //        BindTreeData(tn, DtTre, strValue);
+                        //    }
+                        //}
+                        //else
+                        //{
+                        //    BindTreeData(tn, DtTre, strValue);
+                        //}
+                    }
+                }
+
+               
+                TreeV1.ExpandAll();
+
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+            
+        }
+
+        private void BindTreeData(TreeNode tn, DataTable dtData, string strValue)
+        {
+            TreeNode tn1 = new TreeNode();
+            tn1.Name = strValue;
+            tn1.Text = strValue;
+            tn.Nodes.Add(tn1);
+
+            DataRow[] rows = dtData.Select(string.Format("SerialNumber='{0}'", strValue));
+            if (rows.Length > 0)
+            {
+                foreach (DataRow dr in rows)
+                {
+                    TreeNode tn2 = new TreeNode();
+                    tn2.Name = dr["SerialNumber"].ToString();
+                    tn2.Text = dr["changetime"].ToString();
+                    tn1.Nodes.Add(tn2);
+                }
+            }
+        }
+
     }
 }

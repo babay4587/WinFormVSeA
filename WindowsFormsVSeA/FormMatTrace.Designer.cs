@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.button1 = new System.Windows.Forms.Button();
+            this.BtnTreeAct = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.TB_SNR = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -41,17 +41,20 @@
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.label5 = new System.Windows.Forms.Label();
             this.TB_TargetMatDesc = new System.Windows.Forms.TextBox();
+            this.TreeV1 = new System.Windows.Forms.TreeView();
+            this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
-            // button1
+            // BtnTreeAct
             // 
-            this.button1.Location = new System.Drawing.Point(1119, 37);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(92, 35);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
+            this.BtnTreeAct.Location = new System.Drawing.Point(1119, 37);
+            this.BtnTreeAct.Name = "BtnTreeAct";
+            this.BtnTreeAct.Size = new System.Drawing.Size(102, 39);
+            this.BtnTreeAct.TabIndex = 0;
+            this.BtnTreeAct.Text = "反向追溯";
+            this.BtnTreeAct.UseVisualStyleBackColor = true;
+            this.BtnTreeAct.Click += new System.EventHandler(this.BtnTreeAct_Click);
             // 
             // label1
             // 
@@ -72,7 +75,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(391, 40);
+            this.label2.Location = new System.Drawing.Point(442, 28);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(107, 18);
             this.label2.TabIndex = 1;
@@ -80,9 +83,9 @@
             // 
             // TBunicode
             // 
-            this.TBunicode.Location = new System.Drawing.Point(504, 37);
+            this.TBunicode.Location = new System.Drawing.Point(577, 37);
             this.TBunicode.Name = "TBunicode";
-            this.TBunicode.Size = new System.Drawing.Size(552, 28);
+            this.TBunicode.Size = new System.Drawing.Size(479, 28);
             this.TBunicode.TabIndex = 2;
             // 
             // label3
@@ -119,6 +122,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(1076, 109);
@@ -155,23 +159,32 @@
             this.TB_TargetMatDesc.Size = new System.Drawing.Size(479, 28);
             this.TB_TargetMatDesc.TabIndex = 2;
             // 
+            // TreeV1
+            // 
+            this.TreeV1.Location = new System.Drawing.Point(12, 268);
+            this.TreeV1.Name = "TreeV1";
+            this.TreeV1.Size = new System.Drawing.Size(549, 206);
+            this.TreeV1.TabIndex = 5;
+            // 
             // FormMatTrace
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1335, 486);
+            this.Controls.Add(this.TreeV1);
             this.Controls.Add(this.TBunicode);
             this.Controls.Add(this.TBMatDesc);
             this.Controls.Add(this.TB_SNR);
             this.Controls.Add(this.label3);
-            this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.BtnTreeAct);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.groupBox2);
             this.Name = "FormMatTrace";
             this.Text = "FormMatTrace";
             this.Load += new System.EventHandler(this.FormMatTrace_Load);
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
@@ -181,7 +194,7 @@
 
         #endregion
 
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button BtnTreeAct;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox TB_SNR;
         private System.Windows.Forms.Label label2;
@@ -194,5 +207,6 @@
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.TextBox TB_TargetMatDesc;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.TreeView TreeV1;
     }
 }

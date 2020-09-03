@@ -1141,12 +1141,12 @@ namespace WindowsFormsVSeA
         public DataTable Qty_MMlot_TargetPK2SNR(string UniqueCode)
         {
             string sql = string.Format(@"select snr.LotID,snr.LotName SerialNumber,uniqueID.LotName as uniqueCode
-                                                            ,snr.RowUpdated changetime
-                                                            FROM [SitMesDb].[dbo].[MMLots] snr
-                                                            with(nolock)
-                                                            inner join [SitMesDb].[dbo].[MMLots] uniqueID
-                                                            on snr.LotPK=uniqueID.TargetLotPK
-                                                            where uniqueID.LotName = '{0}'", UniqueCode);
+                                                        ,snr.RowUpdated as changetime
+                                                        FROM [SitMesDb].[dbo].[MMLots] snr
+                                                        with(nolock)
+                                                        inner join [SitMesDb].[dbo].[MMLots] uniqueID
+                                                        on snr.LotPK=uniqueID.TargetLotPK
+                                                        where uniqueID.LotName = '{0}'", UniqueCode);
 
             DataTable dt = new DataTable();
 
@@ -1155,7 +1155,77 @@ namespace WindowsFormsVSeA
                 dt = SQLSet(sql);
                 return dt;
             }
-            catch (Exception)
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// 通过唯一件 唯一码进行递归查询
+        /// LotID 料号+唯一码；SerialNumber 序列号；uniqueCode 唯一码；时间
+        /// </summary>
+        /// <param name="UniqueCode"></param>
+        /// <returns></returns>
+        public DataTable Qty_CTEMat(string UniqueCode)
+        {
+            //string sql = string.Format(@"with cte as
+            //                                            (
+            //                                            select snr.LotID,snr.LotName SerialNumber,uniqueID.LotName as uniqueCode
+            //                                            ,snr.RowUpdated as changetime
+            //                                            FROM [SitMesDb].[dbo].[MMLots] snr
+            //                                            with(nolock)
+            //                                            inner join [SitMesDb].[dbo].[MMLots] uniqueID
+            //                                            on snr.LotPK=uniqueID.TargetLotPK
+            //                                            where uniqueID.LotName = '{0}'
+            //                                            union all
+            //                                             select A.LotID,A.SerialNumber,A.uniqueCode,A.changetime from
+            //                                             (select snr.LotID,snr.LotName SerialNumber,uniqueID.LotName as uniqueCode
+            //                                              ,snr.RowUpdated as changetime
+            //                                              FROM [SitMesDb].[dbo].[MMLots] snr
+            //                                              with(nolock)
+            //                                              inner join [SitMesDb].[dbo].[MMLots] uniqueID
+            //                                              on snr.LotPK=uniqueID.TargetLotPK
+
+            //                                             ) A inner join cte
+            //                                             on A.uniqueCode=cte.SerialNumber
+            //                                            )
+            //                                            select * from cte", UniqueCode);
+
+            string sql = string.Format(@"with cte as
+                                                        (
+                                                        select snr.LotID,snr.LotName SerialNumber,uniqueID.LotName as uniqueCode
+                                                        ,snr.RowUpdated as changetime
+                                                        FROM [SitMesDb].[dbo].[MMLots] snr
+                                                        with(nolock)
+                                                        inner join [SitMesDb].[dbo].[MMLots] uniqueID
+                                                        on snr.LotPK=uniqueID.TargetLotPK
+                                                        where uniqueID.LotName = '{0}'
+                                                        union all
+	                                                        select A.LotID,A.SerialNumber,A.uniqueCode,A.changetime from
+	                                                        (select snr.LotID,snr.LotName SerialNumber,uniqueID.LotName as uniqueCode
+		                                                        ,snr.RowUpdated as changetime
+		                                                        FROM [SitMesDb].[dbo].[MMLots] snr
+		                                                        with(nolock)
+		                                                        inner join [SitMesDb].[dbo].[MMLots] uniqueID
+		                                                        on snr.LotPK=uniqueID.TargetLotPK
+		
+	                                                        ) A inner join cte
+	                                                        on A.uniqueCode=cte.SerialNumber
+                                                        )
+                                                        select * from cte
+                                                        union all
+                                                        select '1','{0}','1',''
+                                                        order by changetime desc", UniqueCode);
+
+            DataTable dt = new DataTable();
+
+            try
+            {
+                dt = SQLSet(sql);
+                return dt;
+            }
+            catch (Exception e)
             {
                 return null;
             }
