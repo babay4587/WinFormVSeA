@@ -17,6 +17,7 @@ namespace WindowsFormsVSeA
     
     public class Class_User
     {
+        
         public class UserModel
         {
             private string equipmentID;
@@ -24,6 +25,7 @@ namespace WindowsFormsVSeA
             private string TranSNR;
             private string Matdescription;
             private string UniqueCode;
+            private string Order_ID;
 
             public string EquipmentID
             {
@@ -46,6 +48,13 @@ namespace WindowsFormsVSeA
                 set { UniqueCode = value; }
                 get { return UniqueCode; }
             }
+
+            public string OrderID
+            {
+                set { Order_ID = value; }
+                get { return Order_ID; }
+            }
+
         }
     }
 
@@ -1105,8 +1114,20 @@ namespace WindowsFormsVSeA
 
         public DataTable Qty_UniqueMat(string UniqueCode)
         {
-            string sql = string.Format(@"select TARGET_LOT as SNR,MACHINE_ID as Terminal_ID,COMPONENT_ID as MaterialNum
-                    ,(select DefName from [SitMesDB].[dbo].MMwDefVers  where DefID=Gen.COMPONENT_ID ) as MaterialName
+            string sql = string.Format(@"select 
+			(select top 1 					
+				(select DefName from mmwdefvers						
+					where defid=ev.PRODUCT_ID) 
+					FROM [Arch_RPT_MGR_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EV] ev with(nolock)						
+				where SERIAL=Gen.TARGET_LOT) as FinalProductName,
+				(select top 1 	ev.PRODUCT_ID 
+				FROM [Arch_RPT_MGR_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EV] ev with(nolock)						
+				where SERIAL=Gen.TARGET_LOT) as FinalProductID,
+				(select top 1 	ev.ORDER_ID 
+				FROM [Arch_RPT_MGR_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EV] ev with(nolock)						
+				where SERIAL=Gen.TARGET_LOT) as ORDER_ID,
+	            TARGET_LOT as AssembleTo_SNR,MACHINE_ID as Terminal_ID,COMPONENT_ID as Unique_MatNum
+                    ,(select DefName from [SitMesDB].[dbo].MMwDefVers  where DefID=Gen.COMPONENT_ID ) as Unique_MatName
                     ,LOT_ID as UniqueCode,QUANTITY
                     ,(case when ASSEMBLE_CONFIRMED=1 then N'已装配' else N'未装配' end) as Assembled,
                     DISASSEMBLE_CONFIRMED as DisassembledCount
@@ -1134,7 +1155,7 @@ namespace WindowsFormsVSeA
         }
 
         /// <summary>
-        /// 
+        /// 根据唯一码 查询绑定的序列号
         /// </summary>
         /// <param name="UniqueCode"></param>
         /// <returns></returns>
@@ -1160,6 +1181,311 @@ namespace WindowsFormsVSeA
                 return null;
             }
         }
+
+
+        /// <summary>
+        /// input single snr then get order id; final material number and name
+        /// </summary>
+        /// <param name="SNR"></param>
+        /// <returns></returns>
+        public DataTable Qty_Single_SNR(string SNR)
+        {
+            string sql = string.Format(@"select top 1	
+                                            (select DefName from mmwdefvers	
+	                                            where defid=ev.PRODUCT_ID) FinalProductName,ev.PRODUCT_ID as FinalProductID,ORDER_ID
+                                            FROM [Arch_RPT_MGR_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EV] ev with(nolock)	
+                                            where SERIAL='{0}'", SNR);
+
+            DataTable dt = new DataTable();
+
+            try
+            {
+                dt = SQLSet(sql);
+                return dt;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+        public DataTable Qty_SNR_Rework_Temp(string SNR)
+        {
+            string sql = string.Format(@"select 
+                                                            dateadd(hour,8,RowUpdated) ReworkTime
+                                                           ,LOT_PK,HUT_ASSIGNMENT
+                                                          ,REWORK_STATE
+                                                          ,CNT_ASSEMBLED
+                                                          ,REWORK_DATA_TMP
+                                                          ,REWORK_DATA_TMP_2
+                                                          ,REWORK_DATA_TMP_3
+                                                          ,REWORK_DATA_TMP_4
+                                                           from [SitMesDB].[dbo].[ARCH_T_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EC_LOT_PROP_EXT_$111$]
+                                                          where LOT_PK=(SELECT [LotPK]
+                                                             FROM [SitMesDB].[dbo].[MMLots]
+                                                          where LotName='{0}' )", SNR);
+
+            DataTable dt = new DataTable();
+
+            try
+            {
+                dt = SQLSet(sql);
+                return dt;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// 根据SNR，Order查询物料临时表  EC_SETUP_MAT_LABEL_TEMP
+        /// </summary>
+        /// <param name="SNR"></param>
+        /// <param name="Order"></param>
+        /// <returns></returns>
+        public DataTable Qty_Mat_Temp_Db(string SNR,string Order)
+        {
+            string sql = string.Format(@"SELECT	
+                                                    ORDER_ID,	
+                                                    SERIALNUMBER,	
+                                                    [MACHINE_ID]	
+                                                    ,[PROCESS_STEP]	
+                                                    ,[COMPONENT_ID] as MatNumber	
+	                                                    ,(select DefName from
+                                                    [SITMesDB].[dbo].[MMwDefVers] where	
+                                                    defid=Mst.[COMPONENT_ID]) as MatName	
+                                                    ,[COMPONENT_POS]	
+                                                    ,[LIFNR]	
+                                                    ,[PACKID]	
+                                                    ,[UNIKAT]	
+                                                    ,[EQUIPMENT_ID]	
+                                                    ,dateadd(hour,8,[RowUpdated])as dateTimes	
+                                                    ,[SETUP_STATE]
+                                                    FROM [SITMesDB].[dbo].[ARCH_T_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EC_SETUP_MAT_LABEL_TEMP_$102$] Mst with(nolock)	
+                                                    where order_id='{1}' or SERIALNUMBER like '%{0}%'	", SNR,Order);
+
+            DataTable dt = new DataTable();
+
+            try
+            {
+                dt = SQLSet(sql);
+                return dt;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// 根据工单号查询 实际 物料扫描记录
+        /// </summary>
+        /// <param name="Order"></param>
+        /// <returns></returns>
+        public DataTable Qty_Mat_Real_Genealogy(string Order)
+        {
+            string sql = string.Format(@"SELECT POMV_ETRY.pom_order_id as Order_ID
+                                        ,gen.TARGET_LOT as SNR, gen.MACHINE_ID as Terminal_ID
+                                        ,EEP.ERP_OPERATION_ID as AVO_ID, POMV_ETRY.pom_entry_type_id as WorkOperationID
+                                        ,gen.COMPONENT_ID as MatNumber
+                                        ,MMwDefVers.DefName as MatName
+                                        ,gen.LIFNR
+                                        , gen.PACKID
+                                        , gen.LOT_ID as UniqueCode
+                                        , gen.QUANTITY as BoM_QUANTITY
+                                        , dateadd(hour,8,gen.RowUpdated)as dateTimes
+                                        from [ArchSitMesPomRTF8F959F4-452B-462E-BA33-DB852EFDA899/EC_ENTRY_EXT_GENEALOGY_MATLABEL] gen		
+                                        INNER JOIN POMV_ETRY on gen.MES_RECORD_PK = POMV_ETRY.pom_entry_pk		
+                                        INNER JOIN [ArchSitMesPomRTF8F959F4-452B-462E-BA33-DB852EFDA899/EC_ENTRY_EXT_PROPERTIES] EEP on POMV_ETRY.pom_entry_pk = EEP.MES_RECORD_PK		
+                                        INNER JOIN MMwDefVers ON MMwDefVers.DefID = gen.COMPONENT_ID		
+                                        where		
+                                        POMV_ETRY.pom_order_id='{0}'",  Order);
+
+            DataTable dt = new DataTable();
+
+            try
+            {
+                dt = SQLSet(sql);
+                return dt;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+
+        /// <summary>
+        /// 输入SNR 查询eCar 报表类似数据
+        /// </summary>
+        /// <param name="SNR"></param>
+        /// <returns></returns>
+        public DataTable Qty_eCar_Product_SNR(string SNR)
+        {
+            string sql = string.Format(@"declare @snr nvarchar(4000)
+
+                                            declare @orderFromLot nvarchar(4000)
+
+                                            set @snr = '{0}'
+
+                                            declare @lops TABLE
+                                            (
+                                            LotPk int,
+                                            NewName NVARCHAR(4000),
+                                            OperationDate DATETIME,
+                                            UserID NVARCHAR(4000),
+                                            AssociateTo NVARCHAR(4000),
+                                            Comments NVARCHAR(4000),
+                                            SrvCrtBias SMALLINT,
+                                            NewLocPk INT,
+                                            NewStatusPk INT
+                                            );
+
+                                            -- can be empty, when snr is not yet running
+                                            insert into @lops
+                                            select LotPk, NewName, OperationDate, UserID, AssociateTo, Comments, SrvCrtBias, NewLocPK, NewStatusPK from MMvLotOperations with(nolock)
+                                            where NewName = @snr and LotOpeTypePK = 9
+
+                                            declare @lot_route TABLE
+                                            (
+                                            LOT_PK INT,
+                                            ROUTE_POS INT,
+                                            ENTRY_TYPE NVARCHAR(4000),
+                                            POM_ENTRY_PK INT,
+                                            CTX_ID NVARCHAR(4000),
+                                            ROUTE_POS_STATUS NVARCHAR(4000),
+                                            FLAG_REWORK NVARCHAR(4000)
+                                            );
+
+                                            set @orderFromLot = (select CommitTo from MMLotCommitTo WITH(NOLOCK) where LotPK = (select LotPk from MMvLots with(nolock) where LotName = @snr))
+
+                                            insert into @lot_route
+                                            select LOT_PK, ROUTE_POS, pet.id, POMV_ETRY.pom_entry_pk, CTX_ID, ROUTE_POS_STATUS, FLAG_REWORK
+                                            from [Arch_RPT_MGR_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EC_LOT_ROUTE] lot_route with(nolock)
+                                            LEFT JOIN POM_ENTRY_TYPE pet on pet.pom_entry_type_pk = lot_route.ENTRY_TYPE_PK
+                                            LEFT JOIN POMV_ETRY on POMV_ETRY.pom_order_id = @orderFromLot and pet.id = POMV_ETRY.pom_entry_type_id
+                                            where LOT_PK = (select LotPk from MMvLots where LotName = @snr)
+
+                                            declare @history TABLE
+                                            (
+                                            ROUTE_POS NVARCHAR(100),
+                                            ORDER_ID NVARCHAR(4000),
+                                            SNR NVARCHAR(4000),
+                                            TERMINAL NVARCHAR(4000),
+                                            AVO_ID NVARCHAR(4000),
+                                            AVO NVARCHAR(4000),
+                                            AVO_BESCHREIBUNG NVARCHAR(4000),
+                                            WORKFLOW NVARCHAR(4000),
+                                            SNR_STATUS NVARCHAR(4000),
+                                            REWORK_STEP NVARCHAR(100),
+                                            InterlockingCode NVARCHAR(4000),
+                                            InterlockingError NVARCHAR(4000),
+                                            USER_ID NVARCHAR(4000),
+                                            TIMESTAMP DATETIME
+                                            );
+
+                                            insert into @history
+                                            select 
+                                            isnull(ROUTE_POS,'-') as 'ROUTE_POS',
+                                            @orderFromLot as Order_ID,
+                                            @snr as SNR,
+                                            isnull(lops.AssociateTo,'...') as Terminal,
+                                            isnull(EEP.ERP_OPERATION_ID,'...') as AVO_ID, 
+                                            isnull(lot_route.ENTRY_TYPE,loc.LocID) as AVO,
+                                            isnull(EEP.WO_DESCR,loc.LocID) as AVO_Beschreibung,
+                                            isnull(EEP.WORKFLOW,'...') as Workflow,
+                                            isnull(NULLIF(isnull(ROUTE_POS_STATUS,stat.LotStatusID),''),'...') as SNR_Status,
+                                            isnull(FLAG_REWORK,'') as 'Rework_Step',
+                                            '--' as InterlockingCode,
+                                            '--' as InterlockingError,
+                                            isnull(UserID,'...') as User_ID,
+                                            isnull(lops.OperationDate,'2999-01-01 00:00:00.000') as Timestamp
+                                            /*IEV-Timestamp cannot be converted to local => EV-timestamp has to be in UTC, too.*/
+                                            --isnull(dateadd(minute,-lops.SrvCrtBias, lops.OperationDate),'2999-01-01 00:00:00.000') as Timestamp
+                                            FROM 
+                                            @lot_route as lot_route
+                                            INNER JOIN SITMesDB.dbo.[ArchSitMesPomRTF8F959F4-452B-462E-BA33-DB852EFDA899/EC_ENTRY_EXT_PROPERTIES] EEP on EEP.MES_RECORD_PK = lot_route.POM_ENTRY_PK
+                                            FULL OUTER JOIN @lops as lops on lot_route.LOT_PK = lops.LotPk and lot_route.CTX_ID = lops.Comments 
+                                            LEFT JOIN MMLocations loc on loc.LocPK = lops.NewLocPk
+                                            LEFT JOIN MMLotStatuses stat on stat.LotStatusPK = lops.NewStatusPk
+
+                                            /*
+                                            Merge with interlocking checks
+                                            */
+                                            insert into @history
+                                            select
+                                            '      Itlk' as 'ROUTE_POS',
+                                            @orderFromLot as Order_ID,
+                                            @snr as SNR,
+                                            iev.TERM_ID as Terminal,
+                                            EEP.ERP_OPERATION_ID as AVO_ID,
+                                            iev.WO_IDT as AVO,
+                                            EEP.WO_DESCR as 'AVO_Beschreibung',
+                                            EEP.WORKFLOW as Workflow,
+                                            iev.STATUS as SNR_Status,
+                                            '' as 'Rework_Step',
+                                            iev.ITLK_CODE as InterlockingCode,
+                                            iev.ERROR_ID as InterlockingError,
+                                            'Itlk-Check' as User_ID,
+                                            dateadd(hour,8,iev.EVENT_DATE_TIME) as Timestamp
+                                            from [ArchSitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/IEV] iev with(nolock)
+                                            LEFT JOIN POMV_ETRY on iev.ORDER_ID = pomv_etry.pom_order_id and iev.WO_IDT = POMV_ETRY.pom_entry_type_id
+                                            LEFT JOIN MMLocations on MMLocations.LocID = POMV_ETRY.pom_entry_type_id
+                                            LEFT JOIN [ArchSitMesPomRTF8F959F4-452B-462E-BA33-DB852EFDA899/EC_ENTRY_EXT_PROPERTIES] EEP on POMV_ETRY.pom_entry_pk = EEP.MES_RECORD_PK 
+                                            where 
+                                            iev.ORDER_ID = @orderFromLot and 
+                                            iev.SERIAL = @snr
+                                            order by iev.EVENT_DATE_TIME
+
+                                            select * from @history history
+                                            where 
+                                            --history.Timestamp > convert(datetime,@from)
+                                            --and history.Timestamp < convert(datetime,@to) and
+                                            history.Terminal like '%'
+                                            and history.AVO like '%'
+                                            order by TIMESTAMP", SNR);
+
+            DataTable dt = new DataTable();
+
+            try
+            {
+                dt = SQLSet(sql);
+                return dt;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+
+
+        public DataTable Qty_Order_Setup(string Orderid)
+        {
+            string sql = string.Format(@"SELECT [MACHINE_ID]	
+                                                        ,[PROCESS_STEP]	
+                                                        ,[ORDER_ID]	
+                                                        ,[PLC_SETUP_FLAG]	
+                                                        ,dateadd(hour,8,[RowUpdated]) as Times	
+                                                        ,[EQUIPMENT_ID]	
+                                                        FROM [SitMesDB].[dbo].[ARCH_T_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EC_SETUP_SHOPFLOOR_$106$]	
+                                                        with(nolock)	
+                                                        where ORDER_ID='{0}'", Orderid);
+
+            DataTable dt = new DataTable();
+
+            try
+            {
+                dt = SQLSet(sql);
+                return dt;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
 
         /// <summary>
         /// 通过唯一件 唯一码进行递归查询

@@ -103,6 +103,12 @@
     <Compile Include="FormMatTrace.Designer.cs">
       <DependentUpon>FormMatTrace.cs</DependentUpon>
     </Compile>
+    <Compile Include="FrmOrderSetup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmOrderSetup.Designer.cs">
+      <DependentUpon>FrmOrderSetup.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1.resx">
@@ -110,6 +116,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormMatTrace.resx">
       <DependentUpon>FormMatTrace.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmOrderSetup.resx">
+      <DependentUpon>FrmOrderSetup.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

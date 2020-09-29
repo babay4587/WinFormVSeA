@@ -25,6 +25,10 @@ namespace WindowsFormsVSeA
 
         //public static string DBConnStr = string.Empty;
 
+        DataView DV_RealTrace = new DataView();
+
+        DataTable Dt_Cpy = new DataTable();
+        
         public static Class_User.UserModel CUModel = new Class_User.UserModel();
 
         public Form1()
@@ -417,6 +421,273 @@ private void dataGridView4_CellClick(object sender, DataGridViewCellEventArgs e)
             new FormMatTrace().Show();
         }
 
-        
+        private void btn_Rework_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(SSQL.DBConnStr))
+                {
+                    MessageBox.Show("数据库未连接 ！");
+                    return;
+                }
+
+                if (this.tB_SNR.Text != "" || !string.IsNullOrEmpty(this.tB_SNR.Text))
+                {
+                    DataTable dt = new DataTable();
+                    dt = SSQL.Qty_Single_SNR(this.tB_SNR.Text);
+
+                    if (dt != null && dt.Rows.Count > 0)
+                    {
+                        tB_5.Text = dt.Rows[0][2].ToString();
+                        tB_4.Text = dt.Rows[0][1].ToString();
+                        tB_3.Text = dt.Rows[0][0].ToString();
+
+                    }
+
+                    dt=SSQL.Qty_SNR_Rework_Temp(this.tB_SNR.Text);
+                    if (dt != null && dt.Rows.Count > 0)
+                    {
+                        dataGridView5.DataSource = dt;
+                        dataGridView5.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                    }
+
+                    dt.Dispose();
+                    
+                }
+                else
+                {
+                    MessageBox.Show("Please input Serial Number first ！");
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(SSQL.DBConnStr))
+                {
+                    MessageBox.Show("数据库未连接 ！");
+                    return;
+                }
+
+                if (!string.IsNullOrEmpty(this.TB_Temp_Order.Text) || !string.IsNullOrEmpty(this.TB_Temp_SNR.Text))
+                {
+                    DataTable dt = new DataTable();
+                    dt = SSQL.Qty_Mat_Temp_Db(this.TB_Temp_SNR.Text, this.TB_Temp_Order.Text);
+
+                    if (dt != null && dt.Rows.Count > 0)
+                    {
+
+                        dataGridView6.DataSource = dt;
+                        dataGridView6.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                        dataGridView6.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                        dataGridView6.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                        dataGridView6.Columns[5].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                        dataGridView6.Columns[9].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                        dataGridView6.Columns[11].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                        dataGridView6.Columns[6].Visible = false;
+
+                        if (!string.IsNullOrEmpty(this.TB_Temp_Order.Text)) //如果输入工单号 则不显示工单号列
+                        {
+                            dataGridView6.Columns[0].Visible = false;
+
+                        }
+                        if (!string.IsNullOrEmpty(this.TB_Temp_SNR.Text)) //如果输入序列号 则不显示序列号列
+                        {
+                            dataGridView6.Columns[1].Visible = false;
+                            this.TB_Temp_SNR.Text = dt.Rows[0][1].ToString();
+                            dataGridView6.Columns[0].Visible = false;
+                            this.TB_Temp_Order.Text= dt.Rows[0][0].ToString();
+                        }
+                
+                    }
+
+                    dt.Dispose();
+
+                }
+                else
+                {
+                    MessageBox.Show("Please input Serial Number first ！");
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(SSQL.DBConnStr))
+                {
+                    MessageBox.Show("数据库未连接 ！");
+                    return;
+                }
+
+                if (this.TB_Mat_Real_Trace.Text != "" || !string.IsNullOrEmpty(this.TB_Mat_Real_Trace.Text))
+                {
+                    DataTable dt = new DataTable();
+                    dt = SSQL.Qty_Mat_Real_Genealogy(this.TB_Mat_Real_Trace.Text);
+
+                    if (dt != null && dt.Rows.Count > 0)
+                    {
+                       
+                        DataRow dr = dt.NewRow();
+                        dr[1] = "Summary Total:";
+                        dr[2] = dt.Rows.Count;
+                        dt.Rows.Add(dr);
+
+                        dataGridView7.DataSource = dt;
+                        dataGridView7.Columns[0].Visible = false;
+                        dataGridView7.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                        dataGridView7.Columns[5].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                        dataGridView7.Columns[6].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                        dataGridView7.Columns[9].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                        dataGridView7.Columns[11].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+
+                    }
+
+                    DV_RealTrace = dt.DefaultView;
+
+                    Dt_Cpy = dt.Copy();
+                    //DV_History = dt.DefaultView;
+
+                    dt.Dispose();
+
+                }
+                else
+                {
+                    MessageBox.Show("Please input Serial Number first ！");
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(this.TB_Filter_SNR.Text))
+            {
+                
+                DV_RealTrace.RowFilter = string.Format("SNR='{0}'", this.TB_Filter_SNR.Text);
+                dataGridView7.DataSource = DV_RealTrace;
+            }
+            if (!string.IsNullOrEmpty(this.TB_Filter_WO.Text))
+            {
+                DV_RealTrace.RowFilter = string.Format("WorkOperationID='{0}'", this.TB_Filter_WO.Text);
+                dataGridView7.DataSource = DV_RealTrace;
+            }
+            if (!string.IsNullOrEmpty(this.TB_Filter_UniCode.Text))
+            {
+                DV_RealTrace.RowFilter = string.Format("UniqueCode like '%{0}%'", this.TB_Filter_UniCode.Text);
+                dataGridView7.DataSource = DV_RealTrace;
+            }
+
+        }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+            
+            dataGridView7.DataSource = Dt_Cpy;
+        }
+
+        private void Btn_eCar_Report_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(SSQL.DBConnStr))
+                {
+                    MessageBox.Show("数据库未连接 ！");
+                    return;
+                }
+
+                DataTable dt = new DataTable();
+
+                if (!string.IsNullOrEmpty(this.TB_eCar_Product.Text))
+                {
+                    dt = SSQL.Qty_eCar_Product_SNR(this.TB_eCar_Product.Text);
+                }
+                                
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    //dataGridView8.AutoGenerateColumns = false;
+                    dataGridView8.DataSource = dt;
+                    dataGridView8.Columns[1].Visible = false;
+                    dataGridView8.Columns[2].Visible = false;
+                    dataGridView8.Columns[6].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                    dataGridView8.Columns[11].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                    dataGridView8.Columns[12].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                    dataGridView8.Columns[13].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                    dataGridView8.Columns[5].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+
+                    TB_eCar_OrderID.Text = dt.Rows[0][1].ToString();
+
+                }
+
+                DataTable dtt1 = new DataTable();
+                dtt1 = SSQL.Qty_Single_SNR(this.TB_eCar_Product.Text);
+                TB_eCar_Product_Matid.Text = dtt1.Rows[0][1].ToString();
+                TB_eCar_Product_MatName.Text = dtt1.Rows[0][0].ToString();
+
+                Dt_Cpy = dt.Copy();
+                
+                dt.Dispose();
+                dtt1.Dispose();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                
+
+                if(checkBox1.CheckState == CheckState.Checked)
+                {
+                    if (this.dataGridView8.Rows.Count != 0)
+                    {
+                        DataView dv = new DataView(Dt_Cpy);
+
+                        dv.RowFilter = string.Format("ROUTE_POS<>'{0}'", "      Itlk");
+                        this.dataGridView8.DataSource = dv;
+                       
+                    }
+                }
+
+                if (checkBox1.CheckState == CheckState.Unchecked)
+                {
+                   
+                    this.dataGridView8.DataSource = Dt_Cpy;
+                    
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void checkBox2_CheckedChanged(object sender, EventArgs e)
+        {
+            CUModel.OrderID = this.tB_Order.Text;
+            new FrmOrderSetup().Show();
+        }
     }
 }
