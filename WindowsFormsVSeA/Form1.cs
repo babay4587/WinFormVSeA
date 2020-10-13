@@ -686,8 +686,45 @@ private void dataGridView4_CellClick(object sender, DataGridViewCellEventArgs e)
 
         private void checkBox2_CheckedChanged(object sender, EventArgs e)
         {
-            CUModel.OrderID = this.tB_Order.Text;
-            new FrmOrderSetup().Show();
+            if (checkBox2.CheckState == CheckState.Checked)
+            {
+                CUModel.OrderID = this.tB_Order.Text;
+                new FrmOrderSetup().Show();
+            }
+                
+        }
+
+        private void menuStrip2_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+
+        }
+
+        private void gOODSMOVEMENTToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(Form1.SSQL.DBConnStr))
+            {
+                MessageBox.Show("数据库未连接 ！");
+                return;
+            }
+            else
+            {
+                 new SAP_Report().Show();
+            }
+           
+        }
+
+        private void gOODSMOVEMENTToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(Form1.SSQL.DBConnStr))
+            {
+                MessageBox.Show("数据库未连接 ！");
+                return;
+            }
+            else
+            {
+                new FrmSAP101().Show();
+            }
+
         }
     }
 }

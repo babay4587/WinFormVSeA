@@ -40,7 +40,7 @@ namespace WindowsFormsVSeA
                 }
                 else
                 {
-                    MessageBox.Show("工单无下发 工单号 数据 ！");
+                    MessageBox.Show("工单无 Setup 数据 ！");
                 }
             }
 

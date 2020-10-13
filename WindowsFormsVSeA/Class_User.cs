@@ -1209,6 +1209,37 @@ namespace WindowsFormsVSeA
             }
         }
 
+
+        /// <summary>
+        /// 单个工单号 查询 产品料号与名称
+        /// </summary>
+        /// <param name="OrderID"></param>
+        /// <returns></returns>
+        public DataTable Qty_Single_Order(string OrderID)
+        {
+            string sql = string.Format(@"select top 1  (select POMV.matl_def_id from [SITMesDB].[dbo].[POMV_ORDR] POMV 
+	                                        where POMV_ETRY.pom_order_id=POMV.pom_order_id) as FERT_MAT_ID,
+                                           (select mmlot.defname from [SitMesDB].[dbo].[MMDefinitions] mmlot
+		                                        where mmlot.DefID in (select pom_ordr.matl_def_id from [SITMesDB].[dbo].[POMV_ORDR] pom_ordr 
+			                                        where POMV_ETRY.pom_order_id=pom_ordr.pom_order_id)) as FERT_Name,
+	                                        POMV_ETRY.pom_order_id as OrderID	
+                                           from POMV_ETRY with(nolock)
+                                            where POMV_ETRY.pom_order_id='{0}'", OrderID);
+
+            DataTable dt = new DataTable();
+
+            try
+            {
+                dt = SQLSet(sql);
+                return dt;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+
         public DataTable Qty_SNR_Rework_Temp(string SNR)
         {
             string sql = string.Format(@"select 
@@ -1460,7 +1491,11 @@ namespace WindowsFormsVSeA
         }
 
 
-
+        /// <summary>
+        /// 通过工单号查询 工单Setup状态
+        /// </summary>
+        /// <param name="Orderid"></param>
+        /// <returns></returns>
         public DataTable Qty_Order_Setup(string Orderid)
         {
             string sql = string.Format(@"SELECT [MACHINE_ID]	
@@ -1481,6 +1516,111 @@ namespace WindowsFormsVSeA
                 return dt;
             }
             catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+
+        /// <summary>
+        /// 基于工单的SAP报工 查询 包括物料号与SNR
+        /// </summary>
+        /// <param name="Orderid"></param>
+        /// <returns></returns>
+        public DataTable Qty_MES2SAP_Order_Bas(string Orderid)
+        {
+            string sql = string.Format(@"if exists (select * from tempdb.dbo.sysobjects where id = object_id(N'tempdb..#XMLTab') and type='U')
+                                                          drop table #XMLTab
+                                                          else
+                                                          CREATE TABLE #XMLTab(ID   int IDENTITY (1,1) not null,TransData xml,TransTime  datetime)
+
+	                                                        INSERT INTO #XMLTab(TransData,TransTime)
+                                                        SELECT items.ITEM+trans.OPERATION_DATA as TransData,trans.RowUpdated as TransTime   
+	                                                        FROM [SitMesDB].[dbo].[ARCH_T_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EC_SAP_TRANSFER_ITEMS_$118$] items with(nolock),
+	                                                          [SitMesDB].[dbo].[ARCH_T_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EC_SAP_TRANSFER_$117$] trans
+                                                          where trans.[$IDArchiveValue]=items.SAP_TRANSFER_PK and trans.SAP_ORDER ='{0}'
+
+                                                          select t1.SNR as SerialNumber,
+                                                          t1.matid as MatNumber,
+                                                          (select DefName from [SITMesDB].[dbo].[MMwDefVers] where	
+                                                           defid=t1.matid) as MatName,
+                                                            t1.dateTimes as Tran_Date,
+                                                           t1.quan as Quantity,
+                                                           t1.uom as UOM
+                                                          from(
+                                                          select 
+		                                                        node.c.value('MATERIAL[1]','varchar(20)') as matid,
+		                                                        node.c.value('QUANTITY[1]','varchar(8)') as quan,
+		                                                        node.c.value('UOM[1]','varchar(8)') as uom,
+		                                                        op.v.value('LWO[1]','varchar(20)') as AVO,
+		                                                        op.v.value('SERIAL[1]','varchar(20)') as SNR,
+		                                                        node.c.value('PLANT[1]','varchar(20)') as Plant,
+		                                                        dateadd(hour,8,bg.TransTime)as dateTimes
+		                                                        from #XMLTab bg with(nolock) cross apply TransData.nodes('/ITEM') as node(c) 
+					                                                        cross apply TransData.nodes('OPERATION_DATA') as op(v)
+		                                                        )t1
+                                                        ", Orderid);
+
+            DataTable dt = new DataTable();
+
+            try
+            {
+                dt = SQLSet(sql);
+                return dt;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+
+        /// <summary>
+        /// 根据时间段 查询发送至SAP的101物料数据
+        /// </summary>
+        /// <param name="S_Datetime"></param>
+        /// <param name="E_Datetime"></param>
+        /// <returns></returns>
+        public DataTable Qty_MES2SAP_MatMas_101(string S_Datetime, string E_Datetime)
+        {
+            string sql = string.Format(@"if exists (select * from tempdb.dbo.sysobjects where id = object_id(N'tempdb..#XMLTab') and type='U')
+                                                      drop table #XMLTab
+                                                      else
+                                                      CREATE TABLE #XMLTab(ID   int IDENTITY (1,1) not null,TransData xml,TransTime  datetime)
+
+	                                                    INSERT INTO #XMLTab(TransData,TransTime)
+                                                      select MESSAGE+OPERATION_DATA,dateadd(hour,8,RowUpdated) from [SitMesDB].[dbo].[ARCH_T_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EC_SAP_TRANSFER_$117$] trans with(nolock)
+                                                      where trans.MESSAGE_TYPE='GOODS_RECEIPT' and dateadd(hour,8,RowUpdated) between '{0}' and '{1}'
+                                                        
+                                                        select dt.MatID,
+                                                      (select DefName from
+                                                        [SITMesDB].[dbo].[MMwDefVers] where	
+                                                        defid=dt.MatID) as MatName,
+	                                                    dt.Quantity,
+	                                                    dt.OrderID,
+	                                                    dt.SerialNumber,
+	                                                    dt.WorkOperationID,
+	                                                    dt.DateTimes
+                                                      from(
+                                                      select 
+		                                                    node.c.value('MATERIAL[1]','varchar(20)') as MatID,
+		                                                    node.c.value('QUANTITY[1]','varchar(8)') as Quantity,
+		                                                    substring(node.c.value('ORDER_ID[1]','varchar(12)'),6,12) as OrderID,
+		                                                    op.v.value('LWO[1]','varchar(20)') as WorkOperationID,
+		                                                    op.v.value('SERIAL[1]','varchar(20)') as SerialNumber,
+		                                                    dateadd(hour,8,bg.TransTime)as DateTimes
+		                                                    from #XMLTab bg with(nolock) cross apply TransData.nodes('/MESSAGE/ITEM') as node(c) 
+					                                                    cross apply TransData.nodes('OPERATION_DATA') as op(v)
+					                                                    )dt", S_Datetime, E_Datetime);
+
+            DataTable dt = new DataTable();
+
+            try
+            {
+                dt = SQLSet(sql);
+                return dt;
+            }
+            catch (Exception)
             {
                 return null;
             }

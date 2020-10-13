@@ -109,8 +109,20 @@
     <Compile Include="FrmOrderSetup.Designer.cs">
       <DependentUpon>FrmOrderSetup.cs</DependentUpon>
     </Compile>
+    <Compile Include="FrmSAP101.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmSAP101.Designer.cs">
+      <DependentUpon>FrmSAP101.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SAP Report.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SAP Report.Designer.cs">
+      <DependentUpon>SAP Report.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
@@ -119,6 +131,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FrmOrderSetup.resx">
       <DependentUpon>FrmOrderSetup.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmSAP101.resx">
+      <DependentUpon>FrmSAP101.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -130,6 +145,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="SAP Report.resx">
+      <DependentUpon>SAP Report.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="app.config" />
     <None Include="Properties\app.manifest" />
     <None Include="Properties\Settings.settings">

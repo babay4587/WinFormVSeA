@@ -28,12 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle15 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle16 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle17 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle18 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tb_dul = new System.Windows.Forms.TextBox();
@@ -51,6 +45,7 @@
             this.Tb2 = new System.Windows.Forms.TextBox();
             this.button3 = new System.Windows.Forms.Button();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -58,7 +53,20 @@
             this.TB_Mat_Fert = new System.Windows.Forms.TextBox();
             this.tB_Order = new System.Windows.Forms.TextBox();
             this.button2 = new System.Windows.Forms.Button();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.dataGridView2 = new System.Windows.Forms.DataGridView();
+            this.tabPage8 = new System.Windows.Forms.TabPage();
+            this.label23 = new System.Windows.Forms.Label();
+            this.label24 = new System.Windows.Forms.Label();
+            this.TB_eCar_Product_MatName = new System.Windows.Forms.TextBox();
+            this.TB_eCar_Product_Matid = new System.Windows.Forms.TextBox();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.TB_eCar_OrderID = new System.Windows.Forms.TextBox();
+            this.label22 = new System.Windows.Forms.Label();
+            this.TB_eCar_Product = new System.Windows.Forms.TextBox();
+            this.label21 = new System.Windows.Forms.Label();
+            this.Btn_eCar_Report = new System.Windows.Forms.Button();
+            this.dataGridView8 = new System.Windows.Forms.DataGridView();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.button5 = new System.Windows.Forms.Button();
             this.TB_UniMat = new System.Windows.Forms.TextBox();
@@ -98,9 +106,6 @@
             this.label17 = new System.Windows.Forms.Label();
             this.TB_Mat_Real_Trace = new System.Windows.Forms.TextBox();
             this.dataGridView7 = new System.Windows.Forms.DataGridView();
-            this.tabPage8 = new System.Windows.Forms.TabPage();
-            this.Btn_eCar_Report = new System.Windows.Forms.Button();
-            this.dataGridView8 = new System.Windows.Forms.DataGridView();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.dBConnectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pSYSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -111,17 +116,12 @@
             this.label7 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.tBColorP = new System.Windows.Forms.TextBox();
-            this.TB_eCar_Product = new System.Windows.Forms.TextBox();
-            this.label21 = new System.Windows.Forms.Label();
-            this.label22 = new System.Windows.Forms.Label();
-            this.TB_eCar_OrderID = new System.Windows.Forms.TextBox();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.label23 = new System.Windows.Forms.Label();
-            this.label24 = new System.Windows.Forms.Label();
-            this.TB_eCar_Product_MatName = new System.Windows.Forms.TextBox();
-            this.TB_eCar_Product_Matid = new System.Windows.Forms.TextBox();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.checkBox2 = new System.Windows.Forms.CheckBox();
+            this.menuStrip2 = new System.Windows.Forms.MenuStrip();
+            this.sAPToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.按工单查询ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.gOODSMOVEMENTToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.gOODSMOVEMENTToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripContainer2 = new System.Windows.Forms.ToolStripContainer();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -129,6 +129,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView3)).BeginInit();
             this.tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
+            this.tabPage8.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView8)).BeginInit();
             this.tabPage4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView4)).BeginInit();
             this.tabPage5.SuspendLayout();
@@ -138,10 +140,10 @@
             this.tabPage7.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView7)).BeginInit();
-            this.tabPage8.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView8)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.toolStripContainer1.SuspendLayout();
+            this.menuStrip2.SuspendLayout();
+            this.toolStripContainer2.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -334,6 +336,18 @@
             this.tabPage2.Text = "工单查询";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
+            // checkBox2
+            // 
+            this.checkBox2.AutoSize = true;
+            this.checkBox2.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.checkBox2.Location = new System.Drawing.Point(624, 13);
+            this.checkBox2.Name = "checkBox2";
+            this.checkBox2.Size = new System.Drawing.Size(158, 28);
+            this.checkBox2.TabIndex = 9;
+            this.checkBox2.Text = "工单Setup状态";
+            this.checkBox2.UseVisualStyleBackColor = true;
+            this.checkBox2.CheckedChanged += new System.EventHandler(this.checkBox2_CheckedChanged);
+            // 
             // label5
             // 
             this.label5.AutoSize = true;
@@ -392,25 +406,149 @@
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
+            // comboBox1
+            // 
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Location = new System.Drawing.Point(20, 52);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(227, 35);
+            this.comboBox1.TabIndex = 4;
+            this.comboBox1.Visible = false;
+            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged_1);
+            this.comboBox1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.comboBox1_MouseDown);
+            // 
             // dataGridView2
             // 
             this.dataGridView2.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.ColumnHeader;
             this.dataGridView2.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedHeaders;
             this.dataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle13.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle13.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle13.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle13.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle13.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle13.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle13.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridView2.DefaultCellStyle = dataGridViewCellStyle13;
             this.dataGridView2.EnableHeadersVisualStyles = false;
             this.dataGridView2.Location = new System.Drawing.Point(6, 102);
             this.dataGridView2.Name = "dataGridView2";
             this.dataGridView2.RowTemplate.Height = 30;
             this.dataGridView2.Size = new System.Drawing.Size(1607, 705);
             this.dataGridView2.TabIndex = 3;
+            // 
+            // tabPage8
+            // 
+            this.tabPage8.Controls.Add(this.label23);
+            this.tabPage8.Controls.Add(this.label24);
+            this.tabPage8.Controls.Add(this.TB_eCar_Product_MatName);
+            this.tabPage8.Controls.Add(this.TB_eCar_Product_Matid);
+            this.tabPage8.Controls.Add(this.checkBox1);
+            this.tabPage8.Controls.Add(this.TB_eCar_OrderID);
+            this.tabPage8.Controls.Add(this.label22);
+            this.tabPage8.Controls.Add(this.TB_eCar_Product);
+            this.tabPage8.Controls.Add(this.label21);
+            this.tabPage8.Controls.Add(this.Btn_eCar_Report);
+            this.tabPage8.Controls.Add(this.dataGridView8);
+            this.tabPage8.Location = new System.Drawing.Point(4, 36);
+            this.tabPage8.Name = "tabPage8";
+            this.tabPage8.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage8.Size = new System.Drawing.Size(1675, 890);
+            this.tabPage8.TabIndex = 7;
+            this.tabPage8.Text = "eCar Product Report";
+            this.tabPage8.UseVisualStyleBackColor = true;
+            // 
+            // label23
+            // 
+            this.label23.AutoSize = true;
+            this.label23.Location = new System.Drawing.Point(845, 64);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(97, 27);
+            this.label23.TabIndex = 35;
+            this.label23.Text = "物料名称:";
+            // 
+            // label24
+            // 
+            this.label24.AutoSize = true;
+            this.label24.Location = new System.Drawing.Point(438, 64);
+            this.label24.Name = "label24";
+            this.label24.Size = new System.Drawing.Size(97, 27);
+            this.label24.TabIndex = 36;
+            this.label24.Text = "成品料号:";
+            // 
+            // TB_eCar_Product_MatName
+            // 
+            this.TB_eCar_Product_MatName.Location = new System.Drawing.Point(955, 60);
+            this.TB_eCar_Product_MatName.Name = "TB_eCar_Product_MatName";
+            this.TB_eCar_Product_MatName.Size = new System.Drawing.Size(333, 34);
+            this.TB_eCar_Product_MatName.TabIndex = 33;
+            // 
+            // TB_eCar_Product_Matid
+            // 
+            this.TB_eCar_Product_Matid.Location = new System.Drawing.Point(541, 60);
+            this.TB_eCar_Product_Matid.Name = "TB_eCar_Product_Matid";
+            this.TB_eCar_Product_Matid.Size = new System.Drawing.Size(262, 34);
+            this.TB_eCar_Product_Matid.TabIndex = 34;
+            // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Location = new System.Drawing.Point(443, 13);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(165, 31);
+            this.checkBox1.TabIndex = 32;
+            this.checkBox1.Text = "Interlock Info";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            // 
+            // TB_eCar_OrderID
+            // 
+            this.TB_eCar_OrderID.Location = new System.Drawing.Point(155, 60);
+            this.TB_eCar_OrderID.Name = "TB_eCar_OrderID";
+            this.TB_eCar_OrderID.Size = new System.Drawing.Size(131, 34);
+            this.TB_eCar_OrderID.TabIndex = 30;
+            // 
+            // label22
+            // 
+            this.label22.AutoSize = true;
+            this.label22.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label22.Location = new System.Drawing.Point(55, 65);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(84, 24);
+            this.label22.TabIndex = 31;
+            this.label22.Text = "OrderID:";
+            // 
+            // TB_eCar_Product
+            // 
+            this.TB_eCar_Product.Location = new System.Drawing.Point(74, 13);
+            this.TB_eCar_Product.Name = "TB_eCar_Product";
+            this.TB_eCar_Product.Size = new System.Drawing.Size(212, 34);
+            this.TB_eCar_Product.TabIndex = 30;
+            // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label21.Location = new System.Drawing.Point(19, 16);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(51, 24);
+            this.label21.TabIndex = 31;
+            this.label21.Text = "SNR:";
+            // 
+            // Btn_eCar_Report
+            // 
+            this.Btn_eCar_Report.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.Btn_eCar_Report.Location = new System.Drawing.Point(304, 13);
+            this.Btn_eCar_Report.Name = "Btn_eCar_Report";
+            this.Btn_eCar_Report.Size = new System.Drawing.Size(89, 34);
+            this.Btn_eCar_Report.TabIndex = 19;
+            this.Btn_eCar_Report.Text = "查询";
+            this.Btn_eCar_Report.UseVisualStyleBackColor = true;
+            this.Btn_eCar_Report.Click += new System.EventHandler(this.Btn_eCar_Report_Click);
+            // 
+            // dataGridView8
+            // 
+            this.dataGridView8.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.ColumnHeader;
+            this.dataGridView8.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedHeaders;
+            this.dataGridView8.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView8.EnableHeadersVisualStyles = false;
+            this.dataGridView8.Location = new System.Drawing.Point(3, 105);
+            this.dataGridView8.Name = "dataGridView8";
+            this.dataGridView8.RowTemplate.Height = 30;
+            this.dataGridView8.Size = new System.Drawing.Size(1507, 669);
+            this.dataGridView8.TabIndex = 18;
             // 
             // tabPage4
             // 
@@ -459,19 +597,11 @@
             this.dataGridView4.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.ColumnHeader;
             this.dataGridView4.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedHeaders;
             this.dataGridView4.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle14.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle14.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle14.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle14.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle14.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle14.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridView4.DefaultCellStyle = dataGridViewCellStyle14;
             this.dataGridView4.EnableHeadersVisualStyles = false;
             this.dataGridView4.Location = new System.Drawing.Point(6, 104);
             this.dataGridView4.Name = "dataGridView4";
             this.dataGridView4.RowTemplate.Height = 30;
-            this.dataGridView4.Size = new System.Drawing.Size(1532, 684);
+            this.dataGridView4.Size = new System.Drawing.Size(1505, 684);
             this.dataGridView4.TabIndex = 6;
             this.dataGridView4.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView4_CellClick);
             this.dataGridView4.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView4_CellContentClick);
@@ -550,14 +680,6 @@
             this.dataGridView5.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.ColumnHeader;
             this.dataGridView5.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedHeaders;
             this.dataGridView5.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle15.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle15.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle15.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle15.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle15.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle15.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle15.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridView5.DefaultCellStyle = dataGridViewCellStyle15;
             this.dataGridView5.EnableHeadersVisualStyles = false;
             this.dataGridView5.Location = new System.Drawing.Point(31, 95);
             this.dataGridView5.Name = "dataGridView5";
@@ -670,14 +792,6 @@
             this.dataGridView6.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.ColumnHeader;
             this.dataGridView6.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedHeaders;
             this.dataGridView6.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle16.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle16.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle16.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle16.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle16.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle16.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle16.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridView6.DefaultCellStyle = dataGridViewCellStyle16;
             this.dataGridView6.EnableHeadersVisualStyles = false;
             this.dataGridView6.Location = new System.Drawing.Point(20, 77);
             this.dataGridView6.Name = "dataGridView6";
@@ -846,66 +960,6 @@
             this.dataGridView7.Size = new System.Drawing.Size(1507, 652);
             this.dataGridView7.TabIndex = 17;
             // 
-            // tabPage8
-            // 
-            this.tabPage8.Controls.Add(this.label23);
-            this.tabPage8.Controls.Add(this.label24);
-            this.tabPage8.Controls.Add(this.TB_eCar_Product_MatName);
-            this.tabPage8.Controls.Add(this.TB_eCar_Product_Matid);
-            this.tabPage8.Controls.Add(this.checkBox1);
-            this.tabPage8.Controls.Add(this.TB_eCar_OrderID);
-            this.tabPage8.Controls.Add(this.label22);
-            this.tabPage8.Controls.Add(this.TB_eCar_Product);
-            this.tabPage8.Controls.Add(this.label21);
-            this.tabPage8.Controls.Add(this.Btn_eCar_Report);
-            this.tabPage8.Controls.Add(this.dataGridView8);
-            this.tabPage8.Location = new System.Drawing.Point(4, 36);
-            this.tabPage8.Name = "tabPage8";
-            this.tabPage8.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage8.Size = new System.Drawing.Size(1675, 890);
-            this.tabPage8.TabIndex = 7;
-            this.tabPage8.Text = "eCar Product Report";
-            this.tabPage8.UseVisualStyleBackColor = true;
-            // 
-            // Btn_eCar_Report
-            // 
-            this.Btn_eCar_Report.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.Btn_eCar_Report.Location = new System.Drawing.Point(304, 13);
-            this.Btn_eCar_Report.Name = "Btn_eCar_Report";
-            this.Btn_eCar_Report.Size = new System.Drawing.Size(89, 34);
-            this.Btn_eCar_Report.TabIndex = 19;
-            this.Btn_eCar_Report.Text = "查询";
-            this.Btn_eCar_Report.UseVisualStyleBackColor = true;
-            this.Btn_eCar_Report.Click += new System.EventHandler(this.Btn_eCar_Report_Click);
-            // 
-            // dataGridView8
-            // 
-            this.dataGridView8.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.ColumnHeader;
-            this.dataGridView8.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedHeaders;
-            dataGridViewCellStyle17.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle17.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle17.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle17.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle17.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle17.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle17.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridView8.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle17;
-            this.dataGridView8.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle18.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle18.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle18.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle18.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle18.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle18.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle18.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridView8.DefaultCellStyle = dataGridViewCellStyle18;
-            this.dataGridView8.EnableHeadersVisualStyles = false;
-            this.dataGridView8.Location = new System.Drawing.Point(3, 105);
-            this.dataGridView8.Name = "dataGridView8";
-            this.dataGridView8.RowTemplate.Height = 30;
-            this.dataGridView8.Size = new System.Drawing.Size(1507, 669);
-            this.dataGridView8.TabIndex = 18;
-            // 
             // menuStrip1
             // 
             this.menuStrip1.Dock = System.Windows.Forms.DockStyle.None;
@@ -915,7 +969,7 @@
             this.menuStrip1.Location = new System.Drawing.Point(9, 9);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
-            this.menuStrip1.Size = new System.Drawing.Size(125, 33);
+            this.menuStrip1.Size = new System.Drawing.Size(131, 32);
             this.menuStrip1.TabIndex = 7;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -924,21 +978,22 @@
             this.dBConnectToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.pSYSToolStripMenuItem,
             this.qSYSToolStripMenuItem});
+            this.dBConnectToolStripMenuItem.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dBConnectToolStripMenuItem.Name = "dBConnectToolStripMenuItem";
-            this.dBConnectToolStripMenuItem.Size = new System.Drawing.Size(117, 29);
+            this.dBConnectToolStripMenuItem.Size = new System.Drawing.Size(123, 28);
             this.dBConnectToolStripMenuItem.Text = "DB Connect";
             // 
             // pSYSToolStripMenuItem
             // 
             this.pSYSToolStripMenuItem.Name = "pSYSToolStripMenuItem";
-            this.pSYSToolStripMenuItem.Size = new System.Drawing.Size(147, 30);
+            this.pSYSToolStripMenuItem.Size = new System.Drawing.Size(252, 30);
             this.pSYSToolStripMenuItem.Text = "P_SYS";
             this.pSYSToolStripMenuItem.Click += new System.EventHandler(this.pSYSToolStripMenuItem_Click);
             // 
             // qSYSToolStripMenuItem
             // 
             this.qSYSToolStripMenuItem.Name = "qSYSToolStripMenuItem";
-            this.qSYSToolStripMenuItem.Size = new System.Drawing.Size(147, 30);
+            this.qSYSToolStripMenuItem.Size = new System.Drawing.Size(252, 30);
             this.qSYSToolStripMenuItem.Text = "Q_SYS";
             this.qSYSToolStripMenuItem.Click += new System.EventHandler(this.qSYSToolStripMenuItem_Click);
             // 
@@ -962,7 +1017,7 @@
             // 
             this.tBColorQ.BackColor = System.Drawing.SystemColors.Control;
             this.tBColorQ.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.tBColorQ.Location = new System.Drawing.Point(72, 248);
+            this.tBColorQ.Location = new System.Drawing.Point(83, 252);
             this.tBColorQ.Name = "tBColorQ";
             this.tBColorQ.Size = new System.Drawing.Size(79, 21);
             this.tBColorQ.TabIndex = 8;
@@ -970,18 +1025,20 @@
             // label7
             // 
             this.label7.AutoSize = true;
+            this.label7.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label7.Location = new System.Drawing.Point(13, 251);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(53, 18);
+            this.label7.Size = new System.Drawing.Size(64, 24);
             this.label7.TabIndex = 9;
             this.label7.Text = "Q-SYS";
             // 
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(13, 280);
+            this.label8.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label8.Location = new System.Drawing.Point(17, 280);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(53, 18);
+            this.label8.Size = new System.Drawing.Size(60, 24);
             this.label8.TabIndex = 9;
             this.label8.Text = "P-SYS";
             // 
@@ -989,116 +1046,78 @@
             // 
             this.tBColorP.BackColor = System.Drawing.SystemColors.Control;
             this.tBColorP.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.tBColorP.Location = new System.Drawing.Point(72, 279);
+            this.tBColorP.Location = new System.Drawing.Point(83, 279);
             this.tBColorP.Name = "tBColorP";
             this.tBColorP.Size = new System.Drawing.Size(79, 21);
             this.tBColorP.TabIndex = 8;
             // 
-            // TB_eCar_Product
+            // menuStrip2
             // 
-            this.TB_eCar_Product.Location = new System.Drawing.Point(74, 13);
-            this.TB_eCar_Product.Name = "TB_eCar_Product";
-            this.TB_eCar_Product.Size = new System.Drawing.Size(212, 34);
-            this.TB_eCar_Product.TabIndex = 30;
+            this.menuStrip2.Dock = System.Windows.Forms.DockStyle.None;
+            this.menuStrip2.ImageScalingSize = new System.Drawing.Size(24, 24);
+            this.menuStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.sAPToolStripMenuItem});
+            this.menuStrip2.Location = new System.Drawing.Point(225, 9);
+            this.menuStrip2.Name = "menuStrip2";
+            this.menuStrip2.Size = new System.Drawing.Size(107, 33);
+            this.menuStrip2.TabIndex = 10;
+            this.menuStrip2.Text = "SAP 报工";
+            this.menuStrip2.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.menuStrip2_ItemClicked);
             // 
-            // label21
+            // sAPToolStripMenuItem
             // 
-            this.label21.AutoSize = true;
-            this.label21.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label21.Location = new System.Drawing.Point(19, 16);
-            this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(51, 24);
-            this.label21.TabIndex = 31;
-            this.label21.Text = "SNR:";
+            this.sAPToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.按工单查询ToolStripMenuItem,
+            this.gOODSMOVEMENTToolStripMenuItem});
+            this.sAPToolStripMenuItem.Name = "sAPToolStripMenuItem";
+            this.sAPToolStripMenuItem.Size = new System.Drawing.Size(99, 29);
+            this.sAPToolStripMenuItem.Text = "SAP 报工";
             // 
-            // label22
+            // 按工单查询ToolStripMenuItem
             // 
-            this.label22.AutoSize = true;
-            this.label22.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label22.Location = new System.Drawing.Point(55, 65);
-            this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(84, 24);
-            this.label22.TabIndex = 31;
-            this.label22.Text = "OrderID:";
+            this.按工单查询ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.gOODSMOVEMENTToolStripMenuItem1});
+            this.按工单查询ToolStripMenuItem.Name = "按工单查询ToolStripMenuItem";
+            this.按工单查询ToolStripMenuItem.Size = new System.Drawing.Size(252, 30);
+            this.按工单查询ToolStripMenuItem.Text = "按工单查询";
             // 
-            // TB_eCar_OrderID
+            // gOODSMOVEMENTToolStripMenuItem1
             // 
-            this.TB_eCar_OrderID.Location = new System.Drawing.Point(155, 60);
-            this.TB_eCar_OrderID.Name = "TB_eCar_OrderID";
-            this.TB_eCar_OrderID.Size = new System.Drawing.Size(131, 34);
-            this.TB_eCar_OrderID.TabIndex = 30;
+            this.gOODSMOVEMENTToolStripMenuItem1.Name = "gOODSMOVEMENTToolStripMenuItem1";
+            this.gOODSMOVEMENTToolStripMenuItem1.Size = new System.Drawing.Size(263, 30);
+            this.gOODSMOVEMENTToolStripMenuItem1.Text = "GOODS_MOVEMENT";
+            this.gOODSMOVEMENTToolStripMenuItem1.Click += new System.EventHandler(this.gOODSMOVEMENTToolStripMenuItem1_Click);
             // 
-            // checkBox1
+            // gOODSMOVEMENTToolStripMenuItem
             // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(443, 13);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(165, 31);
-            this.checkBox1.TabIndex = 32;
-            this.checkBox1.Text = "Interlock Info";
-            this.checkBox1.UseVisualStyleBackColor = true;
-            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            this.gOODSMOVEMENTToolStripMenuItem.Name = "gOODSMOVEMENTToolStripMenuItem";
+            this.gOODSMOVEMENTToolStripMenuItem.Size = new System.Drawing.Size(252, 30);
+            this.gOODSMOVEMENTToolStripMenuItem.Text = "物料101查询";
+            this.gOODSMOVEMENTToolStripMenuItem.Click += new System.EventHandler(this.gOODSMOVEMENTToolStripMenuItem_Click);
             // 
-            // label23
+            // toolStripContainer2
             // 
-            this.label23.AutoSize = true;
-            this.label23.Location = new System.Drawing.Point(845, 64);
-            this.label23.Name = "label23";
-            this.label23.Size = new System.Drawing.Size(97, 27);
-            this.label23.TabIndex = 35;
-            this.label23.Text = "物料名称:";
+            this.toolStripContainer2.BottomToolStripPanelVisible = false;
             // 
-            // label24
+            // toolStripContainer2.ContentPanel
             // 
-            this.label24.AutoSize = true;
-            this.label24.Location = new System.Drawing.Point(438, 64);
-            this.label24.Name = "label24";
-            this.label24.Size = new System.Drawing.Size(97, 27);
-            this.label24.TabIndex = 36;
-            this.label24.Text = "成品料号:";
-            // 
-            // TB_eCar_Product_MatName
-            // 
-            this.TB_eCar_Product_MatName.Location = new System.Drawing.Point(955, 60);
-            this.TB_eCar_Product_MatName.Name = "TB_eCar_Product_MatName";
-            this.TB_eCar_Product_MatName.Size = new System.Drawing.Size(333, 34);
-            this.TB_eCar_Product_MatName.TabIndex = 33;
-            // 
-            // TB_eCar_Product_Matid
-            // 
-            this.TB_eCar_Product_Matid.Location = new System.Drawing.Point(541, 60);
-            this.TB_eCar_Product_Matid.Name = "TB_eCar_Product_Matid";
-            this.TB_eCar_Product_Matid.Size = new System.Drawing.Size(262, 34);
-            this.TB_eCar_Product_Matid.TabIndex = 34;
-            // 
-            // comboBox1
-            // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(20, 52);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(227, 35);
-            this.comboBox1.TabIndex = 4;
-            this.comboBox1.Visible = false;
-            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged_1);
-            this.comboBox1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.comboBox1_MouseDown);
-            // 
-            // checkBox2
-            // 
-            this.checkBox2.AutoSize = true;
-            this.checkBox2.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.checkBox2.Location = new System.Drawing.Point(624, 13);
-            this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(158, 28);
-            this.checkBox2.TabIndex = 9;
-            this.checkBox2.Text = "工单Setup状态";
-            this.checkBox2.UseVisualStyleBackColor = true;
-            this.checkBox2.CheckedChanged += new System.EventHandler(this.checkBox2_CheckedChanged);
+            this.toolStripContainer2.ContentPanel.Size = new System.Drawing.Size(150, 13);
+            this.toolStripContainer2.LeftToolStripPanelVisible = false;
+            this.toolStripContainer2.Location = new System.Drawing.Point(187, 26);
+            this.toolStripContainer2.Name = "toolStripContainer2";
+            this.toolStripContainer2.RightToolStripPanelVisible = false;
+            this.toolStripContainer2.Size = new System.Drawing.Size(150, 13);
+            this.toolStripContainer2.TabIndex = 11;
+            this.toolStripContainer2.Text = "toolStripContainer2";
+            this.toolStripContainer2.TopToolStripPanelVisible = false;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1707, 907);
+            this.Controls.Add(this.menuStrip2);
+            this.Controls.Add(this.toolStripContainer2);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.tBColorP);
@@ -1120,6 +1139,9 @@
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).EndInit();
+            this.tabPage8.ResumeLayout(false);
+            this.tabPage8.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView8)).EndInit();
             this.tabPage4.ResumeLayout(false);
             this.tabPage4.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView4)).EndInit();
@@ -1134,13 +1156,14 @@
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView7)).EndInit();
-            this.tabPage8.ResumeLayout(false);
-            this.tabPage8.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView8)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.toolStripContainer1.ResumeLayout(false);
             this.toolStripContainer1.PerformLayout();
+            this.menuStrip2.ResumeLayout(false);
+            this.menuStrip2.PerformLayout();
+            this.toolStripContainer2.ResumeLayout(false);
+            this.toolStripContainer2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1158,7 +1181,6 @@
         private System.Windows.Forms.TextBox tB_RowCount;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btn_duplicate;
-        private System.Windows.Forms.DataGridView dataGridView2;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.TextBox tB_Order;
         private System.Windows.Forms.TabPage tabPage3;
@@ -1236,6 +1258,13 @@
         private System.Windows.Forms.TextBox TB_eCar_Product_Matid;
         private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.CheckBox checkBox2;
+        private System.Windows.Forms.MenuStrip menuStrip2;
+        private System.Windows.Forms.ToolStripContainer toolStripContainer2;
+        private System.Windows.Forms.ToolStripMenuItem sAPToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 按工单查询ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem gOODSMOVEMENTToolStripMenuItem1;
+        private System.Windows.Forms.DataGridView dataGridView2;
+        private System.Windows.Forms.ToolStripMenuItem gOODSMOVEMENTToolStripMenuItem;
     }
 }
 
