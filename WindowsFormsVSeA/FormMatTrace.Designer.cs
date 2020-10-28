@@ -39,8 +39,8 @@
             this.TBAssembleTo = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.label5 = new System.Windows.Forms.Label();
             this.TB_TargetMatDesc = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
             this.TreeV1 = new System.Windows.Forms.TreeView();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -48,6 +48,7 @@
             // 
             // BtnTreeAct
             // 
+            this.BtnTreeAct.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.BtnTreeAct.Location = new System.Drawing.Point(1119, 37);
             this.BtnTreeAct.Name = "BtnTreeAct";
             this.BtnTreeAct.Size = new System.Drawing.Size(102, 39);
@@ -59,70 +60,79 @@
             // label1
             // 
             this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label1.Location = new System.Drawing.Point(38, 40);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(125, 18);
+            this.label1.Size = new System.Drawing.Size(133, 24);
             this.label1.TabIndex = 1;
             this.label1.Text = "SerialNumber:";
             // 
             // TB_SNR
             // 
-            this.TB_SNR.Location = new System.Drawing.Point(169, 37);
+            this.TB_SNR.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.TB_SNR.Location = new System.Drawing.Point(165, 27);
             this.TB_SNR.Name = "TB_SNR";
-            this.TB_SNR.Size = new System.Drawing.Size(197, 28);
+            this.TB_SNR.Size = new System.Drawing.Size(197, 31);
             this.TB_SNR.TabIndex = 2;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label2.Location = new System.Drawing.Point(442, 28);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(107, 18);
+            this.label2.Size = new System.Drawing.Size(121, 24);
             this.label2.TabIndex = 1;
             this.label2.Text = "UniqueCode:";
             // 
             // TBunicode
             // 
+            this.TBunicode.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.TBunicode.Location = new System.Drawing.Point(577, 37);
             this.TBunicode.Name = "TBunicode";
-            this.TBunicode.Size = new System.Drawing.Size(479, 28);
+            this.TBunicode.Size = new System.Drawing.Size(479, 31);
             this.TBunicode.TabIndex = 2;
             // 
             // label3
             // 
             this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label3.Location = new System.Drawing.Point(391, 82);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(170, 18);
+            this.label3.Size = new System.Drawing.Size(163, 24);
             this.label3.TabIndex = 1;
             this.label3.Text = "Material Descript:";
             // 
             // TBMatDesc
             // 
+            this.TBMatDesc.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.TBMatDesc.Location = new System.Drawing.Point(577, 79);
             this.TBMatDesc.Name = "TBMatDesc";
-            this.TBMatDesc.Size = new System.Drawing.Size(479, 28);
+            this.TBMatDesc.Size = new System.Drawing.Size(479, 31);
             this.TBMatDesc.TabIndex = 2;
             // 
             // label4
             // 
             this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label4.Location = new System.Drawing.Point(26, 37);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(125, 18);
+            this.label4.Size = new System.Drawing.Size(135, 24);
             this.label4.TabIndex = 1;
             this.label4.Text = "Assembled To:";
             // 
             // TBAssembleTo
             // 
-            this.TBAssembleTo.Location = new System.Drawing.Point(157, 27);
+            this.TBAssembleTo.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.TBAssembleTo.Location = new System.Drawing.Point(167, 33);
             this.TBAssembleTo.Name = "TBAssembleTo";
-            this.TBAssembleTo.Size = new System.Drawing.Size(197, 28);
+            this.TBAssembleTo.Size = new System.Drawing.Size(197, 31);
             this.TBAssembleTo.TabIndex = 2;
             // 
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.label2);
+            this.groupBox1.Controls.Add(this.TB_SNR);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(1076, 109);
@@ -143,21 +153,23 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "目标SNR";
             // 
+            // TB_TargetMatDesc
+            // 
+            this.TB_TargetMatDesc.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.TB_TargetMatDesc.Location = new System.Drawing.Point(565, 27);
+            this.TB_TargetMatDesc.Name = "TB_TargetMatDesc";
+            this.TB_TargetMatDesc.Size = new System.Drawing.Size(479, 31);
+            this.TB_TargetMatDesc.TabIndex = 2;
+            // 
             // label5
             // 
             this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label5.Location = new System.Drawing.Point(379, 30);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(170, 18);
+            this.label5.Size = new System.Drawing.Size(163, 24);
             this.label5.TabIndex = 1;
             this.label5.Text = "Material Descript:";
-            // 
-            // TB_TargetMatDesc
-            // 
-            this.TB_TargetMatDesc.Location = new System.Drawing.Point(565, 27);
-            this.TB_TargetMatDesc.Name = "TB_TargetMatDesc";
-            this.TB_TargetMatDesc.Size = new System.Drawing.Size(479, 28);
-            this.TB_TargetMatDesc.TabIndex = 2;
             // 
             // TreeV1
             // 
@@ -174,7 +186,6 @@
             this.Controls.Add(this.TreeV1);
             this.Controls.Add(this.TBunicode);
             this.Controls.Add(this.TBMatDesc);
-            this.Controls.Add(this.TB_SNR);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.BtnTreeAct);

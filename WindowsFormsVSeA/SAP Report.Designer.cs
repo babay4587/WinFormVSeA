@@ -32,6 +32,9 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SAP_Report));
             this.dataGV_SAP_1 = new System.Windows.Forms.DataGridView();
             this.Tb_SAP_OrdBas1 = new System.Windows.Forms.TextBox();
             this.label21 = new System.Windows.Forms.Label();
@@ -44,8 +47,10 @@
             this.label1 = new System.Windows.Forms.Label();
             this.dataGV_SAP_2 = new System.Windows.Forms.DataGridView();
             this.Btn_SAP_Rpt_detail = new System.Windows.Forms.Button();
+            this.DGV_MoveType = new System.Windows.Forms.DataGridView();
             ((System.ComponentModel.ISupportInitialize)(this.dataGV_SAP_1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGV_SAP_2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.DGV_MoveType)).BeginInit();
             this.SuspendLayout();
             // 
             // dataGV_SAP_1
@@ -53,7 +58,7 @@
             this.dataGV_SAP_1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.ColumnHeader;
             this.dataGV_SAP_1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGV_SAP_1.EnableHeadersVisualStyles = false;
-            this.dataGV_SAP_1.Location = new System.Drawing.Point(12, 98);
+            this.dataGV_SAP_1.Location = new System.Drawing.Point(12, 130);
             this.dataGV_SAP_1.Name = "dataGV_SAP_1";
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
@@ -63,6 +68,7 @@
             dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.dataGV_SAP_1.RowHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            this.dataGV_SAP_1.RowHeadersVisible = false;
             dataGridViewCellStyle2.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.dataGV_SAP_1.RowsDefaultCellStyle = dataGridViewCellStyle2;
             this.dataGV_SAP_1.RowTemplate.Height = 30;
@@ -71,9 +77,10 @@
             // 
             // Tb_SAP_OrdBas1
             // 
+            this.Tb_SAP_OrdBas1.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.Tb_SAP_OrdBas1.Location = new System.Drawing.Point(120, 12);
             this.Tb_SAP_OrdBas1.Name = "Tb_SAP_OrdBas1";
-            this.Tb_SAP_OrdBas1.Size = new System.Drawing.Size(172, 28);
+            this.Tb_SAP_OrdBas1.Size = new System.Drawing.Size(172, 31);
             this.Tb_SAP_OrdBas1.TabIndex = 33;
             // 
             // label21
@@ -148,16 +155,16 @@
             this.label1.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label1.Location = new System.Drawing.Point(50, 53);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(64, 24);
+            this.label1.Size = new System.Drawing.Size(55, 24);
             this.label1.TabIndex = 39;
-            this.label1.Text = "行数：";
+            this.label1.Text = "行数 :";
             // 
             // dataGV_SAP_2
             // 
             this.dataGV_SAP_2.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.ColumnHeader;
             this.dataGV_SAP_2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGV_SAP_2.EnableHeadersVisualStyles = false;
-            this.dataGV_SAP_2.Location = new System.Drawing.Point(1124, 98);
+            this.dataGV_SAP_2.Location = new System.Drawing.Point(1124, 130);
             this.dataGV_SAP_2.Name = "dataGV_SAP_2";
             dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
@@ -167,6 +174,7 @@
             dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.dataGV_SAP_2.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            this.dataGV_SAP_2.RowHeadersVisible = false;
             dataGridViewCellStyle4.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.dataGV_SAP_2.RowsDefaultCellStyle = dataGridViewCellStyle4;
             this.dataGV_SAP_2.RowTemplate.Height = 30;
@@ -184,11 +192,44 @@
             this.Btn_SAP_Rpt_detail.UseVisualStyleBackColor = true;
             this.Btn_SAP_Rpt_detail.Click += new System.EventHandler(this.dataGV_SAP_1_CellContentClick);
             // 
+            // DGV_MoveType
+            // 
+            this.DGV_MoveType.BackgroundColor = System.Drawing.Color.Linen;
+            this.DGV_MoveType.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.DGV_MoveType.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle5;
+            this.DGV_MoveType.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.DGV_MoveType.ColumnHeadersVisible = false;
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle6.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.DGV_MoveType.DefaultCellStyle = dataGridViewCellStyle6;
+            this.DGV_MoveType.GridColor = System.Drawing.SystemColors.Info;
+            this.DGV_MoveType.Location = new System.Drawing.Point(1290, 15);
+            this.DGV_MoveType.Name = "DGV_MoveType";
+            this.DGV_MoveType.RowHeadersVisible = false;
+            this.DGV_MoveType.RowTemplate.Height = 30;
+            this.DGV_MoveType.Size = new System.Drawing.Size(360, 96);
+            this.DGV_MoveType.TabIndex = 42;
+            this.DGV_MoveType.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.DGV_MoveType_CellFormatting);
+            this.DGV_MoveType.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.DGV_MoveType_CellPainting);
+            // 
             // SAP_Report
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1662, 688);
+            this.Controls.Add(this.DGV_MoveType);
             this.Controls.Add(this.Btn_SAP_Rpt_detail);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.LB_RowsCount);
@@ -201,11 +242,13 @@
             this.Controls.Add(this.Btn_eCar_Report);
             this.Controls.Add(this.dataGV_SAP_2);
             this.Controls.Add(this.dataGV_SAP_1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "SAP_Report";
             this.Text = "SAP_Report";
             this.Load += new System.EventHandler(this.SAP_Report_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGV_SAP_1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGV_SAP_2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.DGV_MoveType)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -225,5 +268,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.DataGridView dataGV_SAP_2;
         private System.Windows.Forms.Button Btn_SAP_Rpt_detail;
+        private System.Windows.Forms.DataGridView DGV_MoveType;
     }
 }

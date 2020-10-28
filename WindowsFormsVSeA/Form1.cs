@@ -90,8 +90,9 @@ namespace WindowsFormsVSeA
         {
             try
             {
+                int i = 0;
                 bool isDuplicate=false;
-                for(int nbRow = 0; nbRow < dataGridView1.Rows.Count-1; nbRow++)
+                for(int nbRow = 0; nbRow < dataGridView1.Rows.Count-1; nbRow++) //Equipment ID 查重
                 {
                     for(int NextRow = nbRow+ 1; NextRow <= dataGridView1.Rows.Count-2; NextRow++)
                     {
@@ -100,6 +101,7 @@ namespace WindowsFormsVSeA
                             isDuplicate = true;
                             dataGridView1.Rows[nbRow].Cells[6].Style.BackColor = Color.LightGreen;
                             dataGridView1.Rows[NextRow].Cells[6].Style.BackColor = Color.LightGreen;
+                            i++;
                         }
                     }
                    
@@ -112,7 +114,56 @@ namespace WindowsFormsVSeA
 
                 }
 
-               
+                for (int nbRow = 0; nbRow < dataGridView1.Rows.Count - 1; nbRow++) //SSAP 查重
+                {
+                    for (int NextRow = nbRow + 1; NextRow <= dataGridView1.Rows.Count - 2; NextRow++)
+                    {
+                        if (dataGridView1.Rows[nbRow].Cells[0].Value.ToString() == "RFC1006")
+                        {
+                            if (dataGridView1.Rows[nbRow].Cells[3].Value.ToString() == dataGridView1.Rows[NextRow].Cells[3].Value.ToString())
+                            {
+                                isDuplicate = true;
+                                dataGridView1.Rows[nbRow].Cells[3].Style.BackColor = Color.LightGreen;
+                                dataGridView1.Rows[NextRow].Cells[3].Style.BackColor = Color.LightGreen;
+                                i++;
+                            }
+                        }
+                    }
+                    
+                    if (isDuplicate)
+                    {
+                        //MessageBox.Show(dataGridView1[6, nbRow].Value.ToString());
+                        isDuplicate = false;
+                    }
+
+                }
+
+                for (int nbRow = 0; nbRow < dataGridView1.Rows.Count - 1; nbRow++) //TSAP 查重
+                {
+                    for (int NextRow = nbRow + 1; NextRow <= dataGridView1.Rows.Count - 2; NextRow++)
+                    {
+                        if (dataGridView1.Rows[nbRow].Cells[0].Value.ToString()== "RFC1006")
+                        {
+                            if (dataGridView1.Rows[nbRow].Cells[4].Value.ToString() == dataGridView1.Rows[NextRow].Cells[4].Value.ToString())
+                            {
+                                isDuplicate = true;
+                                dataGridView1.Rows[nbRow].Cells[4].Style.BackColor = Color.LightGreen;
+                                dataGridView1.Rows[NextRow].Cells[4].Style.BackColor = Color.LightGreen;
+                                i++;
+                            }
+                        }
+                        
+                    }
+
+                    if (isDuplicate)
+                    {
+                        //MessageBox.Show(dataGridView1[6, nbRow].Value.ToString());
+                        isDuplicate = false;
+                    }
+
+                }
+
+                tb_dul.Text = "共发现 " + i.ToString() + " 个重复记录";
             }
             catch (Exception ex)
             {
@@ -146,10 +197,12 @@ namespace WindowsFormsVSeA
                         dataGridView2.Columns[1].Visible = false;
                         dataGridView2.Columns[2].Visible = false;
 
-                        dataGridView2.ColumnHeadersDefaultCellStyle.Font = new Font("雅黑", 9, FontStyle.Bold);
+                        dataGridView2.ColumnHeadersDefaultCellStyle.Font = new Font("雅黑", 10, FontStyle.Bold);
                         dataGridView2.ColumnHeadersDefaultCellStyle.ForeColor = Color.Purple;
                         dataGridView2.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                         dataGridView2.Columns[5].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+
+                        this.Btn_Ordr_detail.Enabled = true;
                     }
                     else
                     {
@@ -167,13 +220,7 @@ namespace WindowsFormsVSeA
             }
         }
 
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            string coboSele = comboBox1.SelectedItem.ToString();
-
-            string connStatus = SSQL.DbConn(coboSele); //根据combo选项更改数据库连接
-        }
-
+     
         
 
         private void button3_Click(object sender, EventArgs e)
@@ -260,30 +307,7 @@ namespace WindowsFormsVSeA
 
       
 
-        private void comboBox1_MouseDown(object sender, MouseEventArgs e)
-        {
-            try
-            {
-                if (comboBox1.Items.Count == 0)
-                {
-                    List<string> Conns = SSQL.GetConnectionStringsConfig();
-
-                    if (Conns.Count != 0)
-                    {
-                        foreach (string i in Conns)
-                        {
-                            comboBox1.Items.Add(i);
-                        }
-
-                    }
-                }
-
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.ToString());
-            }
-        }
+        
 
         private void qSYSToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -320,26 +344,11 @@ namespace WindowsFormsVSeA
             }
         }
 
-        private void comboBox1_SelectedIndexChanged_1(object sender, EventArgs e)
-        {
-            try
-            {
-                List<string> Conns = SSQL.GetConnectionStringsConfig();
-
-                if (comboBox1.Text== "Q_connString")
-                {
-                    
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.ToString());
-            }
-        }
+        
 
         private void Form1_Load(object sender, EventArgs e)
         {
-
+            this.Btn_Ordr_detail.Enabled = false;
         }
 
         private void button5_Click(object sender, EventArgs e)
@@ -372,7 +381,7 @@ namespace WindowsFormsVSeA
                         TB_MatDesc.Text = dataGridView4.Rows[0].Cells[1].Value.ToString();
 
                         
-                        dataGridView4.ColumnHeadersDefaultCellStyle.Font = new Font("雅黑", 9, FontStyle.Bold);
+                        dataGridView4.ColumnHeadersDefaultCellStyle.Font = new Font("雅黑", 10, FontStyle.Bold);
                         dataGridView4.ColumnHeadersDefaultCellStyle.ForeColor = Color.Purple;
                         dataGridView4.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                         dataGridView4.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
@@ -492,6 +501,7 @@ private void dataGridView4_CellClick(object sender, DataGridViewCellEventArgs e)
                         dataGridView6.Columns[9].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                         dataGridView6.Columns[11].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                         dataGridView6.Columns[6].Visible = false;
+                        dataGridView6.ColumnHeadersDefaultCellStyle.ForeColor = Color.Purple;
 
                         if (!string.IsNullOrEmpty(this.TB_Temp_Order.Text)) //如果输入工单号 则不显示工单号列
                         {
@@ -547,6 +557,10 @@ private void dataGridView4_CellClick(object sender, DataGridViewCellEventArgs e)
                         dt.Rows.Add(dr);
 
                         dataGridView7.DataSource = dt;
+
+                        dataGridView7.ColumnHeadersDefaultCellStyle.Font = new Font("雅黑", 10, FontStyle.Bold);
+                        dataGridView7.ColumnHeadersDefaultCellStyle.ForeColor = Color.Purple;
+
                         dataGridView7.Columns[0].Visible = false;
                         dataGridView7.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                         dataGridView7.Columns[5].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
@@ -566,7 +580,7 @@ private void dataGridView4_CellClick(object sender, DataGridViewCellEventArgs e)
                 }
                 else
                 {
-                    MessageBox.Show("Please input Serial Number first ！");
+                    MessageBox.Show("Please input Order Number first ！");
                     return;
                 }
             }
@@ -576,7 +590,7 @@ private void dataGridView4_CellClick(object sender, DataGridViewCellEventArgs e)
             }
         }
 
-        private void button8_Click(object sender, EventArgs e)
+        private void Btn_MeasureFilter_Click(object sender, EventArgs e)
         {
             if (!string.IsNullOrEmpty(this.TB_Filter_SNR.Text))
             {
@@ -597,7 +611,7 @@ private void dataGridView4_CellClick(object sender, DataGridViewCellEventArgs e)
 
         }
 
-        private void button9_Click(object sender, EventArgs e)
+        private void Btn_MeasureBack_Click(object sender, EventArgs e)
         {
             
             dataGridView7.DataSource = Dt_Cpy;
@@ -626,11 +640,14 @@ private void dataGridView4_CellClick(object sender, DataGridViewCellEventArgs e)
                     dataGridView8.DataSource = dt;
                     dataGridView8.Columns[1].Visible = false;
                     dataGridView8.Columns[2].Visible = false;
+                    dataGridView8.ColumnHeadersDefaultCellStyle.ForeColor = Color.Purple;
                     dataGridView8.Columns[6].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                     dataGridView8.Columns[11].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                     dataGridView8.Columns[12].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                     dataGridView8.Columns[13].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                     dataGridView8.Columns[5].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+
+                    dataGridView4.ColumnHeadersDefaultCellStyle.ForeColor = Color.Purple;
 
                     TB_eCar_OrderID.Text = dt.Rows[0][1].ToString();
 
@@ -725,6 +742,226 @@ private void dataGridView4_CellClick(object sender, DataGridViewCellEventArgs e)
                 new FrmSAP101().Show();
             }
 
+        }
+
+        private void Btn_Ordr_detail_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                DataTable dt = new DataTable();
+
+                if (!string.IsNullOrEmpty(this.tB_Order.Text))
+                {
+                    dt = SSQL.Qty_Order_SNRs(this.tB_Order.Text);
+                }
+
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    DataRow dr = dt.NewRow();
+                    dr[1] = "Summary Total:";
+                    dr[2] = dt.Rows.Count;
+                    dt.Rows.Add(dr);
+                    //dataGridView8.AutoGenerateColumns = false;
+                    dataGridView2.DataSource = dt;
+                    dataGridView2.ColumnHeadersDefaultCellStyle.ForeColor = Color.Purple;
+                    dataGridView2.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                    dataGridView2.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                    dataGridView2.Columns[5].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void Btn_OrderItlk_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                DataTable dt = new DataTable();
+
+                if (!string.IsNullOrEmpty(this.tB_Order.Text))
+                {
+                    dt = SSQL.Qty_Order_ItlkObj(this.tB_Order.Text);
+                }
+
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    DataRow dr = dt.NewRow();
+                    dr[1] = "Summary Total:";
+                    dr[2] = dt.Rows.Count;
+                    dt.Rows.Add(dr);
+                    //dataGridView8.AutoGenerateColumns = false;
+                    dataGridView2.DataSource = dt;
+                    dataGridView2.ColumnHeadersDefaultCellStyle.ForeColor = Color.Purple;
+                    dataGridView2.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                    dataGridView2.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                    dataGridView2.Columns[5].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                    dataGridView2.Columns[19].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void Btn_Order_Detail_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                DataTable dt = new DataTable();
+
+                if (!string.IsNullOrEmpty(this.tB_Order.Text))
+                {
+                    dt = SSQL.Qty_Order_ItlkObj(this.tB_Order.Text);
+                }
+
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    DataRow dr = dt.NewRow();
+                    dr[1] = "Summary Total:";
+                    dr[2] = dt.Rows.Count;
+                    dt.Rows.Add(dr);
+                    //dataGridView8.AutoGenerateColumns = false;
+                    dataGridView2.DataSource = dt;
+                    dataGridView2.ColumnHeadersDefaultCellStyle.ForeColor = Color.Purple;
+                    dataGridView2.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                    dataGridView2.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                    dataGridView2.Columns[5].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void celianghziToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(Form1.SSQL.DBConnStr))
+                {
+                    MessageBox.Show("数据库未连接 ！");
+                    return;
+                }
+                else
+                {
+                    new QueryMeasurement().Show();
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+
+        }
+
+        private void 接口堵塞监控ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(Form1.SSQL.DBConnStr))
+                {
+                    MessageBox.Show("数据库未连接 ！");
+                    return;
+                }
+                else
+                {
+                    new MES2SAPMonitor().Show();
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void 唯一件装配查询ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(Form1.SSQL.DBConnStr))
+                {
+                    MessageBox.Show("数据库未连接 ！");
+                    return;
+                }
+                else
+                {
+                    new Material2Uniques().Show();
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void Btn_MatReal_SNR_Click(object sender, EventArgs e)
+        {
+            try
+            {
+
+                if (string.IsNullOrEmpty(SSQL.DBConnStr))
+                {
+                    MessageBox.Show("数据库未连接 ！");
+                    return;
+                }
+
+                if (this.TB_Filter_SNR.Text != "" || !string.IsNullOrEmpty(this.TB_Filter_SNR.Text))
+                {
+                    DataTable dt = new DataTable();
+                    dt = SSQL.Qty_SNR_Real_Genealogy(this.TB_Filter_SNR.Text.Trim());
+
+                    if (dt != null && dt.Rows.Count > 0)
+                    {
+                        
+                        dataGridView7.DataSource = dt;
+
+                        dataGridView7.ColumnHeadersDefaultCellStyle.Font = new Font("雅黑", 10, FontStyle.Bold);
+                        dataGridView7.ColumnHeadersDefaultCellStyle.ForeColor = Color.Purple;
+
+                        dataGridView7.Columns[0].Visible = false;
+                        dataGridView7.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                        dataGridView7.Columns[5].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                        dataGridView7.Columns[6].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                        dataGridView7.Columns[9].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                        dataGridView7.Columns[11].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+
+                        DataRow dr = dt.NewRow();
+                        dr[1] = "Summary Total:";
+                        dr[2] = dt.Rows.Count;
+                        dt.Rows.Add(dr);
+
+                    }
+
+                    DV_RealTrace = dt.DefaultView;
+
+                    Dt_Cpy = dt.Copy();
+                    //DV_History = dt.DefaultView;
+
+                    dt.Dispose();
+
+                }
+                else
+                {
+                    MessageBox.Show("Please input Serial Number first ！");
+                    return;
+                }
+            }
+            
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
         }
     }
 }

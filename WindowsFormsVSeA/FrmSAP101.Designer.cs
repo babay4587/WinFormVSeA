@@ -32,6 +32,7 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmSAP101));
             this.DateGridV_MatMas101_1 = new System.Windows.Forms.DataGridView();
             this.DTPicker1 = new System.Windows.Forms.DateTimePicker();
             this.DTPicker_E = new System.Windows.Forms.DateTimePicker();
@@ -41,8 +42,8 @@
             this.label3 = new System.Windows.Forms.Label();
             this.TB_IntvalDay = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.Btn_Matid = new System.Windows.Forms.Button();
             this.Btn_Orderid = new System.Windows.Forms.Button();
+            this.Btn_Matid = new System.Windows.Forms.Button();
             this.DateGridV_MatMas101_2 = new System.Windows.Forms.DataGridView();
             this.Btn_SNRChk = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.DateGridV_MatMas101_1)).BeginInit();
@@ -154,17 +155,6 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Summary Zone";
             // 
-            // Btn_Matid
-            // 
-            this.Btn_Matid.BackColor = System.Drawing.SystemColors.Info;
-            this.Btn_Matid.Location = new System.Drawing.Point(15, 41);
-            this.Btn_Matid.Name = "Btn_Matid";
-            this.Btn_Matid.Size = new System.Drawing.Size(75, 34);
-            this.Btn_Matid.TabIndex = 0;
-            this.Btn_Matid.Text = "物料号";
-            this.Btn_Matid.UseVisualStyleBackColor = false;
-            this.Btn_Matid.Click += new System.EventHandler(this.Btn_Matid_Click);
-            // 
             // Btn_Orderid
             // 
             this.Btn_Orderid.BackColor = System.Drawing.SystemColors.Info;
@@ -175,6 +165,17 @@
             this.Btn_Orderid.Text = "工单号";
             this.Btn_Orderid.UseVisualStyleBackColor = false;
             this.Btn_Orderid.Click += new System.EventHandler(this.Btn_Orderid_Click);
+            // 
+            // Btn_Matid
+            // 
+            this.Btn_Matid.BackColor = System.Drawing.SystemColors.Info;
+            this.Btn_Matid.Location = new System.Drawing.Point(15, 41);
+            this.Btn_Matid.Name = "Btn_Matid";
+            this.Btn_Matid.Size = new System.Drawing.Size(75, 34);
+            this.Btn_Matid.TabIndex = 0;
+            this.Btn_Matid.Text = "物料号";
+            this.Btn_Matid.UseVisualStyleBackColor = false;
+            this.Btn_Matid.Click += new System.EventHandler(this.Btn_Matid_Click);
             // 
             // DateGridV_MatMas101_2
             // 
@@ -226,6 +227,7 @@
             this.Controls.Add(this.DTPicker1);
             this.Controls.Add(this.DateGridV_MatMas101_2);
             this.Controls.Add(this.DateGridV_MatMas101_1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "FrmSAP101";
             this.Text = "SAP MatMas 101";
             this.Load += new System.EventHandler(this.FrmSAP101_Load);

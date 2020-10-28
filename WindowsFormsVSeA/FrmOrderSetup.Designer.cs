@@ -30,6 +30,7 @@
         {
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmOrderSetup));
             this.dataGridView2 = new System.Windows.Forms.DataGridView();
             this.Lb_orderSetup = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
@@ -80,6 +81,7 @@
             this.ClientSize = new System.Drawing.Size(1155, 450);
             this.Controls.Add(this.Lb_orderSetup);
             this.Controls.Add(this.dataGridView2);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "FrmOrderSetup";
             this.Text = "FrmOrderSetup";
             this.Load += new System.EventHandler(this.FrmOrderSetup_Load);

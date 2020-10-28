@@ -1031,6 +1031,12 @@ namespace WindowsFormsVSeA
             }
         }
 
+
+        /// <summary>
+        /// 根据工单号 查询工单段名称，设备号，NC程序号等信息
+        /// </summary>
+        /// <param name="order"></param>
+        /// <returns></returns>
         public DataTable Qty_Batch_Order(string order)
         {
             string sql = string.Format(@"SELECT     
@@ -1063,6 +1069,11 @@ namespace WindowsFormsVSeA
         }
 
 
+        /// <summary>
+        /// 通过工单号查询 每个工序需扫描的物料信息
+        /// </summary>
+        /// <param name="order"></param>
+        /// <returns></returns>
         public DataTable Qty_Mat_Order(string order)
         {
             string sql = string.Format(@"SELECT  
@@ -1074,6 +1085,7 @@ namespace WindowsFormsVSeA
                                         POMV_ETRY.pom_order_id as Order_ID,
                                         ESW.MACHINE_ID as WorkOperationID,
                                         replace(POMV_ETRY.pom_entry_id,POMV_ETRY.pom_order_id+'-','') as AVO_ID,
+                                        FHM.FHM_ID as EquipmentID,
                                         isnull(POMV_MATL_SPEC_ITM.def_id,'-') as Matnr,
                                         isnull(MMwDefVers.DefName,'-') as Mat_Description,
                                         isnull(POMV_MATL_SPEC_ITM.uom_id,'-') as UoM,
@@ -1094,7 +1106,8 @@ namespace WindowsFormsVSeA
                                         LEFT JOIN POMV_MATL_LST_PRP_VAL pmlpv7 on POMV_MATL_SPEC_ITM.pom_entry_id = pmlpv7.pom_entry_id and POMV_MATL_SPEC_ITM.def_id = pmlpv7.def_id and POMV_MATL_SPEC_ITM.seq = pmlpv7.pom_mat_list_seq and pmlpv7.pom_custom_fld_name = 'DUMMY_COMPONENT'
 
                                         LEFT JOIN [ArchSitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EC_SAP_WORKCENTERS] ESW on ESW.WORKCENTER_ID = POMV_ETRY.ERP_WRKCNTR
-
+                                        left join dbo.[ArchSitMesPomRTF8F959F4-452B-462E-BA33-DB852EFDA899/EC_ENTRY_EXT_SHOPFLOOR] FHM
+                                        on POMV_ETRY.pom_entry_pk=FHM.MES_RECORD_PK
                                         WHERE     
                                         POMV_ETRY.pom_order_id = '{0}'
                                         order by 3", order);
@@ -1112,6 +1125,12 @@ namespace WindowsFormsVSeA
             }
         }
 
+
+        /// <summary>
+        /// 通过唯一码 查询唯一码装配及拆解状态 以及装配到的目标序列号
+        /// </summary>
+        /// <param name="UniqueCode"></param>
+        /// <returns></returns>
         public DataTable Qty_UniqueMat(string UniqueCode)
         {
             string sql = string.Format(@"select 
@@ -1240,6 +1259,11 @@ namespace WindowsFormsVSeA
         }
 
 
+        /// <summary>
+        /// 查询返工数据临时表
+        /// </summary>
+        /// <param name="SNR"></param>
+        /// <returns></returns>
         public DataTable Qty_SNR_Rework_Temp(string SNR)
         {
             string sql = string.Format(@"select 
@@ -1332,6 +1356,44 @@ namespace WindowsFormsVSeA
                                         INNER JOIN MMwDefVers ON MMwDefVers.DefID = gen.COMPONENT_ID		
                                         where		
                                         POMV_ETRY.pom_order_id='{0}'",  Order);
+
+            DataTable dt = new DataTable();
+
+            try
+            {
+                dt = SQLSet(sql);
+                return dt;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+
+        /// <summary>
+        /// 根据单个SNR序列号 查询所关联的物料信息
+        /// </summary>
+        /// <param name="SNR"></param>
+        /// <returns></returns>
+        public DataTable Qty_SNR_Real_Genealogy(string SNR)
+        {
+            string sql = string.Format(@"SELECT POMV_ETRY.pom_order_id as Order_ID
+                                        ,gen.TARGET_LOT as SNR, gen.MACHINE_ID as Terminal_ID
+                                        ,EEP.ERP_OPERATION_ID as AVO_ID, POMV_ETRY.pom_entry_type_id as WorkOperationID
+                                        ,gen.COMPONENT_ID as MatNumber
+                                        ,MMwDefVers.DefName as MatName
+                                        ,gen.LIFNR
+                                        , gen.PACKID
+                                        , gen.LOT_ID as UniqueCode
+                                        , gen.QUANTITY as BoM_QUANTITY
+                                        , dateadd(hour,8,gen.RowUpdated)as dateTimes
+                                        from [ArchSitMesPomRTF8F959F4-452B-462E-BA33-DB852EFDA899/EC_ENTRY_EXT_GENEALOGY_MATLABEL] gen		
+                                        INNER JOIN POMV_ETRY on gen.MES_RECORD_PK = POMV_ETRY.pom_entry_pk		
+                                        INNER JOIN [ArchSitMesPomRTF8F959F4-452B-462E-BA33-DB852EFDA899/EC_ENTRY_EXT_PROPERTIES] EEP on POMV_ETRY.pom_entry_pk = EEP.MES_RECORD_PK		
+                                        INNER JOIN MMwDefVers ON MMwDefVers.DefID = gen.COMPONENT_ID		
+                                        where		
+                                        gen.TARGET_LOT='{0}'", SNR);
 
             DataTable dt = new DataTable();
 
@@ -1523,6 +1585,48 @@ namespace WindowsFormsVSeA
 
 
         /// <summary>
+        /// 查询工单下所有SNRs 及其状态 工单号可模糊查询
+        /// </summary>
+        /// <param name="Orderid"></param>
+        /// <returns></returns>
+        public DataTable Qty_Order_SNRs(string Orderid)
+        {
+            string sql = string.Format(@"Use SITMesDB
+
+                                                        SELECT
+                                                        MMLots.LotName AS SerialNumber, 
+                                                        POM_ORDER_STATUS.id AS Order_Status,
+                                                        MMLotStatuses.LotStatusID AS SNR_Status,
+                                                        POM_ENTRY.initial_qty AS Quantity, 
+                                                        dateadd(hour,8,POM_ORDER.RowUpdated) as LatestChange,
+                                                        dateadd(hour,8,oep.RowUpdated) as ImportDate
+                                                        FROM
+                                                        POM_ORDER 
+                                                        INNER JOIN POM_ORDER_STATUS ON POM_ORDER.pom_order_status_pk = POM_ORDER_STATUS.pom_order_status_pk 
+                                                        INNER JOIN MMLotCommitTo ON POM_ORDER.pom_order_id = MMLotCommitTo.CommitTo
+                                                        INNER JOIN MMLots ON MMLotCommitTo.LotPK = MMLots.LotPK 
+                                                        INNER JOIN MMLotStatuses ON MMLotStatuses.LotStatusPK = MMLots.LotStatusPK
+                                                        INNER JOIN POM_ENTRY ON POM_ORDER.pom_order_pk = POM_ENTRY.pom_order_pk AND POM_ENTRY.order_extended_data = N'Y' 
+                                                        INNER JOIN POM_CUSTOM_FIELD_RT ON POM_ENTRY.pom_entry_pk = POM_CUSTOM_FIELD_RT.pom_entry_pk AND POM_CUSTOM_FIELD_RT.pom_custom_fld_name = N'BOM_NAME'
+                                                        inner JOIN MMDefinitions on MMDefinitions.DefID = POM_ENTRY.matl_def_id
+                                                        INNER JOIN [ArchSitMesPomRTF8F959F4-452B-462E-BA33-DB852EFDA899/EC_ORDER_EXT_PROPERTIES] oep on oep.MES_RECORD_PK = POM_ORDER.pom_order_pk
+                                                        where POM_ORDER.pom_order_id like '%{0}%'", Orderid);
+
+            DataTable dt = new DataTable();
+
+            try
+            {
+                dt = SQLSet(sql);
+                return dt;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+
+        /// <summary>
         /// 基于工单的SAP报工 查询 包括物料号与SNR
         /// </summary>
         /// <param name="Orderid"></param>
@@ -1544,6 +1648,8 @@ namespace WindowsFormsVSeA
                                                           t1.matid as MatNumber,
                                                           (select DefName from [SITMesDB].[dbo].[MMwDefVers] where	
                                                            defid=t1.matid) as MatName,
+                                                            (case t1.MoveType when '' then '261'
+															when 'X' then '262' end) as MoveType,
                                                             t1.dateTimes as Tran_Date,
                                                            t1.quan as Quantity,
                                                            t1.uom as UOM
@@ -1554,6 +1660,7 @@ namespace WindowsFormsVSeA
 		                                                        node.c.value('UOM[1]','varchar(8)') as uom,
 		                                                        op.v.value('LWO[1]','varchar(20)') as AVO,
 		                                                        op.v.value('SERIAL[1]','varchar(20)') as SNR,
+                                                                node.c.value('MOVEMENT_TYPE[1]','varchar(5)') as MoveType,
 		                                                        node.c.value('PLANT[1]','varchar(20)') as Plant,
 		                                                        dateadd(hour,8,bg.TransTime)as dateTimes
 		                                                        from #XMLTab bg with(nolock) cross apply TransData.nodes('/ITEM') as node(c) 
@@ -1612,6 +1719,278 @@ namespace WindowsFormsVSeA
 		                                                    from #XMLTab bg with(nolock) cross apply TransData.nodes('/MESSAGE/ITEM') as node(c) 
 					                                                    cross apply TransData.nodes('OPERATION_DATA') as op(v)
 					                                                    )dt", S_Datetime, E_Datetime);
+
+            DataTable dt = new DataTable();
+
+            try
+            {
+                dt = SQLSet(sql);
+                return dt;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+
+        /// <summary>
+        /// 通过 order id查询 interlock object FHM等
+        /// </summary>
+        /// <param name="OrderID"></param>
+        /// <returns></returns>
+        public DataTable Qty_Order_ItlkObj(string OrderID)
+        {
+            string sql = string.Format(@"
+                                                        Use SITMesDB
+                                                        SELECT
+                                                        EP.ERP_OPERATION_ID as AVO_ID,
+                                                        POMV_ETRY.pom_entry_type_id as AVO,
+                                                        EP.WO_DESCR as AVO_Desc,
+                                                        EP.WORKFLOW as Workflow,
+                                                        WC.MACHINE_ID as Terminal,
+                                                        Mapping.TERMINAL as T_Terminal,
+                                                        POMV_ETRY.ERP_WRKCNTR as SAP_OBJID,
+                                                        EEES.FHM_ID as S7_Equipment,
+                                                        cast(prp2.VAL as Integer) as LoopCycleMax,
+                                                        EP.CONTROL_KEY as CONTROL_KEY,
+                                                        cast(POMV_ETRY_PRP.VAL as integer) as Interlocking_Code,
+                                                        cast(POMV_ETRY_PRP.VAL as integer) & 1 as Itlk_LoopCycle,
+                                                        cast(POMV_ETRY_PRP.VAL as integer) & 2 as Itlk_ProcessRouting,
+                                                        cast(POMV_ETRY_PRP.VAL as integer) & 4 as Itlk_SNRStatus,
+                                                        cast(POMV_ETRY_PRP.VAL as integer) & 512 as Itlk_OrderStatus,
+                                                        cast(POMV_ETRY_PRP.VAL as integer) & 32768 as Itlk_SetupShopfloor,
+                                                        cast(POMV_ETRY_PRP.VAL as integer) & 65536 as Itlk_SetupMatlabel,
+                                                        cast(POMV_ETRY_PRP.VAL as integer) & 131072 as Itlk_SetupTools,
+                                                        cast(POMV_ETRY_PRP.VAL as integer) & 262144 as Itlk_DelayBtwnAvos,
+                                                        dateadd(hour,8,EP.RowUpdated) as DateTimes
+                                                        FROM POMV_ETRY with(nolock)
+                                                        INNER JOIN [ArchSitMesPomRTF8F959F4-452B-462E-BA33-DB852EFDA899/EC_ENTRY_EXT_PROPERTIES] EP ON POMV_ETRY.pom_entry_pk = EP.MES_RECORD_PK
+                                                        INNER JOIN [ArchSitMesPomRTF8F959F4-452B-462E-BA33-DB852EFDA899/EC_ENTRY_EXT_SHOPFLOOR] EEES ON EEES.MES_RECORD_PK = EP.MES_RECORD_PK and EEES.FHM_TYPE = 'G'
+                                                        INNER JOIN [Arch_RPT_MGR_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EC_SAP_WORKCENTERS] WC ON POMV_ETRY.ERP_WRKCNTR = WC.WORKCENTER_ID
+                                                        INNER JOIN POMV_ETRY_PRP ON POMV_ETRY.pom_entry_pk = POMV_ETRY_PRP.pom_entry_pk and POMV_ETRY_PRP.pom_custom_fld_name = 'ITLK_CODE'
+                                                        INNER JOIN POMV_ETRY_PRP  prp2 ON POMV_ETRY.pom_entry_pk = prp2.pom_entry_pk and prp2.pom_custom_fld_name = 'ITLK_MAX_LOOPS'
+                                                        INNER JOIN [SITMesDB].[dbo].[ARCH_T_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EC_TERMINAL_MAPPING_$91$] Mapping on Mapping.MACHINE_ID=WC.MACHINE_ID
+                                                        WHERE
+                                                        POMV_ETRY.pom_order_id = '{0}'
+                                                        order by 1", OrderID);
+
+            DataTable dt = new DataTable();
+
+            try
+            {
+                dt = SQLSet(sql);
+                return dt;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+
+        /// <summary>
+        /// 通过工单号，SNR号查询测量值数据，序列号可以模糊查询 查询条件可为 %
+        /// </summary>
+        /// <param name="OrderID"></param>
+        /// <param name="SNR"></param>
+        /// <returns></returns>
+        public DataTable Qty_MeasureValue(string OrderID,string SNR)
+        {
+            string sql = string.Format(@"
+                                                        USE SITMesDB							
+                                                        SELECT							
+                                                        EC_MEAS.SERIAL_NUMBER,							
+                                                        PMG.GROUP_ID as LINE_ID,							
+                                                        EC_MEAS.TERMINAL_ID as TERMINAL,							
+                                                        EEP.ERP_OPERATION_ID as AVO_ID,							
+                                                        EC_MEAS.WO_ID as WorkOperationID,							
+                                                        EEP.WO_DESCR as AVO_Desc,							
+                                                        EC_MEAS.EQUIPMENT_ID as EQUIPMENT_ID,							
+                                                        (case EC_MEAS.STATUS when '0' then 'Good'							
+	                                                        when '1' then 'Failed' end) as ValueStatus,						
+                                                        EC_MEAS.MEASUREMENT_ID,							
+                                                        EC_MEAS.MEASUREMENT_TYPE,							
+                                                        EC_MEAS.LOWER_LIMIT,							
+                                                        EC_MEAS.MEASUREMENT,							
+                                                        EC_MEAS.UPPER_LIMIT,							
+                                                        EC_MEAS.TARGET_VALUE,							
+                                                        EC_MEAS.UNIT,							
+                                                        EC_MEAS.MACHINE_CYCLE,							
+                                                        EC_MEAS.DEVICE,							
+                                                        dateadd(hour,8,EC_MEAS.TIMESTAMP) as PLC_Time,							
+                                                        dateadd(hour,8,EC_MEAS.RowUpdated) as MES_Time,							
+                                                        EEP.WORKFLOW as Workflow,							
+                                                        EC_MEAS.FILE_PATH,							
+                                                        EC_MEAS.FILE_NAME							
+                                                        FROM							
+                                                        [ArchSitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EC_MEASUREMENTS] EC_MEAS WITH (NOLOCK)							
+                                                        LEFT JOIN POMV_ETRY WITH (NOLOCK) ON POMV_ETRY.pom_order_id = EC_MEAS.ORDER_ID and POMV_ETRY.pom_entry_type_id = EC_MEAS.WO_ID							
+                                                        LEFT JOIN [ArchSitMesPomRTF8F959F4-452B-462E-BA33-DB852EFDA899/EC_ENTRY_EXT_PROPERTIES] EEP WITH (NOLOCK) on POMV_ETRY.pom_entry_pk = EEP.MES_RECORD_PK							
+                                                        LEFT JOIN [Arch_RPT_MGR_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/ML_PROCESS_MACHINE_GROUP] PMG WITH (NOLOCK) on PMG.MACHINE_ID = EC_MEAS.TERMINAL_ID and PMG.PROCESS_STEP = EC_MEAS.WO_ID							
+                                                        WHERE							
+                                                        EC_MEAS.MEASUREMENT like '%' and							
+                                                        ORDER_ID like '{0}' and							
+                                                        SERIAL_NUMBER like '{1}' and							
+                                                        TERMINAL_ID like '%' and							
+                                                        WO_ID like '%' and							
+                                                        MEASUREMENT_ID like '%' and							
+                                                        STATUS like '%' -- 0 = 'IO' / 1 = 'NIO'							
+                                                        order by 4,18							
+                                                        ", OrderID, SNR);
+
+            DataTable dt = new DataTable();
+
+            try
+            {
+                dt = SQLSet(sql);
+                return dt;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+
+        /// <summary>
+        /// 通过序列号与数值联合查询，查询测量值记录
+        /// </summary>
+        /// <param name="SNR"></param>
+        /// <param name="Vals"></param>
+        /// <returns></returns>
+        public DataTable Qty_Measure_SNR_Val(string SNR, string Vals)
+        {
+            string sql = string.Format(@"
+                                                        USE SITMesDB							
+                                                        SELECT							
+                                                        EC_MEAS.SERIAL_NUMBER,							
+                                                        PMG.GROUP_ID as LINE_ID,							
+                                                        EC_MEAS.TERMINAL_ID as TERMINAL,							
+                                                        EEP.ERP_OPERATION_ID as AVO_ID,							
+                                                        EC_MEAS.WO_ID as WorkOperationID,							
+                                                        EEP.WO_DESCR as AVO_Desc,							
+                                                        EC_MEAS.EQUIPMENT_ID as EQUIPMENT_ID,							
+                                                        (case EC_MEAS.STATUS when '0' then 'Good'							
+	                                                        when '1' then 'Failed' end) as ValueStatus,						
+                                                        EC_MEAS.MEASUREMENT_ID,							
+                                                        EC_MEAS.MEASUREMENT_TYPE,							
+                                                        EC_MEAS.LOWER_LIMIT,							
+                                                        EC_MEAS.MEASUREMENT,							
+                                                        EC_MEAS.UPPER_LIMIT,							
+                                                        EC_MEAS.TARGET_VALUE,							
+                                                        EC_MEAS.UNIT,							
+                                                        EC_MEAS.MACHINE_CYCLE,							
+                                                        EC_MEAS.DEVICE,							
+                                                        dateadd(hour,8,EC_MEAS.TIMESTAMP) as PLC_Time,							
+                                                        dateadd(hour,8,EC_MEAS.RowUpdated) as MES_Time,							
+                                                        EEP.WORKFLOW as Workflow,							
+                                                        EC_MEAS.FILE_PATH,							
+                                                        EC_MEAS.FILE_NAME							
+                                                        FROM							
+                                                        [ArchSitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EC_MEASUREMENTS] EC_MEAS WITH (NOLOCK)							
+                                                        LEFT JOIN POMV_ETRY WITH (NOLOCK) ON POMV_ETRY.pom_order_id = EC_MEAS.ORDER_ID and POMV_ETRY.pom_entry_type_id = EC_MEAS.WO_ID							
+                                                        LEFT JOIN [ArchSitMesPomRTF8F959F4-452B-462E-BA33-DB852EFDA899/EC_ENTRY_EXT_PROPERTIES] EEP WITH (NOLOCK) on POMV_ETRY.pom_entry_pk = EEP.MES_RECORD_PK							
+                                                        LEFT JOIN [Arch_RPT_MGR_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/ML_PROCESS_MACHINE_GROUP] PMG WITH (NOLOCK) on PMG.MACHINE_ID = EC_MEAS.TERMINAL_ID and PMG.PROCESS_STEP = EC_MEAS.WO_ID							
+                                                        WHERE							
+                                                        EC_MEAS.MEASUREMENT like '%{1}%' and							
+                                                        ORDER_ID like '%' and							
+                                                        SERIAL_NUMBER = '{0}' and							
+                                                        TERMINAL_ID like '%' and							
+                                                        WO_ID like '%' and							
+                                                        MEASUREMENT_ID like '%' and							
+                                                        STATUS like '%' -- 0 = 'IO' / 1 = 'NIO'							
+                                                        order by 4,18						
+                                                        ", SNR, Vals);
+
+            DataTable dt = new DataTable();
+
+            try
+            {
+                dt = SQLSet(sql);
+                return dt;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+
+        /// <summary>
+        /// 查询接口是否有未发送数据
+        /// </summary>
+        /// <returns></returns>
+        public DataTable Qty_MES2SAP_Blocked()
+        {
+            string sql = string.Format(@"
+                                                        SELECT count(*) as Un_Sent_Idoc							
+                                                    FROM  [SitMesDB].[dbo].[ARCH_T_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EC_SAP_TRANSFER_$117$]							
+                                                    with (nolock)							
+                                                    where sent =0					
+                                                    ");
+
+            DataTable dt = new DataTable();
+
+            try
+            {
+                dt = SQLSet(sql);
+                return dt;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+
+        /// <summary>
+        /// 查看未发送的 261 101报文
+        /// </summary>
+        /// <returns></returns>
+        public DataTable Qty_MES2SAP_UnSentRecord()
+        {
+            string sql = string.Format(@"
+                                                        select SAP_ORDER, MESSAGE as MessageContent,OPERATION_DATA,MESSAGE_TYPE,SAP_ERROR,SENT as SentStatus,
+                                                    dateadd(hour,8,RowUpdated) as DateTimes						
+                                                    FROM  [SitMesDB].[dbo].[ARCH_T_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EC_SAP_TRANSFER_$117$]							
+                                                    with (nolock)							
+                                                    where sent =0							
+                                                    order by RowUpdated  asc");
+
+            DataTable dt = new DataTable();
+
+            try
+            {
+                dt = SQLSet(sql);
+                return dt;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+
+        /// <summary>
+        /// 找出物料A与物料B 共同装配于哪些序列号上 ！按时间段查询 防止数据量过大
+        /// </summary>
+        /// <param name="MatA"></param>
+        /// <param name="MatB"></param>
+        /// <param name="TimeS"></param>
+        /// <param name="TimeE"></param>
+        /// <returns></returns>
+        public DataTable Qty_Material2Unique(string MatA,string MatB,string TimeS,string TimeE)
+        {
+            string sql = string.Format(@"
+                                                        SELECT A.TARGET_LOT as TARGET_SNR,A.LOT_ID as UiqueID_A,B.LOT_ID as UiqueID_B,dateadd(hour,8,A.RowUpdated) as DateTimes  FROM									
+                                    (									
+                                    SELECT RowUpdated,TARGET_LOT,COMPONENT_ID,LOT_ID									
+                                    FROM [SitMesDB].[dbo].[ARCH_T_SitMesPomRTF8F959F4-452B-462E-BA33-DB852EFDA899/EC_ENTRY_EXT_GENEALOGY_MATLABEL_$107$]									
+                                    with (nolock)									
+                                    where COMPONENT_ID='{0}' AND dateadd(hour,8,RowUpdated) between '{2}' and '{3}'									
+                                    ) A LEFT JOIN  [SitMesDB].[dbo].[ARCH_T_SitMesPomRTF8F959F4-452B-462E-BA33-DB852EFDA899/EC_ENTRY_EXT_GENEALOGY_MATLABEL_$107$]									
+                                    B WITH (NOLOCK) ON A.TARGET_LOT=B.TARGET_LOT WHERE B.COMPONENT_ID='{1}'",MatA,MatB,TimeS,TimeE);
 
             DataTable dt = new DataTable();
 
@@ -1698,7 +2077,7 @@ namespace WindowsFormsVSeA
         }
 
         /// <summary>
-        /// DefVerPK, DefID,DefName
+        /// DefVerPK, DefID,DefName 通过物料号 获取物料名称与PK号
         /// </summary>
         /// <param name="MatID"></param>
         /// <returns></returns>

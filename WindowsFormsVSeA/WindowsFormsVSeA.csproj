@@ -75,6 +75,9 @@
   <PropertyGroup>
     <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>bitbug_favicon.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -115,8 +118,26 @@
     <Compile Include="FrmSAP101.Designer.cs">
       <DependentUpon>FrmSAP101.cs</DependentUpon>
     </Compile>
+    <Compile Include="Material2Uniques.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Material2Uniques.Designer.cs">
+      <DependentUpon>Material2Uniques.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MES2SAPMonitor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MES2SAPMonitor.Designer.cs">
+      <DependentUpon>MES2SAPMonitor.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="QueryMeasurement.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="QueryMeasurement.Designer.cs">
+      <DependentUpon>QueryMeasurement.cs</DependentUpon>
+    </Compile>
     <Compile Include="SAP Report.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -135,6 +156,12 @@
     <EmbeddedResource Include="FrmSAP101.resx">
       <DependentUpon>FrmSAP101.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Material2Uniques.resx">
+      <DependentUpon>Material2Uniques.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MES2SAPMonitor.resx">
+      <DependentUpon>MES2SAPMonitor.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -145,6 +172,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="QueryMeasurement.resx">
+      <DependentUpon>QueryMeasurement.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="SAP Report.resx">
       <DependentUpon>SAP Report.cs</DependentUpon>
     </EmbeddedResource>
@@ -167,6 +197,9 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="bitbug_favicon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
