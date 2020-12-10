@@ -11,6 +11,7 @@ using System.Xml.Linq;
 using System.Xml.XPath;
 using System.Configuration;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Rebar;
+using System.Drawing;
 
 namespace WindowsFormsVSeA
 {
@@ -56,7 +57,17 @@ namespace WindowsFormsVSeA
             }
 
         }
+
+        public void DataGridView_UI_Setup(DataGridView GV)
+        {
+            GV.ColumnHeadersDefaultCellStyle.Font = new Font("雅黑", 10, FontStyle.Bold);
+            GV.DefaultCellStyle.Font = new Font("雅黑", 9, FontStyle.Regular);
+            GV.ColumnHeadersDefaultCellStyle.ForeColor = Color.Purple;
+        }
+
     }
+
+    
 
     #region //XML 文件处理
     public class XmlDo
@@ -954,9 +965,16 @@ namespace WindowsFormsVSeA
         {
             try
             {
+                if(items== "P_Update")
+                {
+                    DBConnStr = ConfigurationManager.ConnectionStrings[items].ConnectionString.ToString();
+                    return "P_DB_Activity";
+                }
+
                 DBConnStr = ConfigurationManager.ConnectionStrings[items].ConnectionString.ToString();
                                
                 return "ok";
+
             }catch(Exception ex)
             {
                 MessageBox.Show(ex.ToString());
@@ -972,7 +990,7 @@ namespace WindowsFormsVSeA
             return Cmd;
         }
 
-        public void RunProc(string sql)
+        public bool RunProc(string sql)
         {
                         
             SqlConnection conn = new SqlConnection(DBConnStr);
@@ -981,15 +999,19 @@ namespace WindowsFormsVSeA
             try
             {
                 cmd.ExecuteNonQuery();
+                return true;
             }
             catch
             {
                 throw new Exception(sql);
+               
             }
             finally
             {
+               
                 conn.Close();
                 conn.Dispose();
+                
             }
         }
 
@@ -1210,9 +1232,9 @@ namespace WindowsFormsVSeA
         public DataTable Qty_Single_SNR(string SNR)
         {
             string sql = string.Format(@"select top 1	
-                                            (select DefName from mmwdefvers	
+                                            (select DefName from [SitMesDb].[dbo].mmwdefvers	
 	                                            where defid=ev.PRODUCT_ID) FinalProductName,ev.PRODUCT_ID as FinalProductID,ORDER_ID
-                                            FROM [Arch_RPT_MGR_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EV] ev with(nolock)	
+                                            FROM [SitMesDb].[dbo].[Arch_RPT_MGR_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EV] ev with(nolock)	
                                             where SERIAL='{0}'", SNR);
 
             DataTable dt = new DataTable();
@@ -1299,9 +1321,10 @@ namespace WindowsFormsVSeA
         /// <param name="SNR"></param>
         /// <param name="Order"></param>
         /// <returns></returns>
-        public DataTable Qty_Mat_Temp_Db(string SNR,string Order)
+        public DataTable Qty_Mat_Temp_Db(string Order)
         {
             string sql = string.Format(@"SELECT	
+                                                    [$IDArchiveValue] as  RecordID,
                                                     ORDER_ID,	
                                                     SERIALNUMBER,	
                                                     [MACHINE_ID]	
@@ -1318,7 +1341,7 @@ namespace WindowsFormsVSeA
                                                     ,dateadd(hour,8,[RowUpdated])as dateTimes	
                                                     ,[SETUP_STATE]
                                                     FROM [SITMesDB].[dbo].[ARCH_T_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EC_SETUP_MAT_LABEL_TEMP_$102$] Mst with(nolock)	
-                                                    where order_id='{1}' or SERIALNUMBER like '%{0}%'	", SNR,Order);
+                                                    where order_id='{0}'", Order);
 
             DataTable dt = new DataTable();
 
@@ -1743,7 +1766,7 @@ namespace WindowsFormsVSeA
         {
             string sql = string.Format(@"
                                                         Use SITMesDB
-                                                        SELECT
+                                                        SELECT distinct
                                                         EP.ERP_OPERATION_ID as AVO_ID,
                                                         POMV_ETRY.pom_entry_type_id as AVO,
                                                         EP.WO_DESCR as AVO_Desc,
@@ -1770,7 +1793,40 @@ namespace WindowsFormsVSeA
                                                         INNER JOIN [Arch_RPT_MGR_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EC_SAP_WORKCENTERS] WC ON POMV_ETRY.ERP_WRKCNTR = WC.WORKCENTER_ID
                                                         INNER JOIN POMV_ETRY_PRP ON POMV_ETRY.pom_entry_pk = POMV_ETRY_PRP.pom_entry_pk and POMV_ETRY_PRP.pom_custom_fld_name = 'ITLK_CODE'
                                                         INNER JOIN POMV_ETRY_PRP  prp2 ON POMV_ETRY.pom_entry_pk = prp2.pom_entry_pk and prp2.pom_custom_fld_name = 'ITLK_MAX_LOOPS'
-                                                        INNER JOIN [SITMesDB].[dbo].[ARCH_T_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EC_TERMINAL_MAPPING_$91$] Mapping on Mapping.MACHINE_ID=WC.MACHINE_ID
+                                                        INNER JOIN [SITMesDB].[dbo].[ARCH_T_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EC_TERMINAL_MAPPING_$91$] Mapping on Mapping.MACHINE_ID=WC.MACHINE_ID and Mapping.EQUIPMENT_ID=''
+                                                        WHERE
+                                                        POMV_ETRY.pom_order_id = '{0}'
+                                                        --order by 1
+														union all
+
+                                                        SELECT distinct
+                                                        EP.ERP_OPERATION_ID as AVO_ID,
+                                                        POMV_ETRY.pom_entry_type_id as AVO,
+                                                        EP.WO_DESCR as AVO_Desc,
+                                                        EP.WORKFLOW as Workflow,
+                                                        WC.MACHINE_ID as Terminal,
+                                                        Mapping.TERMINAL as T_Terminal,
+                                                        POMV_ETRY.ERP_WRKCNTR as SAP_OBJID,
+                                                        EEES.FHM_ID as S7_Equipment,
+                                                        cast(prp2.VAL as Integer) as LoopCycleMax,
+                                                        EP.CONTROL_KEY as CONTROL_KEY,
+                                                        cast(POMV_ETRY_PRP.VAL as integer) as Interlocking_Code,
+                                                        cast(POMV_ETRY_PRP.VAL as integer) & 1 as Itlk_LoopCycle,
+                                                        cast(POMV_ETRY_PRP.VAL as integer) & 2 as Itlk_ProcessRouting,
+                                                        cast(POMV_ETRY_PRP.VAL as integer) & 4 as Itlk_SNRStatus,
+                                                        cast(POMV_ETRY_PRP.VAL as integer) & 512 as Itlk_OrderStatus,
+                                                        cast(POMV_ETRY_PRP.VAL as integer) & 32768 as Itlk_SetupShopfloor,
+                                                        cast(POMV_ETRY_PRP.VAL as integer) & 65536 as Itlk_SetupMatlabel,
+                                                        cast(POMV_ETRY_PRP.VAL as integer) & 131072 as Itlk_SetupTools,
+                                                        cast(POMV_ETRY_PRP.VAL as integer) & 262144 as Itlk_DelayBtwnAvos,
+                                                        dateadd(hour,8,EP.RowUpdated) as DateTimes
+                                                        FROM POMV_ETRY with(nolock)
+                                                        INNER JOIN [ArchSitMesPomRTF8F959F4-452B-462E-BA33-DB852EFDA899/EC_ENTRY_EXT_PROPERTIES] EP ON POMV_ETRY.pom_entry_pk = EP.MES_RECORD_PK
+                                                        INNER JOIN [ArchSitMesPomRTF8F959F4-452B-462E-BA33-DB852EFDA899/EC_ENTRY_EXT_SHOPFLOOR] EEES ON EEES.MES_RECORD_PK = EP.MES_RECORD_PK and EEES.FHM_TYPE = 'G'
+                                                        INNER JOIN [Arch_RPT_MGR_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EC_SAP_WORKCENTERS] WC ON POMV_ETRY.ERP_WRKCNTR = WC.WORKCENTER_ID
+                                                        INNER JOIN POMV_ETRY_PRP ON POMV_ETRY.pom_entry_pk = POMV_ETRY_PRP.pom_entry_pk and POMV_ETRY_PRP.pom_custom_fld_name = 'ITLK_CODE'
+                                                        INNER JOIN POMV_ETRY_PRP  prp2 ON POMV_ETRY.pom_entry_pk = prp2.pom_entry_pk and prp2.pom_custom_fld_name = 'ITLK_MAX_LOOPS'
+                                                        INNER JOIN [SITMesDB].[dbo].[ARCH_T_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EC_TERMINAL_MAPPING_$91$] Mapping on Mapping.MACHINE_ID=WC.MACHINE_ID and Mapping.EQUIPMENT_ID=EEES.FHM_ID
                                                         WHERE
                                                         POMV_ETRY.pom_order_id = '{0}'
                                                         order by 1", OrderID);
@@ -2005,6 +2061,187 @@ namespace WindowsFormsVSeA
             }
         }
 
+
+        /// <summary>
+        /// 通过成品物料号 查询对应的工单号
+        /// </summary>
+        /// <param name="MatA"></param>
+        /// <returns></returns>
+        public DataTable Qty_GetOrderFromMat(string MatA)
+        {
+            string sql = string.Format(@"
+                                                        SELECT																								
+	                                                    POM_ORDER.pom_order_id AS OrderID,																								
+	                                                    MMDefinitions.DefName AS MaterialDescription,																								
+	                                                    MMDefinitions.DefID AS MaterialNum,																								
+	                                                    POM_ORDER_STATUS.id AS Order_Status,																																											
+	                                                    POM_ENTRY.initial_qty AS Quantity,																								
+	                                                    POM_ORDER.RowUpdated as MESUpdateTime,																								
+	                                                    oep.RowUpdated as ImportMESTime																								
+	                                                    FROM																								
+	                                                    POM_ORDER																								
+	                                                    INNER JOIN POM_ORDER_STATUS ON POM_ORDER.pom_order_status_pk = POM_ORDER_STATUS.pom_order_status_pk																								
+																							
+	                                                    INNER JOIN POM_ENTRY ON POM_ORDER.pom_order_pk = POM_ENTRY.pom_order_pk AND POM_ENTRY.order_extended_data = N'Y'																								
+	                                                    INNER JOIN POM_CUSTOM_FIELD_RT ON POM_ENTRY.pom_entry_pk = POM_CUSTOM_FIELD_RT.pom_entry_pk AND POM_CUSTOM_FIELD_RT.pom_custom_fld_name = N'BOM_NAME'																								
+	                                                    inner JOIN MMDefinitions on MMDefinitions.DefID = POM_ENTRY.matl_def_id																								
+	                                                    INNER JOIN [ArchSitMesPomRTF8F959F4-452B-462E-BA33-DB852EFDA899/EC_ORDER_EXT_PROPERTIES] oep on oep.MES_RECORD_PK = POM_ORDER.pom_order_pk	
+	                                                    where MMDefinitions.DefID like '%{0}%'
+	                                                    order by oep.RowUpdated desc		
+	                                                    ", MatA);
+
+            DataTable dt = new DataTable();
+
+            try
+            {
+                dt = SQLSet(sql);
+                return dt;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+
+        /// <summary>
+        /// 输入 过滤字符串 查看表：EC_SETUP_MAT_LABEL_TEMP 时候存在不合理SNRs
+        /// </summary>
+        /// <param name="Str"></param>
+        /// <returns></returns>
+        public DataTable Qty_SNR_Std_Filter(string Str)
+        {
+            string sql = string.Format(@"Use SITMesDB
+
+                                                        select 
+                                                        MACHINE_ID as WorkOperationID, 
+                                                        PROCESS_STEP as TerminalID,
+                                                        ORDER_ID,
+                                                        SERIALNUMBER,
+                                                        COMPONENT_ID as MaterialNum,
+                                                        UNIKAT as UniqueID,
+                                                        EQUIPMENT_ID,
+                                                        SETUP_STATE,
+                                                        dateadd(hour,8,rowupdated) as ChangeTime,
+                                                        LIFNR as SupplierID,
+                                                        PACKID as PackageID,
+                                                        [$IDArchiveValue]
+                                                        FROM [SITMesDB].[dbo].[ArchSitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EC_SETUP_MAT_LABEL_TEMP]
+                                                            WHERE SERIALNUMBER IN
+                                                            (
+                                                            SELECT LotName
+                                                            FROM [SitMesDB].[dbo].MMLots
+                                                            where LotStatusPK in ({0})
+                                                            )
+                                                        ", Str);
+
+            DataTable dt = new DataTable();
+
+            try
+            {
+                dt = SQLSet(sql);
+                return dt;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+
+        /// <summary>
+        /// 查询产线打印机配置情况!
+        /// </summary>
+        /// <returns></returns>
+        public DataTable Qty_EC_Printer()
+        {
+            string sql = string.Format(@"Use SITMesDB
+             SELECT [$IDArchiveValue]
+                  ,[PRINTER]
+                 ,[GROUP_ID]
+                  ,[LAYOUT_ID]
+                  ,[PRINTER_TYPE]
+                  ,convert(char(16),dateadd(hour,8,[RowUpdated]),120) as DateTimes
+                  ,[EQUIPMENT_ID]
+                  ,[MACHINE_ID]
+              FROM [SITMesDB].[dbo].[ARCH_T_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EC_PRINTER_$94$] ");
+
+            DataTable dt = new DataTable();
+
+            try
+            {
+                dt = SQLSet(sql);
+                return dt;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+
+        /// <summary>
+        /// get printer layout table data
+        /// </summary>
+        /// <returns></returns>
+        public DataTable EC_PRINTER_LAYOUTS()
+        {
+            string sql = string.Format(@"Use SITMesDB
+             SELECT 
+      [$IDArchiveValue]
+      ,[LAYOUT]
+      ,[LAYOUT_TYPE]
+  FROM [SITMesDB].[dbo].[ARCH_T_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EC_PRINTER_LAYOUTS_$95$]");
+
+            DataTable dt = new DataTable();
+
+            try
+            {
+                dt = SQLSet(sql);
+                return dt;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+
+
+        public DataTable EC_Config_Qty(string MachineID)
+        {
+            string sql = string.Format(@"Use SITMesDB
+              SELECT distinct									
+ML_process.GROUP_ID as LineID,									
+Mapping.MACHINE_ID,									
+Mapping.PROCESS_STEP,									
+Mapping.TERMINAL MappingTerminal,									
+TerName.TERMINAL as TerminalName,									
+sap.WORKCENTER_ID as ObjectID,									
+Mapping.EQUIPMENT_ID,									
+Mapping.RowUpdated									
+FROM [SITMesDB].[dbo].[ARCH_T_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EC_TERMINAL_MAPPING_$91$] Mapping with(nolock)									
+left join  [SITMesDB].[dbo].[ARCH_T_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EC_TERMINAL_NAMES_$92$] TerName									
+on Mapping.TERMINAL=TerName.TERMINAL									
+inner join [SITMesDB].[dbo].[ARCH_T_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/ML_PROCESS_MACHINE_GROUP_$8$] ML_process									
+on Mapping.MACHINE_ID=ML_process.MACHINE_ID									
+left join [SITMesDB].[dbo].[ARCH_T_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EC_SAP_WORKCENTERS_$97$] Sap									
+on Mapping.MACHINE_ID=sap.MACHINE_ID									
+where mapping.MACHINE_ID like '%{0}%'									
+",MachineID);
+
+            DataTable dt = new DataTable();
+
+            try
+            {
+                dt = SQLSet(sql);
+                return dt;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
 
         /// <summary>
         /// 通过唯一件 唯一码进行递归查询

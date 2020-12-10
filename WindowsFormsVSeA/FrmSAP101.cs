@@ -27,6 +27,8 @@ namespace WindowsFormsVSeA
         private void FrmSAP101_Load(object sender, EventArgs e)
         {
             DTPicker_E.Enabled = false;
+            Form1.Class_User.DataGridView_UI_Setup(this.DateGridV_MatMas101_1);//设置datagridview显示UI
+
         }
 
         private void Btn_MatmasQty_Click(object sender, EventArgs e)
@@ -62,9 +64,7 @@ namespace WindowsFormsVSeA
                     DateGridV_MatMas101_1.DataSource = dt;
                     //LB_RowsCount.Text = dt.Rows.Count.ToString();
 
-                    DateGridV_MatMas101_1.ColumnHeadersDefaultCellStyle.Font = new Font("雅黑", 10, FontStyle.Bold);
-                    DateGridV_MatMas101_1.ColumnHeadersDefaultCellStyle.ForeColor = Color.Purple;
-
+                    
                     DateGridV_MatMas101_1.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                     DateGridV_MatMas101_1.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                     DateGridV_MatMas101_1.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;

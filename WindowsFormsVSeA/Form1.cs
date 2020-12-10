@@ -25,11 +25,17 @@ namespace WindowsFormsVSeA
 
         //public static string DBConnStr = string.Empty;
 
+        public static Class_User Class_User = new Class_User();
+
         DataView DV_RealTrace = new DataView();
 
         DataTable Dt_Cpy = new DataTable();
         
         public static Class_User.UserModel CUModel = new Class_User.UserModel();
+
+        Cursor cursorTmp = Cursor.Current;
+
+        Color colorTmp = Color.White;
 
         public Form1()
         {
@@ -57,8 +63,8 @@ namespace WindowsFormsVSeA
                     {
                         dataGridView1.DataSource = Ddt;
 
-                        dataGridView1.ColumnHeadersDefaultCellStyle.Font = new Font("雅黑", 10, FontStyle.Bold);
-                        dataGridView1.ColumnHeadersDefaultCellStyle.ForeColor = Color.Purple;
+                        Class_User.DataGridView_UI_Setup(this.dataGridView1);//设置datagridview显示UI
+
                         dataGridView1.Columns[3].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                         dataGridView1.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                         tB_RowCount.Text = dataGridView1.Rows.Count.ToString();
@@ -201,6 +207,9 @@ namespace WindowsFormsVSeA
                         dataGridView2.ColumnHeadersDefaultCellStyle.ForeColor = Color.Purple;
                         dataGridView2.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                         dataGridView2.Columns[5].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                        dataGridView2.Columns[6].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                        dataGridView2.Columns[3].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                        dataGridView2.Columns[7].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
 
                         this.Btn_Ordr_detail.Enabled = true;
                     }
@@ -245,8 +254,8 @@ namespace WindowsFormsVSeA
                     {
                         dataGridView3.DataSource = Ddt;
 
-                        dataGridView3.ColumnHeadersDefaultCellStyle.Font = new Font("雅黑", 10, FontStyle.Bold);
-                        dataGridView3.ColumnHeadersDefaultCellStyle.ForeColor = Color.Purple;
+                        Class_User.DataGridView_UI_Setup(dataGridView3);//设置datagridview显示UI
+
                         dataGridView3.Columns[5].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                         dataGridView3.Columns[6].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
 
@@ -318,6 +327,8 @@ namespace WindowsFormsVSeA
                     
                     this.tBColorQ.BackColor = Color.SpringGreen;
                     this.tBColorP.BackColor = Color.Empty;
+
+                    Lb_P_DB.Visible = false;
                     //MessageBox.Show("Q-Sys 连接参数读取完成");
                 }
             }
@@ -335,6 +346,8 @@ namespace WindowsFormsVSeA
                 {
                     this.tBColorP.BackColor = Color.SpringGreen;
                     this.tBColorQ.BackColor = Color.Empty;
+
+                    Lb_P_DB.Visible = false;
                     //MessageBox.Show("P-Sys 连接参数读取完成");
                 }
             }
@@ -349,6 +362,9 @@ namespace WindowsFormsVSeA
         private void Form1_Load(object sender, EventArgs e)
         {
             this.Btn_Ordr_detail.Enabled = false;
+
+            Lb_P_DB.Visible = false;
+            Lb_P_DB.BackColor = Color.RosyBrown;
         }
 
         private void button5_Click(object sender, EventArgs e)
@@ -380,9 +396,8 @@ namespace WindowsFormsVSeA
                         TB_Mat_Fert.Text = dataGridView4.Rows[0].Cells[0].Value.ToString();
                         TB_MatDesc.Text = dataGridView4.Rows[0].Cells[1].Value.ToString();
 
-                        
-                        dataGridView4.ColumnHeadersDefaultCellStyle.Font = new Font("雅黑", 10, FontStyle.Bold);
-                        dataGridView4.ColumnHeadersDefaultCellStyle.ForeColor = Color.Purple;
+                        Class_User.DataGridView_UI_Setup(this.dataGridView4);//设置datagridview显示UI
+
                         dataGridView4.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                         dataGridView4.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                         dataGridView4.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
@@ -458,6 +473,8 @@ private void dataGridView4_CellClick(object sender, DataGridViewCellEventArgs e)
                     {
                         dataGridView5.DataSource = dt;
                         dataGridView5.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                        Class_User.DataGridView_UI_Setup(this.dataGridView5);//设置datagridview显示UI
+
                     }
 
                     dt.Dispose();
@@ -488,34 +505,38 @@ private void dataGridView4_CellClick(object sender, DataGridViewCellEventArgs e)
                 if (!string.IsNullOrEmpty(this.TB_Temp_Order.Text) || !string.IsNullOrEmpty(this.TB_Temp_SNR.Text))
                 {
                     DataTable dt = new DataTable();
-                    dt = SSQL.Qty_Mat_Temp_Db(this.TB_Temp_SNR.Text, this.TB_Temp_Order.Text);
+                    dt = SSQL.Qty_Mat_Temp_Db(this.TB_Temp_Order.Text);
 
                     if (dt != null && dt.Rows.Count > 0)
                     {
 
                         dataGridView6.DataSource = dt;
                         dataGridView6.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-                        dataGridView6.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                        //dataGridView6.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                         dataGridView6.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                         dataGridView6.Columns[5].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                         dataGridView6.Columns[9].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                         dataGridView6.Columns[11].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-                        dataGridView6.Columns[6].Visible = false;
-                        dataGridView6.ColumnHeadersDefaultCellStyle.ForeColor = Color.Purple;
+                        dataGridView6.Columns[7].Visible = false;
+                        dataGridView6.Columns[1].Visible = false;
 
-                        if (!string.IsNullOrEmpty(this.TB_Temp_Order.Text)) //如果输入工单号 则不显示工单号列
-                        {
-                            dataGridView6.Columns[0].Visible = false;
+                        Class_User.DataGridView_UI_Setup(this.dataGridView6);//设置datagridview显示UI
 
-                        }
-                        if (!string.IsNullOrEmpty(this.TB_Temp_SNR.Text)) //如果输入序列号 则不显示序列号列
-                        {
-                            dataGridView6.Columns[1].Visible = false;
-                            this.TB_Temp_SNR.Text = dt.Rows[0][1].ToString();
-                            dataGridView6.Columns[0].Visible = false;
-                            this.TB_Temp_Order.Text= dt.Rows[0][0].ToString();
-                        }
-                
+                        DV_RealTrace = dt.DefaultView;
+
+                        //if (!string.IsNullOrEmpty(this.TB_Temp_Order.Text)) //如果输入工单号 则不显示工单号列
+                        //{
+                        //    dataGridView6.Columns[0].Visible = false;
+
+                        //}
+                        //if (!string.IsNullOrEmpty(this.TB_Temp_SNR.Text)) //如果输入序列号 则不显示序列号列
+                        //{
+                        //    dataGridView6.Columns[1].Visible = false;
+                        //    this.TB_Temp_SNR.Text = dt.Rows[0][1].ToString();
+                        //    dataGridView6.Columns[0].Visible = false;
+                        //    this.TB_Temp_Order.Text= dt.Rows[0][0].ToString();
+                        //}
+
                     }
 
                     dt.Dispose();
@@ -558,8 +579,7 @@ private void dataGridView4_CellClick(object sender, DataGridViewCellEventArgs e)
 
                         dataGridView7.DataSource = dt;
 
-                        dataGridView7.ColumnHeadersDefaultCellStyle.Font = new Font("雅黑", 10, FontStyle.Bold);
-                        dataGridView7.ColumnHeadersDefaultCellStyle.ForeColor = Color.Purple;
+                        Class_User.DataGridView_UI_Setup(this.dataGridView7);//设置datagridview显示UI
 
                         dataGridView7.Columns[0].Visible = false;
                         dataGridView7.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
@@ -640,14 +660,14 @@ private void dataGridView4_CellClick(object sender, DataGridViewCellEventArgs e)
                     dataGridView8.DataSource = dt;
                     dataGridView8.Columns[1].Visible = false;
                     dataGridView8.Columns[2].Visible = false;
-                    dataGridView8.ColumnHeadersDefaultCellStyle.ForeColor = Color.Purple;
+                    
                     dataGridView8.Columns[6].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                     dataGridView8.Columns[11].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                     dataGridView8.Columns[12].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                     dataGridView8.Columns[13].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                     dataGridView8.Columns[5].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
 
-                    dataGridView4.ColumnHeadersDefaultCellStyle.ForeColor = Color.Purple;
+                    Class_User.DataGridView_UI_Setup(this.dataGridView8);//设置datagridview显示UI
 
                     TB_eCar_OrderID.Text = dt.Rows[0][1].ToString();
 
@@ -655,8 +675,17 @@ private void dataGridView4_CellClick(object sender, DataGridViewCellEventArgs e)
 
                 DataTable dtt1 = new DataTable();
                 dtt1 = SSQL.Qty_Single_SNR(this.TB_eCar_Product.Text);
-                TB_eCar_Product_Matid.Text = dtt1.Rows[0][1].ToString();
-                TB_eCar_Product_MatName.Text = dtt1.Rows[0][0].ToString();
+                if (dtt1 != null && dt.Rows.Count > 0)
+                {
+                    TB_eCar_Product_Matid.Text = dtt1.Rows[0][1].ToString();
+                    TB_eCar_Product_MatName.Text = dtt1.Rows[0][0].ToString();
+                }
+                else
+                {
+                    MessageBox.Show("未查询到数据 !");
+                    return;
+                }
+                   
 
                 Dt_Cpy = dt.Copy();
                 
@@ -958,6 +987,165 @@ private void dataGridView4_CellClick(object sender, DataGridViewCellEventArgs e)
                 }
             }
             
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void dataGridView2_CellMouseEnter(object sender, DataGridViewCellEventArgs e)
+        {
+           
+            if (e.RowIndex >= 0)
+            {
+                colorTmp = dataGridView2.Rows[e.RowIndex].DefaultCellStyle.BackColor;
+                dataGridView2.Rows[e.RowIndex].DefaultCellStyle.BackColor = Color.LightBlue;
+                if (e.ColumnIndex == 1)//改变第二列鼠标形状
+                {
+                    cursorTmp = this.Cursor;
+                    this.Cursor = Cursors.Hand;
+                }
+            }
+        }
+
+        private void dataGridView2_CellMouseLeave(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0)
+            {
+                dataGridView2.Rows[e.RowIndex].DefaultCellStyle.BackColor = colorTmp;
+                if (e.ColumnIndex == 1)
+                {
+                    this.Cursor = cursorTmp;
+                }
+            }
+        }
+
+        private void tabPage2_Click(object sender, EventArgs e)
+        {
+            Class_User.DataGridView_UI_Setup(this.dataGridView2);//设置datagridview显示UI
+
+        }
+
+        private void Btn_Temp_Filrer_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(this.TB_Temp_SNR.Text))
+                {
+
+                    DV_RealTrace.RowFilter = string.Format("SERIALNUMBER='{0}'", this.TB_Temp_SNR.Text.Trim());
+                    dataGridView6.DataSource = DV_RealTrace;
+                }
+                else
+                {
+                    MessageBox.Show("请输入 序列号 ！");
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void 工单查询ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(Form1.SSQL.DBConnStr))
+                {
+                    MessageBox.Show("数据库未连接 ！");
+                    return;
+                }
+                else
+                {
+                    new FrmOrderMgr().Show();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void sNR状态查询ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(Form1.SSQL.DBConnStr))
+                {
+                    MessageBox.Show("数据库未连接 ！");
+                    return;
+                }
+                else
+                {
+                    new FrmSNR_Status().Show();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void eC线打印机操作ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+            try
+            {
+                if (string.IsNullOrEmpty(Form1.SSQL.DBConnStr))
+                {
+                    MessageBox.Show("数据库未连接 ！");
+                    return;
+                }
+                else
+                {
+                    new Frm_EC_Printer().Show();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+
+        }
+
+        private void pACTIVEToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (SSQL.DbConn("P_Update") == "P_DB_Activity")
+                {
+
+                    Lb_P_DB.Visible = true;
+
+                    this.tBColorQ.BackColor = Color.Empty;
+                    this.tBColorP.BackColor = Color.Empty;
+
+                    //MessageBox.Show("Q-Sys 连接参数读取完成");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void eCConfigurationToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            
+            try
+            {
+                if (string.IsNullOrEmpty(Form1.SSQL.DBConnStr))
+                {
+                    MessageBox.Show("数据库未连接 ！");
+                    return;
+                }
+                else
+                {
+                    new FrmECConfig().Show();
+                }
+            }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
