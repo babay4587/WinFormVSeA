@@ -115,6 +115,7 @@
             this.dBConnectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pSYSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.qSYSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pACTIVEToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.tBColorQ = new System.Windows.Forms.TextBox();
@@ -133,10 +134,9 @@
             this.工单查询ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sNR状态查询ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.eC线打印机操作ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.eCConfigurationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripContainer2 = new System.Windows.Forms.ToolStripContainer();
             this.Lb_P_DB = new System.Windows.Forms.Label();
-            this.pACTIVEToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.eCConfigurationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -274,7 +274,7 @@
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage3.Size = new System.Drawing.Size(1675, 890);
             this.tabPage3.TabIndex = 2;
-            this.tabPage3.Text = "LOOPRO  ORDER";
+            this.tabPage3.Text = "LOIPRO  ORDER";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
             // button4
@@ -1051,16 +1051,23 @@
             // pSYSToolStripMenuItem
             // 
             this.pSYSToolStripMenuItem.Name = "pSYSToolStripMenuItem";
-            this.pSYSToolStripMenuItem.Size = new System.Drawing.Size(252, 30);
+            this.pSYSToolStripMenuItem.Size = new System.Drawing.Size(173, 30);
             this.pSYSToolStripMenuItem.Text = "P_SYS";
             this.pSYSToolStripMenuItem.Click += new System.EventHandler(this.pSYSToolStripMenuItem_Click);
             // 
             // qSYSToolStripMenuItem
             // 
             this.qSYSToolStripMenuItem.Name = "qSYSToolStripMenuItem";
-            this.qSYSToolStripMenuItem.Size = new System.Drawing.Size(252, 30);
+            this.qSYSToolStripMenuItem.Size = new System.Drawing.Size(173, 30);
             this.qSYSToolStripMenuItem.Text = "Q_SYS";
             this.qSYSToolStripMenuItem.Click += new System.EventHandler(this.qSYSToolStripMenuItem_Click);
+            // 
+            // pACTIVEToolStripMenuItem
+            // 
+            this.pACTIVEToolStripMenuItem.Name = "pACTIVEToolStripMenuItem";
+            this.pACTIVEToolStripMenuItem.Size = new System.Drawing.Size(173, 30);
+            this.pACTIVEToolStripMenuItem.Text = "P_ACTIVE";
+            this.pACTIVEToolStripMenuItem.Click += new System.EventHandler(this.pACTIVEToolStripMenuItem_Click);
             // 
             // openFileDialog1
             // 
@@ -1126,7 +1133,7 @@
             this.工单管理ToolStripMenuItem});
             this.menuStrip2.Location = new System.Drawing.Point(225, 9);
             this.menuStrip2.Name = "menuStrip2";
-            this.menuStrip2.Size = new System.Drawing.Size(468, 33);
+            this.menuStrip2.Size = new System.Drawing.Size(288, 33);
             this.menuStrip2.TabIndex = 10;
             this.menuStrip2.Text = "SAP 报工";
             this.menuStrip2.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.menuStrip2_ItemClicked);
@@ -1199,14 +1206,14 @@
             // 工单查询ToolStripMenuItem
             // 
             this.工单查询ToolStripMenuItem.Name = "工单查询ToolStripMenuItem";
-            this.工单查询ToolStripMenuItem.Size = new System.Drawing.Size(252, 30);
+            this.工单查询ToolStripMenuItem.Size = new System.Drawing.Size(234, 30);
             this.工单查询ToolStripMenuItem.Text = "工单号查询";
             this.工单查询ToolStripMenuItem.Click += new System.EventHandler(this.工单查询ToolStripMenuItem_Click);
             // 
             // sNR状态查询ToolStripMenuItem
             // 
             this.sNR状态查询ToolStripMenuItem.Name = "sNR状态查询ToolStripMenuItem";
-            this.sNR状态查询ToolStripMenuItem.Size = new System.Drawing.Size(252, 30);
+            this.sNR状态查询ToolStripMenuItem.Size = new System.Drawing.Size(234, 30);
             this.sNR状态查询ToolStripMenuItem.Text = "SNR状态查询";
             this.sNR状态查询ToolStripMenuItem.Click += new System.EventHandler(this.sNR状态查询ToolStripMenuItem_Click);
             // 
@@ -1214,9 +1221,17 @@
             // 
             this.eC线打印机操作ToolStripMenuItem.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.eC线打印机操作ToolStripMenuItem.Name = "eC线打印机操作ToolStripMenuItem";
-            this.eC线打印机操作ToolStripMenuItem.Size = new System.Drawing.Size(252, 30);
+            this.eC线打印机操作ToolStripMenuItem.Size = new System.Drawing.Size(234, 30);
             this.eC线打印机操作ToolStripMenuItem.Text = "EC线打印机操作";
             this.eC线打印机操作ToolStripMenuItem.Click += new System.EventHandler(this.eC线打印机操作ToolStripMenuItem_Click);
+            // 
+            // eCConfigurationToolStripMenuItem
+            // 
+            this.eCConfigurationToolStripMenuItem.Font = new System.Drawing.Font("Calibri", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.eCConfigurationToolStripMenuItem.Name = "eCConfigurationToolStripMenuItem";
+            this.eCConfigurationToolStripMenuItem.Size = new System.Drawing.Size(234, 30);
+            this.eCConfigurationToolStripMenuItem.Text = "EC Configuration";
+            this.eCConfigurationToolStripMenuItem.Click += new System.EventHandler(this.eCConfigurationToolStripMenuItem_Click);
             // 
             // toolStripContainer2
             // 
@@ -1243,21 +1258,6 @@
             this.Lb_P_DB.Size = new System.Drawing.Size(172, 24);
             this.Lb_P_DB.TabIndex = 12;
             this.Lb_P_DB.Text = "P系统DB更新权限！";
-            // 
-            // pACTIVEToolStripMenuItem
-            // 
-            this.pACTIVEToolStripMenuItem.Name = "pACTIVEToolStripMenuItem";
-            this.pACTIVEToolStripMenuItem.Size = new System.Drawing.Size(252, 30);
-            this.pACTIVEToolStripMenuItem.Text = "P_ACTIVE";
-            this.pACTIVEToolStripMenuItem.Click += new System.EventHandler(this.pACTIVEToolStripMenuItem_Click);
-            // 
-            // eCConfigurationToolStripMenuItem
-            // 
-            this.eCConfigurationToolStripMenuItem.Font = new System.Drawing.Font("Calibri", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.eCConfigurationToolStripMenuItem.Name = "eCConfigurationToolStripMenuItem";
-            this.eCConfigurationToolStripMenuItem.Size = new System.Drawing.Size(252, 30);
-            this.eCConfigurationToolStripMenuItem.Text = "EC Configuration";
-            this.eCConfigurationToolStripMenuItem.Click += new System.EventHandler(this.eCConfigurationToolStripMenuItem_Click);
             // 
             // Form1
             // 

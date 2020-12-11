@@ -365,6 +365,7 @@ namespace WindowsFormsVSeA
 
             Lb_P_DB.Visible = false;
             Lb_P_DB.BackColor = Color.RosyBrown;
+            this.Size = new Size(1350, 650);
         }
 
         private void button5_Click(object sender, EventArgs e)

@@ -28,12 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.TB_MachineID = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.Btn_CO_Qty = new System.Windows.Forms.Button();
             this.DateGridV_ECConfig_1 = new System.Windows.Forms.DataGridView();
+            this.Btn_NPOI_Excel_Chk = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.DateGridV_ECConfig_1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -73,25 +74,37 @@
             this.DateGridV_ECConfig_1.EnableHeadersVisualStyles = false;
             this.DateGridV_ECConfig_1.Location = new System.Drawing.Point(12, 92);
             this.DateGridV_ECConfig_1.Name = "DateGridV_ECConfig_1";
-            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle9.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle9.Font = new System.Drawing.Font("微软雅黑", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle9.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle9.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle9.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.DateGridV_ECConfig_1.RowHeadersDefaultCellStyle = dataGridViewCellStyle9;
-            dataGridViewCellStyle10.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.DateGridV_ECConfig_1.RowsDefaultCellStyle = dataGridViewCellStyle10;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("微软雅黑", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.DateGridV_ECConfig_1.RowHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.DateGridV_ECConfig_1.RowsDefaultCellStyle = dataGridViewCellStyle2;
             this.DateGridV_ECConfig_1.RowTemplate.Height = 30;
             this.DateGridV_ECConfig_1.Size = new System.Drawing.Size(1394, 641);
             this.DateGridV_ECConfig_1.TabIndex = 46;
+            // 
+            // Btn_NPOI_Excel_Chk
+            // 
+            this.Btn_NPOI_Excel_Chk.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.Btn_NPOI_Excel_Chk.Location = new System.Drawing.Point(651, 23);
+            this.Btn_NPOI_Excel_Chk.Name = "Btn_NPOI_Excel_Chk";
+            this.Btn_NPOI_Excel_Chk.Size = new System.Drawing.Size(104, 44);
+            this.Btn_NPOI_Excel_Chk.TabIndex = 47;
+            this.Btn_NPOI_Excel_Chk.Text = "Excel校验";
+            this.Btn_NPOI_Excel_Chk.UseVisualStyleBackColor = true;
+            this.Btn_NPOI_Excel_Chk.Click += new System.EventHandler(this.Btn_NPOI_Excel_Chk_Click);
             // 
             // FrmECConfig
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1478, 844);
+            this.Controls.Add(this.Btn_NPOI_Excel_Chk);
             this.Controls.Add(this.DateGridV_ECConfig_1);
             this.Controls.Add(this.Btn_CO_Qty);
             this.Controls.Add(this.TB_MachineID);
@@ -111,5 +124,6 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button Btn_CO_Qty;
         private System.Windows.Forms.DataGridView DateGridV_ECConfig_1;
+        private System.Windows.Forms.Button Btn_NPOI_Excel_Chk;
     }
 }

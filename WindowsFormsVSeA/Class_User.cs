@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Data.SqlClient;
 using System.Data;
 using System.Xml;
@@ -12,6 +13,11 @@ using System.Xml.XPath;
 using System.Configuration;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Rebar;
 using System.Drawing;
+using NPOI.XSSF.UserModel;
+using NPOI.SS.UserModel;
+using NPOI.HSSF.UserModel;
+
+
 
 namespace WindowsFormsVSeA
 {
@@ -67,7 +73,337 @@ namespace WindowsFormsVSeA
 
     }
 
-    
+    public  class ExcelHelper
+    {
+        #region //NOIP Excel 处理
+
+        public static List<T> IExcelToEntityList<T>(Dictionary<string, string> cellHeader, string filePath, out StringBuilder errorMsg, int startIndex = 1) where T : new()
+        {
+            errorMsg = new StringBuilder(); // 错误信息,Excel转换到实体对象时，会有格式的错误信息
+            List<T> enlist = new List<T>(); // 转换后的集合
+            try
+            {
+                using (FileStream fs = File.OpenRead(filePath))
+                {
+                    XSSFWorkbook workbook = new XSSFWorkbook(fs);
+                    XSSFSheet sheet = (XSSFSheet)workbook.GetSheetAt(0); // 获取此文件第一个Sheet页
+                    for (int rowIndex = startIndex; rowIndex <= sheet.LastRowNum; rowIndex++)
+                    {
+                        // 1.判断当前行是否空行，若空行就不在进行读取下一行操作，结束Excel读取操作
+                        IRow row = sheet.GetRow(rowIndex);
+                        if (row == null)
+                        {
+                            break;
+                        }
+                        // 2.每一个Excel row转换为一个实体对象
+                        T en = new T();
+                        ExcelRowToEntity<T>(cellHeader, row, rowIndex, en, ref errorMsg);
+                        enlist.Add(en);
+                    }
+                }
+                return enlist;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        #endregion
+
+        public static void ExcelRowToEntity<T>(Dictionary<string, string> cellHeader, IRow row, int rowIndex, T en, ref StringBuilder errorMsg)
+        {
+            List<string> keys = cellHeader.Keys.ToList(); // 要赋值的实体对象属性名称
+            string errStr = ""; // 当前行转换时，是否有错误信息，格式为：第1行数据转换异常：XXX列；
+            for (int i = 0; i < keys.Count; i++)
+            {
+                // 1.若属性头的名称包含'.',就表示是子类里的属性，那么就要遍历子类，eg：UserEn.TrueName
+                if (keys[i].IndexOf(".") >= 0)
+                {
+                    // 1)解析子类属性
+                    string[] properotyArray = keys[i].Split(new string[] { "." }, StringSplitOptions.RemoveEmptyEntries);
+                    string subClassName = properotyArray[0]; // '.'前面的为子类的名称
+                    string subClassProperotyName = properotyArray[1]; // '.'后面的为子类的属性名称
+                    System.Reflection.PropertyInfo subClassInfo = en.GetType().GetProperty(subClassName); // 获取子类的类型
+                    if (subClassInfo != null)
+                    {
+                        // 2)获取子类的实例
+                        var subClassEn = en.GetType().GetProperty(subClassName).GetValue(en, null);
+                        // 3)根据属性名称获取子类里的属性信息
+                        System.Reflection.PropertyInfo properotyInfo = subClassInfo.PropertyType.GetProperty(subClassProperotyName);
+                        if (properotyInfo != null)
+                        {
+                            try
+                            {
+                                // Excel单元格的值转换为对象属性的值，若类型不对，记录出错信息
+                                properotyInfo.SetValue(subClassEn, GetExcelCellToProperty(properotyInfo.PropertyType, row.GetCell(i)), null);
+                            }
+                            catch (Exception e)
+                            {
+                                if (errStr.Length == 0)
+                                {
+                                    errStr = "第" + rowIndex + "行数据转换异常：";
+                                }
+                                errStr += cellHeader[keys[i]] + "列；";
+                            }
+
+                        }
+                    }
+                }
+                else
+                {
+                    // 2.给指定的属性赋值
+                    System.Reflection.PropertyInfo properotyInfo = en.GetType().GetProperty(keys[i]);
+                    if (properotyInfo != null)
+                    {
+                        try
+                        {
+                            // Excel单元格的值转换为对象属性的值，若类型不对，记录出错信息
+                            properotyInfo.SetValue(en, GetExcelCellToProperty(properotyInfo.PropertyType, row.GetCell(i)), null);
+                        }
+                        catch (Exception e)
+                        {
+                            if (errStr.Length == 0)
+                            {
+                                errStr = "第" + rowIndex + "行数据转换异常：";
+                            }
+                            errStr += cellHeader[keys[i]] + "列；";
+                        }
+                    }
+                }
+            }
+            // 若有错误信息，就添加到错误信息里
+            if (errStr.Length > 0)
+            {
+                errorMsg.AppendLine(errStr);
+            }
+        }
+
+        /// <summary>
+        /// Excel Cell转换为实体的属性值
+        /// </summary>
+        /// <param name="distanceType">目标对象类型</param>
+        /// <param name="sourceCell">对象属性的值</param>
+        private static Object GetExcelCellToProperty(Type distanceType, ICell sourceCell)
+        {
+            object rs = distanceType.IsValueType ? Activator.CreateInstance(distanceType) : null;
+
+            // 1.判断传递的单元格是否为空
+            if (sourceCell == null || string.IsNullOrEmpty(sourceCell.ToString()))
+            {
+                return rs;
+            }
+
+            // 2.Excel文本和数字单元格转换，在Excel里文本和数字是不能进行转换，所以这里预先存值
+            object sourceValue = null;
+            switch (sourceCell.CellType)
+            {
+                case CellType.Blank:
+                    break;
+
+                case CellType.Boolean:
+                    break;
+
+                case CellType.Error:
+                    break;
+
+                case CellType.Formula:
+                    break;
+
+                case CellType.Numeric:
+                    sourceValue = sourceCell.NumericCellValue;
+                    break;
+
+                case CellType.String:
+                    sourceValue = sourceCell.StringCellValue;
+                    break;
+
+                case CellType.Unknown:
+                    break;
+
+                default:
+                    sourceValue = sourceCell.StringCellValue;
+                    break;
+            }
+
+            string valueDataType = distanceType.Name;
+
+            // 在这里进行特定类型的处理
+            switch (valueDataType.ToLower()) // 以防出错，全部小写
+            {
+                case "string":
+                    rs = sourceValue.ToString();
+                    break;
+                case "int":
+                    rs = (float)Convert.ChangeType(sourceCell.NumericCellValue.ToString(), distanceType);
+                    break;
+                case "int16":
+                    rs = (float)Convert.ChangeType(sourceCell.NumericCellValue.ToString(), distanceType);
+                    break;
+                case "int32":
+                    rs = (int)Convert.ChangeType(sourceCell.NumericCellValue.ToString(), distanceType);
+                    break;
+                case "float":
+                    rs = (float)Convert.ChangeType(sourceCell.NumericCellValue.ToString(), distanceType);
+                    break;
+                case "single":
+                    rs = (float)Convert.ChangeType(sourceCell.NumericCellValue.ToString(), distanceType);
+                    break;
+                case "datetime":
+                    rs = sourceCell.DateCellValue;
+                    break;
+                case "guid":
+                    rs = (Guid)Convert.ChangeType(sourceCell.NumericCellValue.ToString(), distanceType); return rs;
+                default: rs = (int)Convert.ChangeType(sourceCell.NumericCellValue.ToString(), distanceType); break;
+
+
+
+            }
+            return rs;
+        }
+
+
+        #region //Excel to Datatable
+
+        /// <summary>  
+        /// 将excel导入到datatable  
+        /// </summary>  
+        /// <param name="filePath">excel路径</param>  
+        /// <param name="sheetCount">sheet总数</param> 
+        /// <param name="isColumnName">第一行是否是列名</param> 
+        /// <returns>返回datatable</returns>  
+        public static List<DataTable> ExcelToDataTable(string filePath, int sheetCount, bool isColumnName)
+        {
+            List<DataTable> tableList = new List<DataTable>();
+            DataTable dataTable = null;
+            FileStream fs = null;
+            DataColumn column = null;
+            DataRow dataRow = null;
+            IWorkbook workbook = null;
+            ISheet sheet = null;
+            IRow row = null;
+            ICell cell = null;
+            int startRow = 0;
+            try
+            {
+                using (fs = File.OpenRead(filePath))
+                {
+                    // 2007版本  
+                    if (filePath.IndexOf(".xlsx") >= 0)
+                        workbook = new XSSFWorkbook(fs);
+                    // 2003版本  
+                    else if (filePath.IndexOf(".xls") >= 0)
+                        workbook = new HSSFWorkbook(fs);
+
+                    if (workbook != null)
+                    {
+                        tableList.Clear();
+                        for (int k = 0; k < sheetCount; k++)
+                        {
+                            sheet = workbook.GetSheetAt(k);//读取第k个sheet//读取第一个sheet，当然也可以循环读取每个sheet  
+                            dataTable = new DataTable();
+                            if (sheet != null)
+                            {
+                                int rowCount = sheet.LastRowNum;//总行数  
+                                if (rowCount > 0)
+                                {
+                                    IRow firstRow = sheet.GetRow(0);//第一行  
+                                    int cellCount = firstRow.LastCellNum;//列数  
+
+                                    //构建datatable的列  
+                                    if (isColumnName)
+                                    {
+
+                                        IRow firstRowt = sheet.GetRow(1);//第一行  
+                                        int cellCountt = firstRow.LastCellNum;//列数  
+                                        startRow = 2;//如果第一行是列名，则从第二行开始读取  
+                                        for (int i = firstRowt.FirstCellNum; i < cellCount; ++i)
+                                        {
+                                            cell = firstRowt.GetCell(i);
+                                            if (cell != null)
+                                            {
+
+                                                {
+                                                    column = new DataColumn(cell.ToString());
+                                                    dataTable.Columns.Add(column);
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        for (int i = firstRow.FirstCellNum; i < cellCount; ++i)
+                                        {
+                                            column = new DataColumn("column" + (i + 1));
+                                            dataTable.Columns.Add(column);
+                                        }
+                                    }
+
+                                    //填充行  
+                                    for (int i = startRow; i <= rowCount; ++i)
+                                    {
+                                        row = sheet.GetRow(i);
+                                        if (row == null) continue;
+
+                                        dataRow = dataTable.NewRow();
+                                        for (int j = row.FirstCellNum; j < cellCount; ++j)
+                                        {
+                                            cell = row.GetCell(j);
+                                            if (cell == null)
+                                            {
+                                                dataRow[j] = "";
+                                            }
+                                            else
+                                            {
+                                                //CellType(Unknown = -1,Numeric = 0,String = 1,Formula = 2,Blank = 3,Boolean = 4,Error = 5,)  
+                                                switch (cell.CellType)
+                                                {
+                                                    case CellType.Blank:
+                                                        dataRow[j] = "";
+                                                        break;
+                                                    case CellType.Numeric:
+                                                        short format = cell.CellStyle.DataFormat;
+                                                        //对时间格式（2015.12.5、2015/12/5、2015-12-5等）的处理  
+                                                        if (format == 14 || format == 22 || format == 31 || format == 57 || format == 58)
+                                                            dataRow[j] = cell.DateCellValue;
+                                                        else
+                                                            dataRow[j] = cell.NumericCellValue;
+                                                        break;
+                                                    case CellType.String:
+                                                        dataRow[j] = cell.StringCellValue;
+                                                        break;
+                                                    default:
+                                                        dataRow[j] = cell.StringCellValue;
+                                                        break;
+                                                }
+                                            }
+                                        }
+                                        dataTable.Rows.Add(dataRow);
+                                    }
+                                }
+                            }
+                            tableList.Add(dataTable);
+                        }
+
+                    }
+                }
+                return tableList;
+            }
+            catch (Exception e)
+            {
+                if (fs != null)
+                {
+                    fs.Close();
+                }
+                return null;
+            }
+        }
+
+        #endregion
+
+
+    }
+
 
     #region //XML 文件处理
     public class XmlDo
@@ -778,6 +1114,9 @@ namespace WindowsFormsVSeA
     }
 
     #endregion//XML 文件处理
+
+
+    
 
     public class XmlSerial
     {
