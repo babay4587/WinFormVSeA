@@ -121,11 +121,23 @@
     <Compile Include="FormMatTrace.Designer.cs">
       <DependentUpon>FormMatTrace.cs</DependentUpon>
     </Compile>
+    <Compile Include="FrmConnIssue.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmConnIssue.Designer.cs">
+      <DependentUpon>FrmConnIssue.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrmECConfig.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FrmECConfig.Designer.cs">
       <DependentUpon>FrmECConfig.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FrmHUT.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmHUT.Designer.cs">
+      <DependentUpon>FrmHUT.cs</DependentUpon>
     </Compile>
     <Compile Include="FrmOrderMgr.cs">
       <SubType>Form</SubType>
@@ -189,8 +201,14 @@
     <EmbeddedResource Include="FormMatTrace.resx">
       <DependentUpon>FormMatTrace.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FrmConnIssue.resx">
+      <DependentUpon>FrmConnIssue.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FrmECConfig.resx">
       <DependentUpon>FrmECConfig.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmHUT.resx">
+      <DependentUpon>FrmHUT.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FrmOrderMgr.resx">
       <DependentUpon>FrmOrderMgr.cs</DependentUpon>

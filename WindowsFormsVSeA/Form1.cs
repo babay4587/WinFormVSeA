@@ -30,8 +30,12 @@ namespace WindowsFormsVSeA
         DataView DV_RealTrace = new DataView();
 
         DataTable Dt_Cpy = new DataTable();
+
+        public DataTable Dt_Trans_Eqid = new DataTable();
         
         public static Class_User.UserModel CUModel = new Class_User.UserModel();
+
+        public static bool Updated_P_DB = false;
 
         Cursor cursorTmp = Cursor.Current;
 
@@ -45,7 +49,7 @@ namespace WindowsFormsVSeA
 
         private void button1_Click(object sender, EventArgs e)
         {
-            
+            DataTable Ddt = new DataTable();
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
                 Tb1.Text = openFileDialog1.FileName;
@@ -55,7 +59,7 @@ namespace WindowsFormsVSeA
 
                 if (Fn.ToUpper() == ".XML")
                 {
-                    DataTable Ddt = new DataTable();
+                   
 
                     Ddt = xmlDo.Sfloor_Conn(Tb1.Text);
 
@@ -68,13 +72,27 @@ namespace WindowsFormsVSeA
                         dataGridView1.Columns[3].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                         dataGridView1.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                         tB_RowCount.Text = dataGridView1.Rows.Count.ToString();
+
+                        Dt_Trans_Eqid = Ddt.DefaultView.ToTable(false,"EQUIPMENT_ID");//true 表示去除重复行
+
+                       
+                        #region//通过条件筛选行，并赋值给 Dt_Trans_Eqid表 注释的参考代码
+                        //DataRow[] EqRows = Ddt.Select("EQUIPMENT_ID<>''");
+
+                        //foreach (DataRow row in EqRows)
+                        //{
+                        //    Dt_Trans_Eqid.ImportRow(row);
+                        //}
+                        #endregion 
                     }
+
                 }
                 else
                 {
                     MessageBox.Show("非XML文件");
                 }
             }
+            //Ddt.Clear();
         }
 
         private void dataGridView1_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
@@ -216,6 +234,7 @@ namespace WindowsFormsVSeA
                     else
                     {
                         MessageBox.Show("未查询到 Order 数据");
+                        return;
                     }
                 }
                 else
@@ -329,6 +348,9 @@ namespace WindowsFormsVSeA
                     this.tBColorP.BackColor = Color.Empty;
 
                     Lb_P_DB.Visible = false;
+
+                    Updated_P_DB = false;//操作数据库权限关闭
+
                     //MessageBox.Show("Q-Sys 连接参数读取完成");
                 }
             }
@@ -348,6 +370,8 @@ namespace WindowsFormsVSeA
                     this.tBColorQ.BackColor = Color.Empty;
 
                     Lb_P_DB.Visible = false;
+
+                    Updated_P_DB = false;//操作数据库权限关闭
                     //MessageBox.Show("P-Sys 连接参数读取完成");
                 }
             }
@@ -365,7 +389,7 @@ namespace WindowsFormsVSeA
 
             Lb_P_DB.Visible = false;
             Lb_P_DB.BackColor = Color.RosyBrown;
-            this.Size = new Size(1350, 650);
+            this.Size = new Size(1340, 675);
         }
 
         private void button5_Click(object sender, EventArgs e)
@@ -497,6 +521,8 @@ private void dataGridView4_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             try
             {
+                Class_User.DataGridView_UI_Setup(this.dataGridView6);//设置datagridview显示UI
+
                 if (string.IsNullOrEmpty(SSQL.DBConnStr))
                 {
                     MessageBox.Show("数据库未连接 ！");
@@ -506,23 +532,43 @@ private void dataGridView4_CellClick(object sender, DataGridViewCellEventArgs e)
                 if (!string.IsNullOrEmpty(this.TB_Temp_Order.Text) || !string.IsNullOrEmpty(this.TB_Temp_SNR.Text))
                 {
                     DataTable dt = new DataTable();
-                    dt = SSQL.Qty_Mat_Temp_Db(this.TB_Temp_Order.Text);
+
+                    if (checkBox3.CheckState == CheckState.Checked)
+                    {
+                        dt = SSQL.Qty_Mat_Setup_Temp_Db(this.TB_Temp_Order.Text);
+                    }
+                    else
+                    {
+                        dt = SSQL.Qty_Mat_Setup_Db(this.TB_Temp_Order.Text);
+                    }
 
                     if (dt != null && dt.Rows.Count > 0)
                     {
 
                         dataGridView6.DataSource = dt;
-                        dataGridView6.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-                        //dataGridView6.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-                        dataGridView6.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-                        dataGridView6.Columns[5].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-                        dataGridView6.Columns[9].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-                        dataGridView6.Columns[11].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-                        dataGridView6.Columns[7].Visible = false;
-                        dataGridView6.Columns[1].Visible = false;
 
-                        Class_User.DataGridView_UI_Setup(this.dataGridView6);//设置datagridview显示UI
+                        if (checkBox3.CheckState != CheckState.Checked)
+                        {
+                            dataGridView6.Columns[3].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                            
+                            dataGridView6.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                            dataGridView6.Columns[5].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                            dataGridView6.Columns[6].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                            dataGridView6.Columns[8].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
 
+                        }
+                        else
+                        {
+                            dataGridView6.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                            //dataGridView6.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                            dataGridView6.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                            dataGridView6.Columns[5].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                            dataGridView6.Columns[9].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                            dataGridView6.Columns[11].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                            dataGridView6.Columns[7].Visible = false;
+                            dataGridView6.Columns[1].Visible = false;
+                        }
+                      
                         DV_RealTrace = dt.DefaultView;
 
                         //if (!string.IsNullOrEmpty(this.TB_Temp_Order.Text)) //如果输入工单号 则不显示工单号列
@@ -538,6 +584,11 @@ private void dataGridView4_CellClick(object sender, DataGridViewCellEventArgs e)
                         //    this.TB_Temp_Order.Text= dt.Rows[0][0].ToString();
                         //}
 
+                    }
+                    else
+                    {
+                        MessageBox.Show("查无数据 ！");
+                        return;
                     }
 
                     dt.Dispose();
@@ -798,6 +849,11 @@ private void dataGridView4_CellClick(object sender, DataGridViewCellEventArgs e)
                     dataGridView2.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                     dataGridView2.Columns[5].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                 }
+                else
+                {
+                    MessageBox.Show("查无数据 ！");
+                    return;
+                }
             }
             catch (Exception ex)
             {
@@ -829,6 +885,11 @@ private void dataGridView4_CellClick(object sender, DataGridViewCellEventArgs e)
                     dataGridView2.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                     dataGridView2.Columns[5].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                     dataGridView2.Columns[19].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                }
+                else
+                {
+                    MessageBox.Show("查无数据 ！");
+                    return;
                 }
             }
             catch (Exception ex)
@@ -971,6 +1032,11 @@ private void dataGridView4_CellClick(object sender, DataGridViewCellEventArgs e)
                         dr[2] = dt.Rows.Count;
                         dt.Rows.Add(dr);
 
+                    }
+                    else
+                    {
+                        MessageBox.Show("查无数据 ！");
+                        return;
                     }
 
                     DV_RealTrace = dt.DefaultView;
@@ -1123,6 +1189,7 @@ private void dataGridView4_CellClick(object sender, DataGridViewCellEventArgs e)
                     this.tBColorQ.BackColor = Color.Empty;
                     this.tBColorP.BackColor = Color.Empty;
 
+                    Updated_P_DB = true;
                     //MessageBox.Show("Q-Sys 连接参数读取完成");
                 }
             }
@@ -1145,6 +1212,111 @@ private void dataGridView4_CellClick(object sender, DataGridViewCellEventArgs e)
                 else
                 {
                     new FrmECConfig().Show();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void Btn_LOI_Verify_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (dataGridView3.Rows.Count > 0)
+                {
+                    List<string> Loipro_Eqid = new List<string>();//清洗LOIPRO 设备号字段 去掉 ；
+
+                    List<string> Shopfloor_Issue = new List<string>();//获取找到的 存在问题的设备号;
+
+                    for (int i = 0; i < dataGridView3.Rows.Count; i++)//idoc LOIPRO文件 Equipment id的循环。
+                    {
+                        if (Convert.ToString(dataGridView3.Rows[i].Cells["EQUIPMENT_ID"].Value).Split(';').Length > 2)
+                        {
+                            string[] Arr = Convert.ToString(dataGridView3.Rows[i].Cells["EQUIPMENT_ID"].Value).Split(';');
+                            foreach(string d in Arr)// remove blank or empty string
+                            {
+                                if (!string.IsNullOrEmpty(d))
+                                {
+                                    Loipro_Eqid.Add(d);
+                                }
+                                
+                            }
+                            
+                        }
+                        if (Convert.ToString(dataGridView3.Rows[i].Cells["EQUIPMENT_ID"].Value).Split(';').Length ==2)
+                        {
+                            string[] Arr = Convert.ToString(dataGridView3.Rows[i].Cells["EQUIPMENT_ID"].Value).Split(';');
+                            foreach (string d in Arr)
+                            {
+                                if (!string.IsNullOrEmpty(d))
+                                {
+                                    Loipro_Eqid.Add(d);
+                                }
+
+                            }
+                        }
+                            
+
+                    }
+
+                    if (Dt_Trans_Eqid.Rows.Count>0&& Dt_Trans_Eqid != null)//连接配置参表 不能为空
+                    {
+                        foreach(string s in Loipro_Eqid)//遍历Loipro 工单中的设备号 是否存在与 shopfloor connection 连接文件中
+                        {
+                            if (Dt_Trans_Eqid.Select(string.Format(@"EQUIPMENT_ID='{0}'",s )).Length > 0)//查到 连接配置文件不存在的设备号
+                            {
+                                continue;
+                                
+                            }
+                            else
+                            {
+                                Shopfloor_Issue.Add(s);
+                            }
+                        }
+                        
+                    }
+                    else
+                    {
+                        MessageBox.Show("先运行 Shopfloor Connections 获取连接设备号参数 再运行此校验！");
+                    }
+
+                    if (Shopfloor_Issue.Count > 0)
+                    {
+                        CUModel.List_Str = Shopfloor_Issue;
+                        new FrmConnIssue().Show();
+                        
+                    }
+                    else
+                    {
+                        MessageBox.Show("Shopfloor Connections 中Equipment ID配置与LOIPRO文件中相同 无漏项！");
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("无需要对比的数据");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void 载具查询ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+            try
+            {
+                if (string.IsNullOrEmpty(Form1.SSQL.DBConnStr))
+                {
+                    MessageBox.Show("数据库未连接 ！");
+                    return;
+                }
+                else
+                {
+                    new FrmHUT().Show();
                 }
             }
             catch (Exception ex)

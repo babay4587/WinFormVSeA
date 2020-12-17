@@ -86,6 +86,7 @@
             this.tB_SNR = new System.Windows.Forms.TextBox();
             this.label9 = new System.Windows.Forms.Label();
             this.tabPage6 = new System.Windows.Forms.TabPage();
+            this.checkBox3 = new System.Windows.Forms.CheckBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.Btn_Temp_Filrer = new System.Windows.Forms.Button();
             this.TB_Temp_SNR = new System.Windows.Forms.TextBox();
@@ -137,6 +138,8 @@
             this.eCConfigurationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripContainer2 = new System.Windows.Forms.ToolStripContainer();
             this.Lb_P_DB = new System.Windows.Forms.Label();
+            this.Btn_LOI_Verify = new System.Windows.Forms.Button();
+            this.载具查询ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -248,7 +251,7 @@
             this.button1.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.button1.Location = new System.Drawing.Point(33, 16);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(88, 35);
+            this.button1.Size = new System.Drawing.Size(88, 39);
             this.button1.TabIndex = 1;
             this.button1.Text = "OPEN";
             this.button1.UseVisualStyleBackColor = true;
@@ -263,6 +266,7 @@
             // 
             // tabPage3
             // 
+            this.tabPage3.Controls.Add(this.Btn_LOI_Verify);
             this.tabPage3.Controls.Add(this.button4);
             this.tabPage3.Controls.Add(this.dataGridView3);
             this.tabPage3.Controls.Add(this.label2);
@@ -279,7 +283,8 @@
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(1326, 21);
+            this.button4.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.button4.Location = new System.Drawing.Point(1178, 21);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(107, 46);
             this.button4.TabIndex = 6;
@@ -302,7 +307,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(677, 31);
+            this.label2.Location = new System.Drawing.Point(636, 32);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(215, 27);
             this.label2.TabIndex = 4;
@@ -310,7 +315,7 @@
             // 
             // textBox2
             // 
-            this.textBox2.Location = new System.Drawing.Point(925, 27);
+            this.textBox2.Location = new System.Drawing.Point(884, 28);
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(265, 34);
             this.textBox2.TabIndex = 3;
@@ -324,6 +329,7 @@
             // 
             // button3
             // 
+            this.button3.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.button3.Location = new System.Drawing.Point(25, 24);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(100, 40);
@@ -746,6 +752,7 @@
             // 
             // tabPage6
             // 
+            this.tabPage6.Controls.Add(this.checkBox3);
             this.tabPage6.Controls.Add(this.groupBox2);
             this.tabPage6.Controls.Add(this.label15);
             this.tabPage6.Controls.Add(this.button6);
@@ -759,6 +766,17 @@
             this.tabPage6.TabIndex = 5;
             this.tabPage6.Text = "Mat Temp Table Qty";
             this.tabPage6.UseVisualStyleBackColor = true;
+            // 
+            // checkBox3
+            // 
+            this.checkBox3.AutoSize = true;
+            this.checkBox3.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.checkBox3.Location = new System.Drawing.Point(385, 42);
+            this.checkBox3.Name = "checkBox3";
+            this.checkBox3.Size = new System.Drawing.Size(186, 28);
+            this.checkBox3.TabIndex = 33;
+            this.checkBox3.Text = "Setup MAT Temp";
+            this.checkBox3.UseVisualStyleBackColor = true;
             // 
             // groupBox2
             // 
@@ -804,7 +822,7 @@
             // 
             this.label15.AutoSize = true;
             this.label15.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label15.Location = new System.Drawing.Point(381, 29);
+            this.label15.Location = new System.Drawing.Point(381, 15);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(453, 24);
             this.label15.TabIndex = 27;
@@ -813,7 +831,7 @@
             // button6
             // 
             this.button6.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.button6.Location = new System.Drawing.Point(273, 24);
+            this.button6.Location = new System.Drawing.Point(273, 11);
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(102, 34);
             this.button6.TabIndex = 26;
@@ -825,7 +843,7 @@
             // 
             this.label13.AutoSize = true;
             this.label13.Font = new System.Drawing.Font("微软雅黑", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label13.Location = new System.Drawing.Point(39, 31);
+            this.label13.Location = new System.Drawing.Point(39, 15);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(94, 27);
             this.label13.TabIndex = 23;
@@ -833,7 +851,7 @@
             // 
             // TB_Temp_Order
             // 
-            this.TB_Temp_Order.Location = new System.Drawing.Point(139, 24);
+            this.TB_Temp_Order.Location = new System.Drawing.Point(139, 11);
             this.TB_Temp_Order.Name = "TB_Temp_Order";
             this.TB_Temp_Order.Size = new System.Drawing.Size(113, 34);
             this.TB_Temp_Order.TabIndex = 22;
@@ -1130,10 +1148,11 @@
             this.menuStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.sAPToolStripMenuItem,
             this.celianghziToolStripMenuItem,
-            this.工单管理ToolStripMenuItem});
+            this.工单管理ToolStripMenuItem,
+            this.载具查询ToolStripMenuItem});
             this.menuStrip2.Location = new System.Drawing.Point(225, 9);
             this.menuStrip2.Name = "menuStrip2";
-            this.menuStrip2.Size = new System.Drawing.Size(288, 33);
+            this.menuStrip2.Size = new System.Drawing.Size(568, 33);
             this.menuStrip2.TabIndex = 10;
             this.menuStrip2.Text = "SAP 报工";
             this.menuStrip2.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.menuStrip2_ItemClicked);
@@ -1154,7 +1173,7 @@
             this.按工单查询ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.gOODSMOVEMENTToolStripMenuItem1});
             this.按工单查询ToolStripMenuItem.Name = "按工单查询ToolStripMenuItem";
-            this.按工单查询ToolStripMenuItem.Size = new System.Drawing.Size(229, 30);
+            this.按工单查询ToolStripMenuItem.Size = new System.Drawing.Size(252, 30);
             this.按工单查询ToolStripMenuItem.Text = "按工单查询";
             // 
             // gOODSMOVEMENTToolStripMenuItem1
@@ -1167,21 +1186,21 @@
             // gOODSMOVEMENTToolStripMenuItem
             // 
             this.gOODSMOVEMENTToolStripMenuItem.Name = "gOODSMOVEMENTToolStripMenuItem";
-            this.gOODSMOVEMENTToolStripMenuItem.Size = new System.Drawing.Size(229, 30);
+            this.gOODSMOVEMENTToolStripMenuItem.Size = new System.Drawing.Size(252, 30);
             this.gOODSMOVEMENTToolStripMenuItem.Text = "物料101查询";
             this.gOODSMOVEMENTToolStripMenuItem.Click += new System.EventHandler(this.gOODSMOVEMENTToolStripMenuItem_Click);
             // 
             // 接口堵塞监控ToolStripMenuItem
             // 
             this.接口堵塞监控ToolStripMenuItem.Name = "接口堵塞监控ToolStripMenuItem";
-            this.接口堵塞监控ToolStripMenuItem.Size = new System.Drawing.Size(229, 30);
+            this.接口堵塞监控ToolStripMenuItem.Size = new System.Drawing.Size(252, 30);
             this.接口堵塞监控ToolStripMenuItem.Text = "接口堵塞监控";
             this.接口堵塞监控ToolStripMenuItem.Click += new System.EventHandler(this.接口堵塞监控ToolStripMenuItem_Click);
             // 
             // 唯一件装配查询ToolStripMenuItem
             // 
             this.唯一件装配查询ToolStripMenuItem.Name = "唯一件装配查询ToolStripMenuItem";
-            this.唯一件装配查询ToolStripMenuItem.Size = new System.Drawing.Size(229, 30);
+            this.唯一件装配查询ToolStripMenuItem.Size = new System.Drawing.Size(252, 30);
             this.唯一件装配查询ToolStripMenuItem.Text = "唯一件装配查询";
             this.唯一件装配查询ToolStripMenuItem.Click += new System.EventHandler(this.唯一件装配查询ToolStripMenuItem_Click);
             // 
@@ -1206,14 +1225,14 @@
             // 工单查询ToolStripMenuItem
             // 
             this.工单查询ToolStripMenuItem.Name = "工单查询ToolStripMenuItem";
-            this.工单查询ToolStripMenuItem.Size = new System.Drawing.Size(234, 30);
+            this.工单查询ToolStripMenuItem.Size = new System.Drawing.Size(252, 30);
             this.工单查询ToolStripMenuItem.Text = "工单号查询";
             this.工单查询ToolStripMenuItem.Click += new System.EventHandler(this.工单查询ToolStripMenuItem_Click);
             // 
             // sNR状态查询ToolStripMenuItem
             // 
             this.sNR状态查询ToolStripMenuItem.Name = "sNR状态查询ToolStripMenuItem";
-            this.sNR状态查询ToolStripMenuItem.Size = new System.Drawing.Size(234, 30);
+            this.sNR状态查询ToolStripMenuItem.Size = new System.Drawing.Size(252, 30);
             this.sNR状态查询ToolStripMenuItem.Text = "SNR状态查询";
             this.sNR状态查询ToolStripMenuItem.Click += new System.EventHandler(this.sNR状态查询ToolStripMenuItem_Click);
             // 
@@ -1221,7 +1240,7 @@
             // 
             this.eC线打印机操作ToolStripMenuItem.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.eC线打印机操作ToolStripMenuItem.Name = "eC线打印机操作ToolStripMenuItem";
-            this.eC线打印机操作ToolStripMenuItem.Size = new System.Drawing.Size(234, 30);
+            this.eC线打印机操作ToolStripMenuItem.Size = new System.Drawing.Size(252, 30);
             this.eC线打印机操作ToolStripMenuItem.Text = "EC线打印机操作";
             this.eC线打印机操作ToolStripMenuItem.Click += new System.EventHandler(this.eC线打印机操作ToolStripMenuItem_Click);
             // 
@@ -1229,7 +1248,7 @@
             // 
             this.eCConfigurationToolStripMenuItem.Font = new System.Drawing.Font("Calibri", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.eCConfigurationToolStripMenuItem.Name = "eCConfigurationToolStripMenuItem";
-            this.eCConfigurationToolStripMenuItem.Size = new System.Drawing.Size(234, 30);
+            this.eCConfigurationToolStripMenuItem.Size = new System.Drawing.Size(252, 30);
             this.eCConfigurationToolStripMenuItem.Text = "EC Configuration";
             this.eCConfigurationToolStripMenuItem.Click += new System.EventHandler(this.eCConfigurationToolStripMenuItem_Click);
             // 
@@ -1258,6 +1277,24 @@
             this.Lb_P_DB.Size = new System.Drawing.Size(172, 24);
             this.Lb_P_DB.TabIndex = 12;
             this.Lb_P_DB.Text = "P系统DB更新权限！";
+            // 
+            // Btn_LOI_Verify
+            // 
+            this.Btn_LOI_Verify.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.Btn_LOI_Verify.Location = new System.Drawing.Point(1329, 20);
+            this.Btn_LOI_Verify.Name = "Btn_LOI_Verify";
+            this.Btn_LOI_Verify.Size = new System.Drawing.Size(118, 46);
+            this.Btn_LOI_Verify.TabIndex = 7;
+            this.Btn_LOI_Verify.Text = "设备号对比";
+            this.Btn_LOI_Verify.UseVisualStyleBackColor = true;
+            this.Btn_LOI_Verify.Click += new System.EventHandler(this.Btn_LOI_Verify_Click);
+            // 
+            // 载具查询ToolStripMenuItem
+            // 
+            this.载具查询ToolStripMenuItem.Name = "载具查询ToolStripMenuItem";
+            this.载具查询ToolStripMenuItem.Size = new System.Drawing.Size(100, 29);
+            this.载具查询ToolStripMenuItem.Text = "载具查询";
+            this.载具查询ToolStripMenuItem.Click += new System.EventHandler(this.载具查询ToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -1431,6 +1468,9 @@
         private System.Windows.Forms.Label Lb_P_DB;
         private System.Windows.Forms.ToolStripMenuItem pACTIVEToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem eCConfigurationToolStripMenuItem;
+        private System.Windows.Forms.CheckBox checkBox3;
+        private System.Windows.Forms.Button Btn_LOI_Verify;
+        private System.Windows.Forms.ToolStripMenuItem 载具查询ToolStripMenuItem;
     }
 }
 

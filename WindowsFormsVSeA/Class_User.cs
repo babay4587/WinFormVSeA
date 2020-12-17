@@ -33,6 +33,7 @@ namespace WindowsFormsVSeA
             private string Matdescription;
             private string UniqueCode;
             private string Order_ID;
+            private List<string> LstStr;
 
             public string EquipmentID
             {
@@ -62,6 +63,11 @@ namespace WindowsFormsVSeA
                 get { return Order_ID; }
             }
 
+            public List<string> List_Str
+            {
+                set { LstStr = value; }
+                get { return LstStr; }
+            }
         }
 
         public void DataGridView_UI_Setup(DataGridView GV)
@@ -1660,7 +1666,7 @@ namespace WindowsFormsVSeA
         /// <param name="SNR"></param>
         /// <param name="Order"></param>
         /// <returns></returns>
-        public DataTable Qty_Mat_Temp_Db(string Order)
+        public DataTable Qty_Mat_Setup_Temp_Db(string Order)
         {
             string sql = string.Format(@"SELECT	
                                                     [$IDArchiveValue] as  RecordID,
@@ -1694,6 +1700,38 @@ namespace WindowsFormsVSeA
                 return null;
             }
         }
+
+
+
+        public DataTable Qty_Mat_Setup_Db(string Order)
+        {
+            string sql = string.Format(@"select 
+													ORDER_ID,MACHINE_ID,
+													PROCESS_STEP as WorkOperationID,
+													COMPONENT_ID as MaterialID,
+													(select DefName from
+                                                    [SITMesDB].[dbo].[MMwDefVers] where	
+                                                    defid=Mst.[COMPONENT_ID]) as MatName,
+													LIFNR as SupplierID,
+													PACKID as PackageID,
+													[EQUIPMENT_ID],
+													dateadd(hour,8,[RowUpdated])as dateTimes
+													FROM [SITMesDB].[dbo].[ARCH_T_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EC_SETUP_MAT_LABEL_$101$] Mst with(nolock)	
+                                                    where order_id='{0}'", Order);
+
+            DataTable dt = new DataTable();
+
+            try
+            {
+                dt = SQLSet(sql);
+                return dt;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
 
         /// <summary>
         /// 根据工单号查询 实际 物料扫描记录
@@ -2546,7 +2584,11 @@ namespace WindowsFormsVSeA
         }
 
 
-
+        /// <summary>
+        /// 根据 equipment id设备号查询 CO表配置
+        /// </summary>
+        /// <param name="MachineID"></param>
+        /// <returns></returns>
         public DataTable EC_Config_Qty(string MachineID)
         {
             string sql = string.Format(@"Use SITMesDB
@@ -2581,6 +2623,56 @@ where mapping.MACHINE_ID like '%{0}%'
                 return null;
             }
         }
+
+
+        /// <summary>
+        /// 根据载具号 序列号查询信息 序列号和载具号不能同时存在！
+        /// </summary>
+        /// <param name="Hut"></param>
+        /// <param name="SNR"></param>
+        /// <returns></returns>
+        public DataTable Qty_HUT_SNR(string Hut,string SNR)
+        {
+
+            string sql = string.Empty;
+
+            if (!string.IsNullOrEmpty(Hut))
+            {
+                sql = string.Format(@"Use SITMesDB
+            SELECT  
+      [$IDArchiveValue] as PK
+      ,[HUT_ID]
+      ,[SERIAL_NUMBER]
+      ,dateadd(hour,8,[RowUpdated]) as DateTimes
+  FROM [SITMesDB].[dbo].[ARCH_T_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EC_HUT_ALLOCATION_$80$] with(nolock)
+  where HUT_ID like '%{0}%' ", Hut);
+            }
+
+            if (!string.IsNullOrEmpty(SNR))
+            {
+                sql = string.Format(@"Use SITMesDB
+            SELECT  
+      [$IDArchiveValue] as PK
+      ,[HUT_ID]
+      ,[SERIAL_NUMBER]
+      ,dateadd(hour,8,[RowUpdated]) as DateTimes
+  FROM [SITMesDB].[dbo].[ARCH_T_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EC_HUT_ALLOCATION_$80$] with(nolock)
+  where SERIAL_NUMBER like '%{0}%' ", SNR);
+            }
+
+            DataTable dt = new DataTable();
+
+            try
+            {
+                dt = SQLSet(sql);
+                return dt;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
 
         /// <summary>
         /// 通过唯一件 唯一码进行递归查询
