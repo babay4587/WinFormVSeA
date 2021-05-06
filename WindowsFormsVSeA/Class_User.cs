@@ -2675,6 +2675,50 @@ where mapping.MACHINE_ID like '%{0}%'
 
 
         /// <summary>
+        /// 载具历史数据自定义表 插入时间周期数据
+        /// </summary>
+        /// <param name="Hut"></param>
+        /// <returns></returns>
+        public DataTable Insertinto_HUT_SNR(string Hut)
+        {
+
+            string sql = string.Empty;
+
+            if (!string.IsNullOrEmpty(Hut))
+            {
+                sql = string.Format(@"insert into  [EC_SitMesDB-Extension].[dbo].[EC_CO_HUT_History]
+                  (ArcPK,HUT_Number,SNRs,HUT_ID,RowUpdated,CurrentDateTime,Remark1)
+                  SELECT [$IDArchiveValue]
+                     ,(select b.Hut_Num
+	                  from [EC_SitMesDB-Extension].[dbo].[EC_CO_HutName_Mapping] b with(nolock)
+	                  where a.HUT_ID=b.Hut_ID) as HutNumber,
+	                  a.SERIAL_NUMBER
+	                  ,a.[HUT_ID]
+	                  ,DATEADD(hour,8,a.RowUpdated) as RowUpdated
+	                  ,getdate()
+	                  ,(select b.Production_Line
+	                  from [EC_SitMesDB-Extension].[dbo].[EC_CO_HutName_Mapping] b with(nolock)
+	                  where a.HUT_ID=b.Hut_ID) as ProductionLine
+                  FROM [SITMesDB].[dbo].[ARCH_T_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EC_HUT_ALLOCATION_$80$] a with(nolock)
+                  where a.HUT_ID like  '%{0}%'  ", Hut);
+            }
+
+            DataTable dt = new DataTable();
+
+            try
+            {
+                dt = SQLSet(sql);
+                return dt;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+
+
+        /// <summary>
         /// 通过唯一件 唯一码进行递归查询
         /// LotID 料号+唯一码；SerialNumber 序列号；uniqueCode 唯一码；时间
         /// </summary>

@@ -110,5 +110,41 @@ namespace WindowsFormsVSeA
                 MessageBox.Show(ex.ToString());
             }
         }
+        
+        private void Btn_Hut_monitor_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(Tb_Hut_Num.Text))
+            {
+                MessageBox.Show("需要输入要监控载具号的模糊特征值");
+                return;
+            }
+            if (!string.IsNullOrEmpty(tB_timerInterval.Text))
+            {
+                if (int.Parse(tB_timerInterval.Text) >= 3)
+                {
+                    timer1.Start();
+                   
+                }
+            }
+            else
+            {
+                MessageBox.Show("读取数据的时间间隔未设置 不能小于3秒");
+                return;
+            }
+        }
+
+    
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            timer1.Interval = int.Parse(tB_timerInterval.Text) * 1000;
+
+            Form1.SSQL.Insertinto_HUT_SNR(Tb_Hut_Num.Text);
+        }
+
+        private void btn_StopMonitor_Click(object sender, EventArgs e)
+        {
+            timer1.Stop();
+        }
     }
 }
