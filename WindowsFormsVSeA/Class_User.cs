@@ -2739,30 +2739,30 @@ where mapping.MACHINE_ID like '%{0}%'
 
             string sql_ReadFrom_P = string.Empty;
 
-            string sql_WriteTo_Q = string.Empty;
+            string sql_ReadFrom_Q = string.Empty;
 
             DataTable dt_From_P = new DataTable();
 
-            DataTable dt_WriteTo_Q = new DataTable();
+            DataTable dt_ReadFrom_Q = new DataTable();
+
+            DataTable dt3 = new DataTable();
+
+            dt3.Columns.Add("HutNum", typeof(string));
+            dt3.Columns.Add("HutID", typeof(string));
+            dt3.Columns.Add("SerialNumber", typeof(string));
+            dt3.Columns.Add("ProdLine", typeof(string));
 
             if (DbConn("P_connString") == "ok")
             {
                 if (!string.IsNullOrEmpty(Hut))
                 {
                     sql_ReadFrom_P = string.Format(@"
-                  SELECT [$IDArchiveValue]
-                     ,(select b.Hut_Num
-	                  from [EC_SitMesDB-Extension].[dbo].[EC_CO_HutName_Mapping] b with(nolock)
-	                  where a.HUT_ID=b.Hut_ID) as HutNumber,
-	                  a.SERIAL_NUMBER
-	                  ,a.[HUT_ID]
-	                  ,DATEADD(hour,8,a.RowUpdated) as RowUpdated
-	                  ,getdate() as CurrentDateTime
-	                  ,(select b.Production_Line
-	                  from [EC_SitMesDB-Extension].[dbo].[EC_CO_HutName_Mapping] b with(nolock)
-	                  where a.HUT_ID=b.Hut_ID) as ProductionLine
-                  FROM [SITMesDB].[dbo].[ARCH_T_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EC_HUT_ALLOCATION_$80$] a with(nolock)
-                  where a.HUT_ID like  '%{0}%'  ", Hut);
+                  SELECT [$IDArchiveValue],								
+                [HUT_ID],								
+                SERIAL_NUMBER,								
+                RowUpdated								
+                FROM [SITMesDB].[dbo].[ARCH_T_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EC_HUT_ALLOCATION_$80$] a with(nolock)								
+                where a.HUT_ID like  '%{0}%' ", Hut);
 
                 }
                 dt_From_P = SQLSet(sql_ReadFrom_P);
@@ -2772,7 +2772,32 @@ where mapping.MACHINE_ID like '%{0}%'
             {
                 if (dt_From_P != null && dt_From_P.Rows.Count > 0)
                 {
-                    string ie = string.Empty;
+                    sql_ReadFrom_Q= string.Format(@"
+                  SELECT  [Hut_Num]
+                      ,[Hut_ID]
+                      ,[Production_Line]
+                  FROM [EC_SitMesDB-Extension].[dbo].[EC_CO_HutName_Mapping]");
+
+                    dt_ReadFrom_Q = SQLSet(sql_ReadFrom_Q);
+
+                    if (dt_From_P != null && dt_From_P.Rows.Count > 0)
+                    {
+                        var query = from p in dt_From_P.AsEnumerable()
+                                  join q in dt_ReadFrom_Q.AsEnumerable()
+                                 on p["HUT_ID"].ToString() equals q["Hut_ID"].ToString()
+                                  select new
+                                  {
+                                      HutNum = q["Hut_Num"],
+                                      HutID=p["HUT_ID"],
+                                      SerialNumber=p["SERIAL_NUMBER"],
+                                      ProdLine= q["Production_Line"]
+                                  };
+
+                        query.ToList().ForEach(qr => dt3.Rows.Add(qr.HutNum, qr.HutID, qr.SerialNumber, qr.ProdLine));
+                    }
+
+
+                        string ie = string.Empty;
                     
                     using (SqlConnection destinationConnection = new SqlConnection(DBConnStr))
                     {
