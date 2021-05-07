@@ -2675,6 +2675,61 @@ where mapping.MACHINE_ID like '%{0}%'
 
 
         /// <summary>
+        /// 查询CO 自定义载具历史记录表
+        /// </summary>
+        /// <param name="Hut"></param>
+        /// <param name="SNR"></param>
+        /// <returns></returns>
+        public DataTable Qty_HUT_History(string Hut, string SNR)
+        {
+
+            string sql = string.Empty;
+
+            if (!string.IsNullOrEmpty(Hut))
+            {
+                sql = string.Format(@" Use [EC_SitMesDB-Extension]
+                          SELECT  
+                              [ArcPK] 
+                              ,[HUT_Number]
+                              ,[SNRs] as [SERIAL_NUMBER]
+                              ,[HUT_ID]
+	                          ,[RowUpdated]
+                              ,[CurrentDateTime]
+                              ,[Remark1]
+                          FROM [EC_SitMesDB-Extension].[dbo].[EC_CO_HUT_History] with(nolock)
+                          where HUT_ID like '%{0}%'", Hut);
+            }
+
+            if (!string.IsNullOrEmpty(SNR))
+            {
+                sql = string.Format(@" Use [EC_SitMesDB-Extension]
+                          SELECT  
+                              [ArcPK] 
+                              ,[HUT_Number]
+                              ,[SNRs] as [SERIAL_NUMBER]
+                              ,[HUT_ID]
+	                          ,[RowUpdated]
+                              ,[CurrentDateTime]
+                              ,[Remark1]
+                          FROM [EC_SitMesDB-Extension].[dbo].[EC_CO_HUT_History] with(nolock)
+                          where [SNRs]  like '%{0}%'", SNR);
+            }
+
+            DataTable dt = new DataTable();
+
+            try
+            {
+                dt = SQLSet(sql);
+                return dt;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+
+        /// <summary>
         /// 载具历史数据自定义表 插入时间周期数据
         /// </summary>
         /// <param name="Hut"></param>

@@ -43,6 +43,8 @@
             this.label5 = new System.Windows.Forms.Label();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.btn_StopMonitor = new System.Windows.Forms.Button();
+            this.Btn_Hut_His = new System.Windows.Forms.Button();
+            this.label6 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.DataGridV_Hut)).BeginInit();
             this.SuspendLayout();
             // 
@@ -53,7 +55,7 @@
             this.DataGridV_Hut.Margin = new System.Windows.Forms.Padding(4);
             this.DataGridV_Hut.Name = "DataGridV_Hut";
             this.DataGridV_Hut.RowTemplate.Height = 30;
-            this.DataGridV_Hut.Size = new System.Drawing.Size(1058, 421);
+            this.DataGridV_Hut.Size = new System.Drawing.Size(902, 421);
             this.DataGridV_Hut.TabIndex = 0;
             // 
             // Btn_Hut_Qty
@@ -128,7 +130,7 @@
             // 
             // Btn_Hut_monitor
             // 
-            this.Btn_Hut_monitor.Location = new System.Drawing.Point(1078, 93);
+            this.Btn_Hut_monitor.Location = new System.Drawing.Point(922, 93);
             this.Btn_Hut_monitor.Name = "Btn_Hut_monitor";
             this.Btn_Hut_monitor.Size = new System.Drawing.Size(96, 42);
             this.Btn_Hut_monitor.TabIndex = 5;
@@ -138,7 +140,7 @@
             // 
             // tB_timerInterval
             // 
-            this.tB_timerInterval.Location = new System.Drawing.Point(1078, 415);
+            this.tB_timerInterval.Location = new System.Drawing.Point(922, 483);
             this.tB_timerInterval.Name = "tB_timerInterval";
             this.tB_timerInterval.Size = new System.Drawing.Size(100, 31);
             this.tB_timerInterval.TabIndex = 7;
@@ -146,7 +148,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(1078, 388);
+            this.label5.Location = new System.Drawing.Point(922, 456);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(166, 24);
             this.label5.TabIndex = 3;
@@ -158,7 +160,7 @@
             // 
             // btn_StopMonitor
             // 
-            this.btn_StopMonitor.Location = new System.Drawing.Point(1078, 156);
+            this.btn_StopMonitor.Location = new System.Drawing.Point(922, 156);
             this.btn_StopMonitor.Name = "btn_StopMonitor";
             this.btn_StopMonitor.Size = new System.Drawing.Size(96, 42);
             this.btn_StopMonitor.TabIndex = 8;
@@ -166,16 +168,37 @@
             this.btn_StopMonitor.UseVisualStyleBackColor = true;
             this.btn_StopMonitor.Click += new System.EventHandler(this.btn_StopMonitor_Click);
             // 
+            // Btn_Hut_His
+            // 
+            this.Btn_Hut_His.Location = new System.Drawing.Point(922, 223);
+            this.Btn_Hut_His.Name = "Btn_Hut_His";
+            this.Btn_Hut_His.Size = new System.Drawing.Size(96, 43);
+            this.Btn_Hut_His.TabIndex = 9;
+            this.Btn_Hut_His.Text = "历史记录";
+            this.Btn_Hut_His.UseVisualStyleBackColor = true;
+            this.Btn_Hut_His.Click += new System.EventHandler(this.Btn_Hut_His_Click);
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(922, 292);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(46, 24);
+            this.label6.TabIndex = 3;
+            this.label6.Text = "默认";
+            // 
             // FrmHUT
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1290, 540);
+            this.ClientSize = new System.Drawing.Size(1152, 540);
+            this.Controls.Add(this.Btn_Hut_His);
             this.Controls.Add(this.btn_StopMonitor);
             this.Controls.Add(this.tB_timerInterval);
             this.Controls.Add(this.Btn_Hut_monitor);
             this.Controls.Add(this.Btn_HUT_Del);
             this.Controls.Add(this.label2);
+            this.Controls.Add(this.label6);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label3);
@@ -211,5 +234,7 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.Button btn_StopMonitor;
+        private System.Windows.Forms.Button Btn_Hut_His;
+        private System.Windows.Forms.Label label6;
     }
 }

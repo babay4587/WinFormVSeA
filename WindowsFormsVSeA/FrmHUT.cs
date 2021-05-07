@@ -20,7 +20,7 @@ namespace WindowsFormsVSeA
 
         private void FrmHUT_Load(object sender, EventArgs e)
         {
-            this.Size = new Size(980, 550);
+            this.Size = new Size(1080, 570);
 
             Btn_HUT_Del.Enabled = false;
 
@@ -47,7 +47,8 @@ namespace WindowsFormsVSeA
                 {
                     
                     DataGridV_Hut.DataSource = dt;
-
+                    DataGridV_Hut.ColumnHeadersDefaultCellStyle.ForeColor = Color.Purple;
+                    
                     DataGridV_Hut.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                     DataGridV_Hut.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                     DataGridV_Hut.Columns[3].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
@@ -145,6 +146,40 @@ namespace WindowsFormsVSeA
         private void btn_StopMonitor_Click(object sender, EventArgs e)
         {
             timer1.Stop();
+        }
+
+        private void Btn_Hut_His_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                
+                DataTable dt1 = new DataTable();
+                dt1 = Form1.SSQL.Qty_HUT_History(this.Tb_Hut_Num.Text, this.Tb_Hut_SNR.Text);
+                if (dt1 != null && dt1.Rows.Count > 0)
+                {
+
+                    DataGridV_Hut.DataSource = dt1;
+                    DataGridV_Hut.ColumnHeadersDefaultCellStyle.ForeColor = Color.Purple;
+
+                    DataGridV_Hut.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                    DataGridV_Hut.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                    DataGridV_Hut.Columns[3].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                    DataGridV_Hut.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                    DataGridV_Hut.Columns[4].DefaultCellStyle.Format = "yyyy-MM-dd hh:mm:ss:fff";
+                    DataGridV_Hut.Columns[5].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                    DataGridV_Hut.Columns[5].DefaultCellStyle.Format = "yyyy-MM-dd hh:mm:ss:fff";
+                    Class_User.DataGridView_UI_Setup(this.DataGridV_Hut);//设置datagridview显示UI
+                }
+                else
+                {
+                    MessageBox.Show("查无数据 ！");
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
         }
     }
 }
