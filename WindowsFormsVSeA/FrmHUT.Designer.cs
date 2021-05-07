@@ -45,6 +45,9 @@
             this.btn_StopMonitor = new System.Windows.Forms.Button();
             this.Btn_Hut_His = new System.Windows.Forms.Button();
             this.label6 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.TB_Hut_count = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.DataGridV_Hut)).BeginInit();
             this.SuspendLayout();
             // 
@@ -55,7 +58,7 @@
             this.DataGridV_Hut.Margin = new System.Windows.Forms.Padding(4);
             this.DataGridV_Hut.Name = "DataGridV_Hut";
             this.DataGridV_Hut.RowTemplate.Height = 30;
-            this.DataGridV_Hut.Size = new System.Drawing.Size(902, 421);
+            this.DataGridV_Hut.Size = new System.Drawing.Size(936, 421);
             this.DataGridV_Hut.TabIndex = 0;
             // 
             // Btn_Hut_Qty
@@ -130,7 +133,7 @@
             // 
             // Btn_Hut_monitor
             // 
-            this.Btn_Hut_monitor.Location = new System.Drawing.Point(922, 93);
+            this.Btn_Hut_monitor.Location = new System.Drawing.Point(956, 93);
             this.Btn_Hut_monitor.Name = "Btn_Hut_monitor";
             this.Btn_Hut_monitor.Size = new System.Drawing.Size(96, 42);
             this.Btn_Hut_monitor.TabIndex = 5;
@@ -140,7 +143,7 @@
             // 
             // tB_timerInterval
             // 
-            this.tB_timerInterval.Location = new System.Drawing.Point(922, 483);
+            this.tB_timerInterval.Location = new System.Drawing.Point(956, 483);
             this.tB_timerInterval.Name = "tB_timerInterval";
             this.tB_timerInterval.Size = new System.Drawing.Size(100, 31);
             this.tB_timerInterval.TabIndex = 7;
@@ -148,7 +151,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(922, 456);
+            this.label5.Location = new System.Drawing.Point(956, 456);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(166, 24);
             this.label5.TabIndex = 3;
@@ -160,7 +163,7 @@
             // 
             // btn_StopMonitor
             // 
-            this.btn_StopMonitor.Location = new System.Drawing.Point(922, 156);
+            this.btn_StopMonitor.Location = new System.Drawing.Point(956, 156);
             this.btn_StopMonitor.Name = "btn_StopMonitor";
             this.btn_StopMonitor.Size = new System.Drawing.Size(96, 42);
             this.btn_StopMonitor.TabIndex = 8;
@@ -170,7 +173,7 @@
             // 
             // Btn_Hut_His
             // 
-            this.Btn_Hut_His.Location = new System.Drawing.Point(922, 223);
+            this.Btn_Hut_His.Location = new System.Drawing.Point(956, 223);
             this.Btn_Hut_His.Name = "Btn_Hut_His";
             this.Btn_Hut_His.Size = new System.Drawing.Size(96, 43);
             this.Btn_Hut_His.TabIndex = 9;
@@ -181,11 +184,36 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(922, 292);
+            this.label6.Location = new System.Drawing.Point(956, 364);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(46, 24);
+            this.label6.Size = new System.Drawing.Size(165, 24);
             this.label6.TabIndex = 3;
-            this.label6.Text = "默认";
+            this.label6.Text = "监控必须连接P系统";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(956, 401);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(187, 24);
+            this.label7.TabIndex = 3;
+            this.label7.Text = "历史记录须连接Q系统";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(956, 280);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(86, 24);
+            this.label8.TabIndex = 3;
+            this.label8.Text = "记录行数:";
+            // 
+            // TB_Hut_count
+            // 
+            this.TB_Hut_count.Location = new System.Drawing.Point(1048, 277);
+            this.TB_Hut_count.Name = "TB_Hut_count";
+            this.TB_Hut_count.Size = new System.Drawing.Size(74, 31);
+            this.TB_Hut_count.TabIndex = 7;
             // 
             // FrmHUT
             // 
@@ -194,10 +222,13 @@
             this.ClientSize = new System.Drawing.Size(1152, 540);
             this.Controls.Add(this.Btn_Hut_His);
             this.Controls.Add(this.btn_StopMonitor);
+            this.Controls.Add(this.TB_Hut_count);
             this.Controls.Add(this.tB_timerInterval);
             this.Controls.Add(this.Btn_Hut_monitor);
             this.Controls.Add(this.Btn_HUT_Del);
             this.Controls.Add(this.label2);
+            this.Controls.Add(this.label8);
+            this.Controls.Add(this.label7);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label5);
@@ -236,5 +267,8 @@
         private System.Windows.Forms.Button btn_StopMonitor;
         private System.Windows.Forms.Button Btn_Hut_His;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.TextBox TB_Hut_count;
     }
 }

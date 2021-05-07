@@ -2734,15 +2734,22 @@ where mapping.MACHINE_ID like '%{0}%'
         /// </summary>
         /// <param name="Hut"></param>
         /// <returns></returns>
-        public DataTable Insertinto_HUT_SNR(string Hut)
+        public  DataTable Insertinto_HUT_SNR(string Hut)
         {
 
-            string sql = string.Empty;
+            string sql_ReadFrom_P = string.Empty;
 
-            if (!string.IsNullOrEmpty(Hut))
+            string sql_WriteTo_Q = string.Empty;
+
+            DataTable dt_From_P = new DataTable();
+
+            DataTable dt_WriteTo_Q = new DataTable();
+
+            if (DbConn("P_connString") == "ok")
             {
-                sql = string.Format(@"insert into  [EC_SitMesDB-Extension].[dbo].[EC_CO_HUT_History]
-                  (ArcPK,HUT_Number,SNRs,HUT_ID,RowUpdated,CurrentDateTime,Remark1)
+                if (!string.IsNullOrEmpty(Hut))
+                {
+                    sql_ReadFrom_P = string.Format(@"
                   SELECT [$IDArchiveValue]
                      ,(select b.Hut_Num
 	                  from [EC_SitMesDB-Extension].[dbo].[EC_CO_HutName_Mapping] b with(nolock)
@@ -2750,25 +2757,62 @@ where mapping.MACHINE_ID like '%{0}%'
 	                  a.SERIAL_NUMBER
 	                  ,a.[HUT_ID]
 	                  ,DATEADD(hour,8,a.RowUpdated) as RowUpdated
-	                  ,getdate()
+	                  ,getdate() as CurrentDateTime
 	                  ,(select b.Production_Line
 	                  from [EC_SitMesDB-Extension].[dbo].[EC_CO_HutName_Mapping] b with(nolock)
 	                  where a.HUT_ID=b.Hut_ID) as ProductionLine
                   FROM [SITMesDB].[dbo].[ARCH_T_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EC_HUT_ALLOCATION_$80$] a with(nolock)
                   where a.HUT_ID like  '%{0}%'  ", Hut);
+
+                }
+                dt_From_P = SQLSet(sql_ReadFrom_P);
             }
 
-            DataTable dt = new DataTable();
+            if (DbConn("Q_connString") == "ok")
+            {
+                if (dt_From_P != null && dt_From_P.Rows.Count > 0)
+                {
+                    string ie = string.Empty;
+                    
+                    using (SqlConnection destinationConnection = new SqlConnection(DBConnStr))
+                    {
+                        destinationConnection.Open();
+                        using (SqlBulkCopy sqlbulecopy = new SqlBulkCopy(destinationConnection))
+                        {
+                            try
+                            {
+                                sqlbulecopy.DestinationTableName = "[EC_SitMesDB-Extension].[dbo].[EC_CO_HUT_History]";
+                                sqlbulecopy.BatchSize = dt_From_P.Rows.Count;
+                                sqlbulecopy.ColumnMappings.Add("[$IDArchiveValue]", "[ArcPK]"); //第一个是dt中的字段，第二个是写入表的字段
+                                sqlbulecopy.ColumnMappings.Add("HutNumber", "[HUT_Number]");
+                                sqlbulecopy.ColumnMappings.Add("SERIAL_NUMBER", "[SNRs]");
+                                sqlbulecopy.ColumnMappings.Add("HUT_ID", "[HUT_ID]");
+                                sqlbulecopy.ColumnMappings.Add("RowUpdated", "[RowUpdated]");
+                                sqlbulecopy.ColumnMappings.Add("CurrentDateTime", "[CurrentDateTime]");
+                                sqlbulecopy.ColumnMappings.Add("ProductionLine", "[Remark1]");
 
-            try
-            {
-                dt = SQLSet(sql);
-                return dt;
+                                sqlbulecopy.WriteToServer(dt_From_P);
+                            }
+                            catch (Exception e)
+                            {
+                                return null;
+                            }
+                        }
+
+                        destinationConnection.Close();
+                    }
+                    
+                    
+                    //sql_WriteTo_Q = string.Format(@"insert into [EC_SitMesDB-Extension].[dbo].[EC_CO_HUT_History] 
+                    //                ([ArcPK],[HUT_Number],[SNRs],[HUT_ID],[RowUpdated],[CurrentDateTime],[Remark1])
+                    //                select  [$IDArchiveValue],HutNumber,SERIAL_NUMBER,[HUT_ID],RowUpdated,CurrentDateTime,ProductionLine
+                    //                 from dt_From_P");
+                                        
+                }
+                    
             }
-            catch (Exception e)
-            {
-                return null;
-            }
+            
+            return dt_From_P;
         }
 
 

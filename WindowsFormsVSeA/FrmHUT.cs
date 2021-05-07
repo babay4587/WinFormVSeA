@@ -47,7 +47,7 @@ namespace WindowsFormsVSeA
                 {
                     
                     DataGridV_Hut.DataSource = dt;
-                    DataGridV_Hut.ColumnHeadersDefaultCellStyle.ForeColor = Color.Purple;
+                    //DataGridV_Hut.ColumnHeadersDefaultCellStyle.ForeColor = Color.Purple;
                     
                     DataGridV_Hut.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                     DataGridV_Hut.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
@@ -169,6 +169,8 @@ namespace WindowsFormsVSeA
                     DataGridV_Hut.Columns[5].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                     DataGridV_Hut.Columns[5].DefaultCellStyle.Format = "yyyy-MM-dd hh:mm:ss:fff";
                     Class_User.DataGridView_UI_Setup(this.DataGridV_Hut);//设置datagridview显示UI
+
+                    TB_Hut_count.Text = dt1.Rows.Count.ToString();
                 }
                 else
                 {
