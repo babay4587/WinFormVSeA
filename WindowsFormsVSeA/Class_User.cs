@@ -2730,7 +2730,7 @@ where mapping.MACHINE_ID like '%{0}%'
 
 
         /// <summary>
-        /// 载具历史数据自定义表 插入时间周期数据
+        /// 载具历史数据自定义表 在Q中插入时间周期数据
         /// </summary>
         /// <param name="Hut"></param>
         /// <returns></returns>
@@ -2747,20 +2747,24 @@ where mapping.MACHINE_ID like '%{0}%'
 
             DataTable dt3 = new DataTable();
 
-            dt3.Columns.Add("HutNum", typeof(string));
-            dt3.Columns.Add("HutID", typeof(string));
-            dt3.Columns.Add("SerialNumber", typeof(string));
-            dt3.Columns.Add("ProdLine", typeof(string));
+            
+            dt3.Columns.Add("ArcPK", typeof(string));
+            dt3.Columns.Add("HUT_Number", typeof(string));
+            dt3.Columns.Add("SERIAL_NUMBER", typeof(string));
+            dt3.Columns.Add("HUT_ID", typeof(string));
+            dt3.Columns.Add("RowUpdated", typeof(string));
+            dt3.Columns.Add("CurrentDateTime", typeof(string));
+            dt3.Columns.Add("ProductionLine", typeof(string));
 
             if (DbConn("P_connString") == "ok")
             {
                 if (!string.IsNullOrEmpty(Hut))
                 {
                     sql_ReadFrom_P = string.Format(@"
-                  SELECT [$IDArchiveValue],								
+                  SELECT [$IDArchiveValue] as ArcPK,								
                 [HUT_ID],								
                 SERIAL_NUMBER,								
-                RowUpdated								
+                dateadd(HOUR,8,RowUpdated) as RowUpdated								
                 FROM [SITMesDB].[dbo].[ARCH_T_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EC_HUT_ALLOCATION_$80$] a with(nolock)								
                 where a.HUT_ID like  '%{0}%' ", Hut);
 
@@ -2768,7 +2772,7 @@ where mapping.MACHINE_ID like '%{0}%'
                 dt_From_P = SQLSet(sql_ReadFrom_P);
             }
 
-            if (DbConn("Q_connString") == "ok")
+            if (DbConn("Q_connString") == "ok") //此处操作Q系统库
             {
                 if (dt_From_P != null && dt_From_P.Rows.Count > 0)
                 {
@@ -2776,6 +2780,7 @@ where mapping.MACHINE_ID like '%{0}%'
                   SELECT  [Hut_Num]
                       ,[Hut_ID]
                       ,[Production_Line]
+                      ,getdate() as [CurrentDateTime]
                   FROM [EC_SitMesDB-Extension].[dbo].[EC_CO_HutName_Mapping]");
 
                     dt_ReadFrom_Q = SQLSet(sql_ReadFrom_Q);
@@ -2787,18 +2792,20 @@ where mapping.MACHINE_ID like '%{0}%'
                                  on p["HUT_ID"].ToString() equals q["Hut_ID"].ToString()
                                   select new
                                   {
+                                      P_ArcPK=p["ArcPK"],
                                       HutNum = q["Hut_Num"],
-                                      HutID=p["HUT_ID"],
                                       SerialNumber=p["SERIAL_NUMBER"],
-                                      ProdLine= q["Production_Line"]
+                                      HutID = p["HUT_ID"],
+                                      RowUpdated =p["RowUpdated"],
+                                      CurrentDateTime =q["CurrentDateTime"],
+                                      ProdLine = q["Production_Line"]
                                   };
 
-                        query.ToList().ForEach(qr => dt3.Rows.Add(qr.HutNum, qr.HutID, qr.SerialNumber, qr.ProdLine));
+                        query.ToList().ForEach(qr => dt3.Rows.Add(qr.P_ArcPK,qr.HutNum, qr.SerialNumber, qr.HutID, qr.RowUpdated,qr.CurrentDateTime,qr.ProdLine));
                     }
 
 
-                        string ie = string.Empty;
-                    
+                                           
                     using (SqlConnection destinationConnection = new SqlConnection(DBConnStr))
                     {
                         destinationConnection.Open();
@@ -2808,15 +2815,15 @@ where mapping.MACHINE_ID like '%{0}%'
                             {
                                 sqlbulecopy.DestinationTableName = "[EC_SitMesDB-Extension].[dbo].[EC_CO_HUT_History]";
                                 sqlbulecopy.BatchSize = dt_From_P.Rows.Count;
-                                sqlbulecopy.ColumnMappings.Add("[$IDArchiveValue]", "[ArcPK]"); //第一个是dt中的字段，第二个是写入表的字段
-                                sqlbulecopy.ColumnMappings.Add("HutNumber", "[HUT_Number]");
+                                sqlbulecopy.ColumnMappings.Add("ArcPK", "[ArcPK]"); //第一个是dt中的字段，第二个是写入表的字段
+                                sqlbulecopy.ColumnMappings.Add("HUT_Number", "[HUT_Number]");
                                 sqlbulecopy.ColumnMappings.Add("SERIAL_NUMBER", "[SNRs]");
                                 sqlbulecopy.ColumnMappings.Add("HUT_ID", "[HUT_ID]");
                                 sqlbulecopy.ColumnMappings.Add("RowUpdated", "[RowUpdated]");
                                 sqlbulecopy.ColumnMappings.Add("CurrentDateTime", "[CurrentDateTime]");
                                 sqlbulecopy.ColumnMappings.Add("ProductionLine", "[Remark1]");
 
-                                sqlbulecopy.WriteToServer(dt_From_P);
+                                sqlbulecopy.WriteToServer(dt3);
                             }
                             catch (Exception e)
                             {
@@ -2827,11 +2834,6 @@ where mapping.MACHINE_ID like '%{0}%'
                         destinationConnection.Close();
                     }
                     
-                    
-                    //sql_WriteTo_Q = string.Format(@"insert into [EC_SitMesDB-Extension].[dbo].[EC_CO_HUT_History] 
-                    //                ([ArcPK],[HUT_Number],[SNRs],[HUT_ID],[RowUpdated],[CurrentDateTime],[Remark1])
-                    //                select  [$IDArchiveValue],HutNumber,SERIAL_NUMBER,[HUT_ID],RowUpdated,CurrentDateTime,ProductionLine
-                    //                 from dt_From_P");
                                         
                 }
                     
