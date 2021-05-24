@@ -48,6 +48,7 @@
             this.label7 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.TB_Hut_count = new System.Windows.Forms.TextBox();
+            this.DTimePicker1 = new System.Windows.Forms.DateTimePicker();
             ((System.ComponentModel.ISupportInitialize)(this.DataGridV_Hut)).BeginInit();
             this.SuspendLayout();
             // 
@@ -215,11 +216,19 @@
             this.TB_Hut_count.Size = new System.Drawing.Size(74, 31);
             this.TB_Hut_count.TabIndex = 7;
             // 
+            // DTimePicker1
+            // 
+            this.DTimePicker1.Location = new System.Drawing.Point(960, 327);
+            this.DTimePicker1.Name = "DTimePicker1";
+            this.DTimePicker1.Size = new System.Drawing.Size(162, 31);
+            this.DTimePicker1.TabIndex = 10;
+            // 
             // FrmHUT
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1152, 540);
+            this.Controls.Add(this.DTimePicker1);
             this.Controls.Add(this.Btn_Hut_His);
             this.Controls.Add(this.btn_StopMonitor);
             this.Controls.Add(this.TB_Hut_count);
@@ -270,5 +279,6 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.TextBox TB_Hut_count;
+        private System.Windows.Forms.DateTimePicker DTimePicker1;
     }
 }

@@ -39,6 +39,7 @@
             this.button1 = new System.Windows.Forms.Button();
             this.Tb1 = new System.Windows.Forms.TextBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.Btn_LOI_Verify = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
             this.dataGridView3 = new System.Windows.Forms.DataGridView();
             this.label2 = new System.Windows.Forms.Label();
@@ -136,10 +137,10 @@
             this.sNR状态查询ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.eC线打印机操作ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.eCConfigurationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.载具查询ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripContainer2 = new System.Windows.Forms.ToolStripContainer();
             this.Lb_P_DB = new System.Windows.Forms.Label();
-            this.Btn_LOI_Verify = new System.Windows.Forms.Button();
-            this.载具查询ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.label25 = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -280,6 +281,17 @@
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "LOIPRO  ORDER";
             this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // Btn_LOI_Verify
+            // 
+            this.Btn_LOI_Verify.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.Btn_LOI_Verify.Location = new System.Drawing.Point(1329, 20);
+            this.Btn_LOI_Verify.Name = "Btn_LOI_Verify";
+            this.Btn_LOI_Verify.Size = new System.Drawing.Size(118, 46);
+            this.Btn_LOI_Verify.TabIndex = 7;
+            this.Btn_LOI_Verify.Text = "设备号对比";
+            this.Btn_LOI_Verify.UseVisualStyleBackColor = true;
+            this.Btn_LOI_Verify.Click += new System.EventHandler(this.Btn_LOI_Verify_Click);
             // 
             // button4
             // 
@@ -754,6 +766,7 @@
             // 
             this.tabPage6.Controls.Add(this.checkBox3);
             this.tabPage6.Controls.Add(this.groupBox2);
+            this.tabPage6.Controls.Add(this.label25);
             this.tabPage6.Controls.Add(this.label15);
             this.tabPage6.Controls.Add(this.button6);
             this.tabPage6.Controls.Add(this.label13);
@@ -771,7 +784,7 @@
             // 
             this.checkBox3.AutoSize = true;
             this.checkBox3.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.checkBox3.Location = new System.Drawing.Point(385, 42);
+            this.checkBox3.Location = new System.Drawing.Point(273, 45);
             this.checkBox3.Name = "checkBox3";
             this.checkBox3.Size = new System.Drawing.Size(186, 28);
             this.checkBox3.TabIndex = 33;
@@ -822,11 +835,11 @@
             // 
             this.label15.AutoSize = true;
             this.label15.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label15.Location = new System.Drawing.Point(381, 15);
+            this.label15.Location = new System.Drawing.Point(465, 45);
             this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(453, 24);
+            this.label15.Size = new System.Drawing.Size(350, 24);
             this.label15.TabIndex = 27;
-            this.label15.Text = "说明:查询物料扫描临时表中数据,END后表中数据被清除";
+            this.label15.Text = "勾选后查EC_SETUP_MAT_LABEL_TEMP表";
             // 
             // button6
             // 
@@ -1152,7 +1165,7 @@
             this.载具查询ToolStripMenuItem});
             this.menuStrip2.Location = new System.Drawing.Point(225, 9);
             this.menuStrip2.Name = "menuStrip2";
-            this.menuStrip2.Size = new System.Drawing.Size(568, 33);
+            this.menuStrip2.Size = new System.Drawing.Size(388, 33);
             this.menuStrip2.TabIndex = 10;
             this.menuStrip2.Text = "SAP 报工";
             this.menuStrip2.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.menuStrip2_ItemClicked);
@@ -1252,6 +1265,13 @@
             this.eCConfigurationToolStripMenuItem.Text = "EC Configuration";
             this.eCConfigurationToolStripMenuItem.Click += new System.EventHandler(this.eCConfigurationToolStripMenuItem_Click);
             // 
+            // 载具查询ToolStripMenuItem
+            // 
+            this.载具查询ToolStripMenuItem.Name = "载具查询ToolStripMenuItem";
+            this.载具查询ToolStripMenuItem.Size = new System.Drawing.Size(100, 29);
+            this.载具查询ToolStripMenuItem.Text = "载具查询";
+            this.载具查询ToolStripMenuItem.Click += new System.EventHandler(this.载具查询ToolStripMenuItem_Click);
+            // 
             // toolStripContainer2
             // 
             this.toolStripContainer2.BottomToolStripPanelVisible = false;
@@ -1278,23 +1298,15 @@
             this.Lb_P_DB.TabIndex = 12;
             this.Lb_P_DB.Text = "P系统DB更新权限！";
             // 
-            // Btn_LOI_Verify
+            // label25
             // 
-            this.Btn_LOI_Verify.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.Btn_LOI_Verify.Location = new System.Drawing.Point(1329, 20);
-            this.Btn_LOI_Verify.Name = "Btn_LOI_Verify";
-            this.Btn_LOI_Verify.Size = new System.Drawing.Size(118, 46);
-            this.Btn_LOI_Verify.TabIndex = 7;
-            this.Btn_LOI_Verify.Text = "设备号对比";
-            this.Btn_LOI_Verify.UseVisualStyleBackColor = true;
-            this.Btn_LOI_Verify.Click += new System.EventHandler(this.Btn_LOI_Verify_Click);
-            // 
-            // 载具查询ToolStripMenuItem
-            // 
-            this.载具查询ToolStripMenuItem.Name = "载具查询ToolStripMenuItem";
-            this.载具查询ToolStripMenuItem.Size = new System.Drawing.Size(100, 29);
-            this.载具查询ToolStripMenuItem.Text = "载具查询";
-            this.载具查询ToolStripMenuItem.Click += new System.EventHandler(this.载具查询ToolStripMenuItem_Click);
+            this.label25.AutoSize = true;
+            this.label25.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label25.Location = new System.Drawing.Point(465, 17);
+            this.label25.Name = "label25";
+            this.label25.Size = new System.Drawing.Size(311, 24);
+            this.label25.TabIndex = 27;
+            this.label25.Text = "不勾选后查EC_SETUP_MAT_LABEL表";
             // 
             // Form1
             // 
@@ -1471,6 +1483,7 @@
         private System.Windows.Forms.CheckBox checkBox3;
         private System.Windows.Forms.Button Btn_LOI_Verify;
         private System.Windows.Forms.ToolStripMenuItem 载具查询ToolStripMenuItem;
+        private System.Windows.Forms.Label label25;
     }
 }
 

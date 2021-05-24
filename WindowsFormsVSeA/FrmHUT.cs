@@ -20,7 +20,7 @@ namespace WindowsFormsVSeA
 
         private void FrmHUT_Load(object sender, EventArgs e)
         {
-            this.Size = new Size(1080, 570);
+            this.Size = new Size(1180, 570);
 
             Btn_HUT_Del.Enabled = false;
 
@@ -152,9 +152,9 @@ namespace WindowsFormsVSeA
         {
             try
             {
-                
+                string DTimePickerDay=DTimePicker1.Value.Date.ToString("yyyy-MM-dd");
                 DataTable dt1 = new DataTable();
-                dt1 = Form1.SSQL.Qty_HUT_History(this.Tb_Hut_Num.Text, this.Tb_Hut_SNR.Text);
+                dt1 = Form1.SSQL.Qty_HUT_History(this.Tb_Hut_Num.Text, this.Tb_Hut_SNR.Text, DTimePickerDay);
                 if (dt1 != null && dt1.Rows.Count > 0)
                 {
 

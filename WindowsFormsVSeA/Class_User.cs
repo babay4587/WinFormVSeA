@@ -34,6 +34,7 @@ namespace WindowsFormsVSeA
             private string UniqueCode;
             private string Order_ID;
             private List<string> LstStr;
+            private List<string> all_files;
 
             public string EquipmentID
             {
@@ -67,6 +68,12 @@ namespace WindowsFormsVSeA
             {
                 set { LstStr = value; }
                 get { return LstStr; }
+            }
+
+            public List<string> AllFiles
+            {
+                set { all_files = value; }
+                get { return all_files; }
             }
         }
 
@@ -2680,7 +2687,7 @@ where mapping.MACHINE_ID like '%{0}%'
         /// <param name="Hut"></param>
         /// <param name="SNR"></param>
         /// <returns></returns>
-        public DataTable Qty_HUT_History(string Hut, string SNR)
+        public DataTable Qty_HUT_History(string Hut, string SNR,string DTimePickerDay)
         {
 
             string sql = string.Empty;
@@ -2697,7 +2704,7 @@ where mapping.MACHINE_ID like '%{0}%'
                               ,[CurrentDateTime]
                               ,[Remark1]
                           FROM [EC_SitMesDB-Extension].[dbo].[EC_CO_HUT_History] with(nolock)
-                          where HUT_ID like '%{0}%'", Hut);
+                          where HUT_ID like '%{0}%' and convert(char(10),[RowUpdated],120)='{1}'", Hut, DTimePickerDay);
             }
 
             if (!string.IsNullOrEmpty(SNR))
@@ -2843,6 +2850,74 @@ where mapping.MACHINE_ID like '%{0}%'
         }
 
 
+        /// <summary>
+        /// 监控定子电测及浸漆 测量值
+        /// </summary>
+        /// <param name="Interval"></param>
+        /// <returns></returns>
+        public DataTable Get_Meas_T_Test_SNR(int Interval)
+        {
+            //string sql = string.Format(@"select LOT_PK,(select mmlot.LotName FROM [SITMesDB].[dbo].[MMLots] mmlot with(nolock)
+            //     where LOT_PK=mmlot.LotPK) LotName,DATEADD(hour,8,RowUpdated) as ChinaTime
+            //      FROM [SitMesDb].[dbo].[ARCH_T_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EC_LOT_ROUTE_$112$] rt with(nolock)
+            //      where entry_type_pk=102 and ROUTE_POS_STATUS='prcs' --1小时内 过电测站的件
+            //       and DATEADD(hour,{0},RowUpdated)>= '2020-04-30 06:01:22.250' and DATEADD(hour,{0},RowUpdated)<='2020-05-07 07:39:19.127'
+            //       and LOT_PK in 
+            //       (select LOT_PK
+            //       FROM [SitMesDb].[dbo].[ARCH_T_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EC_LOT_ROUTE_$112$] im with(nolock)
+            //       where entry_type_pk=202 and ROUTE_POS_STATUS='' --1小时内 未过浸漆站的件
+            //        and DATEADD(hour,{0},RowUpdated)>= '2020-04-30 06:01:22.250' and DATEADD(hour,{0},RowUpdated)<='2020-05-07 07:39:19.127')
+            //    ", Interval);
+
+            string sql = string.Format(@"select LOT_PK,(select mmlot.LotName FROM [SITMesDB].[dbo].[MMLots] mmlot with(nolock)
+	                where LOT_PK=mmlot.LotPK) LotName,DATEADD(hour,8,RowUpdated) as ChinaTime
+                  FROM [SitMesDb].[dbo].[ARCH_T_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EC_LOT_ROUTE_$112$] rt with(nolock)
+                  where entry_type_pk=2114 and ROUTE_POS_STATUS='prcs' --1小时内 过电测站的件
+                   and DATEADD(hour,8,RowUpdated)>= DATEADD(hour,-{0},getdate()) and DATEADD(hour,8,RowUpdated)<=GETDATE()
+                   and LOT_PK in 
+                   (select LOT_PK
+	                  FROM [SitMesDb].[dbo].[ARCH_T_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EC_LOT_ROUTE_$112$] im with(nolock)
+	                  where entry_type_pk=2094 and ROUTE_POS_STATUS='' --1小时内 未过浸漆站的件
+	                   and DATEADD(hour,8,RowUpdated)>= DATEADD(hour,-{0},getdate()) and DATEADD(hour,8,RowUpdated)<=GETDATE())", Interval);
+
+
+            DataTable dt = new DataTable();
+
+            try
+            {
+                dt = SQLSet(sql);
+                return dt;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+
+
+        public DataTable Qty_Meas_T_Test_SNR(string SNR)
+        {
+            string sql = string.Format(@"select MEASUREMENT_TYPE,EQUIPMENT_ID,DEVICE,ORDER_ID,TERMINAL_ID,MEASUREMENT_ID,MEASUREMENT,DATEADD(hour,8,RowUpdated) as ChinaTime
+		FROM [SITMesDB].[dbo].[ARCH_T_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EC_MEASUREMENTS_$86$] with(nolock)
+		where SERIAL_NUMBER='{0}' and WO_ID='T_TEST'", SNR);
+
+            DataTable dt = new DataTable();
+
+            try
+            {
+                dt = SQLSet(sql);
+                return dt;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+
+
+
 
         /// <summary>
         /// 通过唯一件 唯一码进行递归查询
@@ -2937,4 +3012,143 @@ where mapping.MACHINE_ID like '%{0}%'
             }
         }
     }
+
+
+    /// <summary>
+    /// 文件处理类
+    /// </summary>
+    public class FileHelper
+    {
+        public static Class_User.UserModel Umodel = new Class_User.UserModel();
+        public static FileHelper fileHelper = new FileHelper();
+
+        /// <summary>
+        /// 得到当前路径下所有子目录
+        /// </summary>
+        /// <param name="rootPath"></param>
+        /// <returns></returns>
+        public static List<string> GetAllDirectories(string rootPath)
+        {
+            
+            string[] subPaths = System.IO.Directory.GetDirectories(rootPath);//得到所有子目录
+            List<string> lis = new List<string>();
+
+            foreach (string path in subPaths)
+            {
+
+                GetAllDirectories(path);//对每一个子目录做与根目录相同的操作：即找到子目录并将当前目录的文件名存入List
+
+            }
+
+            string[] files = System.IO.Directory.GetFiles(rootPath);
+
+            foreach (string file in files)
+            {
+
+                Umodel.AllFiles.Add(file);//将当前目录中的所有文件全名存入文件List
+
+            }
+
+            return Umodel.AllFiles;
+
+
+        }
+
+        /// <summary>
+        /// 创建文件夹
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public static bool MkDir(string path)
+        {
+            if (!System.IO.Directory.Exists(path))
+            {
+                System.IO.Directory.CreateDirectory(path);
+
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool WriteTxt(string path,string txts)
+        {
+            
+            try
+            {
+                if (!System.IO.Directory.Exists(path)) //不存在文件夹
+                {
+                    if(FileHelper.MkDir(path))
+                    {
+                        if(!System.IO.File.Exists(path+@"\"+ DateTime.Now.ToString("yyyy-MM-dd")+".txt"))
+                        {
+                            FileStream fs1 = new FileStream(path + @"\" + DateTime.Now.ToString("yyyy-MM-dd") + ".txt", FileMode.Create);
+
+                            StreamWriter sw1 = new StreamWriter(fs1, Encoding.UTF8);
+
+                            sw1.WriteLine(txts + ";WriteTime:" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:fff"));
+                            //sw1.WriteLine(Environment.NewLine); //换行
+
+                            sw1.Flush();
+                            //关闭流
+                            sw1.Close();
+                            fs1.Close();
+                        }
+                        else //txt文件存在就 append内容
+                        {
+                            FileStream fs1 = new FileStream(path + @"\" + DateTime.Now.ToString("yyyy-MM-dd") + ".txt", FileMode.Append);
+
+                            StreamWriter sw1 = new StreamWriter(fs1, Encoding.UTF8);
+
+                            sw1.WriteLine(txts+ ";WriteTime:" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:fff"));
+                            //sw1.WriteLine(Environment.NewLine); //换行
+
+                            sw1.Flush();
+                            //关闭流
+                            sw1.Close();
+                            fs1.Close();
+                        }
+                        
+                    }
+                }
+                else //文件夹已存在
+                {
+                    if (!System.IO.File.Exists(path + @"\" + DateTime.Now.ToString("yyyy-MM-dd") + ".txt")) //文件不存在 创建
+                    {
+                        FileStream fs1 = new FileStream(path + @"\" + DateTime.Now.ToString("yyyy-MM-dd") + ".txt", FileMode.Create);
+
+                        StreamWriter sw1 = new StreamWriter(fs1, Encoding.UTF8);
+
+                        sw1.WriteLine(txts + ";WriteTime:" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:fff"));
+
+                        sw1.Flush();
+                        //关闭流
+                        sw1.Close();
+                        fs1.Close();
+                    }
+                    else //txt文件存在就 append内容
+                    {
+                        FileStream fs1 = new FileStream(path + @"\" + DateTime.Now.ToString("yyyy-MM-dd") + ".txt", FileMode.Append);
+
+                        StreamWriter sw1 = new StreamWriter(fs1, Encoding.UTF8);
+
+                        sw1.WriteLine(txts + ";WriteTime:" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:fff"));
+
+                        sw1.Flush();
+                        //关闭流
+                        sw1.Close();
+                        fs1.Close();
+                    }
+                }
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+    }
+
 }

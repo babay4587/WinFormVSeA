@@ -11,9 +11,11 @@ namespace WindowsFormsVSeA
 {
     public partial class QueryMeasurement : Form
     {
-
+        public static QueryMeasurement ClassQM = new QueryMeasurement();
         DataView DataView_Filter = new DataView();
         DataTable Dt_Cpy = new DataTable();
+
+        public static FileHelper FileHelper = new FileHelper();
 
         public QueryMeasurement()
         {
@@ -29,7 +31,7 @@ namespace WindowsFormsVSeA
                     MessageBox.Show("请输入要查询的工单号，或序列号！");
                     return;
                 }
-
+                
                 DataTable dt = new DataTable(); //查询物料号与物料名称 填写textbox
                 dt = Form1.SSQL.Qty_MeasureValue(this.Tb_Measure_OrdID1.Text,this.Btn_Measure_SNR.Text);
 
@@ -122,6 +124,97 @@ namespace WindowsFormsVSeA
         private void Btn_Measure_Back_Click(object sender, EventArgs e)
         {
             dataGV_Measure_1.DataSource = Dt_Cpy;
+        }
+
+        private void timer_Meas_Tick(object sender, EventArgs e)
+        {
+            timer_Meas.Interval = int.Parse(Tb_timerCount.Text) * 1000 * 60; //单位：分钟
+
+            DataTable dt = new DataTable();
+            dt = Form1.SSQL.Get_Meas_T_Test_SNR(int.Parse(Tb_SQLInterval.Text)); //计时器调用 数据库校验方法
+            if (dt != null && dt.Rows.Count > 0)
+            {
+                ClassQM.Handle_SNRs(dt); //处理返回的序列号
+            }
+                       
+        }
+
+        private bool  Handle_SNRs(DataTable DT)
+        {
+            DataTable ddt = new DataTable();
+
+            string path =System.IO.Directory.GetCurrentDirectory();
+            path=@"../../TOOLS/T_TEST/Monitor";
+
+            try
+            {
+                for(int i = 0; i < DT.Rows.Count; i++)
+                {
+                   ddt= Form1.SSQL.Qty_Meas_T_Test_SNR(DT.Rows[i]["LotName"].ToString());
+
+                    if (ddt == null) //发现没有电测测量值的序列号 写入txt文件。
+                    {
+                        if(System.IO.File.Exists(path + @"\" + DateTime.Now.ToString("yyyy-MM-dd") + ".txt")) //如果文件存在 再判断是否有相同内容!
+                        {
+                            string readfile = System.IO.File.ReadAllText(path + @"\" + DateTime.Now.ToString("yyyy-MM-dd") + ".txt");
+
+                            if (readfile.Contains(DT.Rows[i]["LotName"].ToString())) //如果存在相同的SNR 表示已经写过，不再写入txt
+                            {
+                                continue; //判断下一个SNR
+                            }
+                            else
+                            {
+                                FileHelper.WriteTxt(path, DT.Rows[i][0].ToString() + ";" + DT.Rows[i][1].ToString() + ";" + DT.Rows[i][2].ToString()); //处理返回的序列号 写入txt文件
+                            }
+                        }
+                        else //文件不存在 直接调用写入方法！
+                        {
+                            FileHelper.WriteTxt(path, DT.Rows[i][0].ToString() + ";" + DT.Rows[i][1].ToString() + ";" + DT.Rows[i][2].ToString()); //处理返回的序列号 写入txt文件
+                        }
+                        
+                       
+                    }
+                }
+                
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        private void Btn_MeasMonitorSTOP_Click(object sender, EventArgs e)
+        {
+            timer_Meas.Stop();
+        }
+
+        private void Btn_MeasMonitor_Click(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(Tb_timerCount.Text))
+            {
+                if (int.Parse(Tb_timerCount.Text) >= 3)
+                {
+                    timer_Meas.Start();
+
+                }
+            }
+            else
+            {
+                MessageBox.Show("读取数据的时间间隔未设置 不能小于3分钟");
+                return;
+            }
+        }
+
+        private void QueryMeasurement_Load(object sender, EventArgs e)
+        {
+            this.Size = new Size(1190, 570);
+            this.Tb_SQLInterval.Text = "8"; //数据库查询间隔数 默认 8小时!
+        }
+
+        private void Tb_timerCount_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
