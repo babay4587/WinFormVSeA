@@ -164,7 +164,7 @@ namespace WindowsFormsVSeA
                             }
                             else
                             {
-                                FileHelper.WriteTxt(path, DT.Rows[i][0].ToString() + ";" + DT.Rows[i][1].ToString() + ";" + DT.Rows[i][2].ToString()); //处理返回的序列号 写入txt文件
+                                FileHelper.WriteTxt(path, "Error: "+DT.Rows[i][0].ToString() + ";" + DT.Rows[i][1].ToString() + ";" + DT.Rows[i][2].ToString()); //处理返回的序列号 写入txt文件
                             }
                         }
                         else //文件不存在 直接调用写入方法！
@@ -173,6 +173,12 @@ namespace WindowsFormsVSeA
                         }
                         
                        
+                    }
+                    else //写入日志，将此SNR及测量值信息写入txt 作为log记录
+                    {
+                        FileHelper.WriteTxt(path, "Log: "+DT.Rows[i]["LotName"].ToString() + ";;" + ddt.Rows[i]["ORDER_ID"] + ";;" + ddt.Rows[i]["TERMINAL_ID"]
+                            + ";;" + ddt.Rows[i]["MEASUREMENT_ID"] + ";;" + ddt.Rows[i]["MEASUREMENT"] + ";;" + ddt.Rows[i]["ChinaTime"]);
+                        
                     }
                 }
                 

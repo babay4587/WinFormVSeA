@@ -2704,7 +2704,7 @@ where mapping.MACHINE_ID like '%{0}%'
                               ,[CurrentDateTime]
                               ,[Remark1]
                           FROM [EC_SitMesDB-Extension].[dbo].[EC_CO_HUT_History] with(nolock)
-                          where HUT_ID like '%{0}%' and convert(char(10),[RowUpdated],120)='{1}'", Hut, DTimePickerDay);
+                          where HUT_ID like '%{0}%' and convert(char(10),[RowUpdated],120)<='{1}'", Hut, DTimePickerDay);
             }
 
             if (!string.IsNullOrEmpty(SNR))
@@ -2870,15 +2870,15 @@ where mapping.MACHINE_ID like '%{0}%'
             //    ", Interval);
 
             string sql = string.Format(@"select LOT_PK,(select mmlot.LotName FROM [SITMesDB].[dbo].[MMLots] mmlot with(nolock)
-	                where LOT_PK=mmlot.LotPK) LotName,DATEADD(hour,8,RowUpdated) as ChinaTime
+                 where LOT_PK=mmlot.LotPK) LotName,DATEADD(hour,8,RowUpdated) as ChinaTime
                   FROM [SitMesDb].[dbo].[ARCH_T_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EC_LOT_ROUTE_$112$] rt with(nolock)
                   where entry_type_pk=2114 and ROUTE_POS_STATUS='prcs' --1小时内 过电测站的件
                    and DATEADD(hour,8,RowUpdated)>= DATEADD(hour,-{0},getdate()) and DATEADD(hour,8,RowUpdated)<=GETDATE()
                    and LOT_PK in 
                    (select LOT_PK
-	                  FROM [SitMesDb].[dbo].[ARCH_T_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EC_LOT_ROUTE_$112$] im with(nolock)
-	                  where entry_type_pk=2094 and ROUTE_POS_STATUS='' --1小时内 未过浸漆站的件
-	                   and DATEADD(hour,8,RowUpdated)>= DATEADD(hour,-{0},getdate()) and DATEADD(hour,8,RowUpdated)<=GETDATE())", Interval);
+                   FROM [SitMesDb].[dbo].[ARCH_T_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EC_LOT_ROUTE_$112$] im with(nolock)
+                   where entry_type_pk=2094 and ROUTE_POS_STATUS='' --1小时内 未过浸漆站的件
+                    and DATEADD(hour,8,RowUpdated)>= DATEADD(hour,-{0},getdate()) and DATEADD(hour,8,RowUpdated)<=GETDATE())", Interval);
 
 
             DataTable dt = new DataTable();

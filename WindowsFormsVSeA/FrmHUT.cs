@@ -154,6 +154,13 @@ namespace WindowsFormsVSeA
             {
                 string DTimePickerDay=DTimePicker1.Value.Date.ToString("yyyy-MM-dd");
                 DataTable dt1 = new DataTable();
+
+                if (string.IsNullOrEmpty(this.Tb_Hut_Num.Text))
+                {
+                    MessageBox.Show("载具号至少输入% 通配符");
+                    return;
+                }
+
                 dt1 = Form1.SSQL.Qty_HUT_History(this.Tb_Hut_Num.Text, this.Tb_Hut_SNR.Text, DTimePickerDay);
                 if (dt1 != null && dt1.Rows.Count > 0)
                 {
