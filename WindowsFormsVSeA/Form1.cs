@@ -346,6 +346,7 @@ namespace WindowsFormsVSeA
                     
                     this.tBColorQ.BackColor = Color.SpringGreen;
                     this.tBColorP.BackColor = Color.Empty;
+                    this.tBColorNewSvr.BackColor = Color.Empty;
 
                     Lb_P_DB.Visible = false;
 
@@ -369,6 +370,7 @@ namespace WindowsFormsVSeA
                     this.tBColorP.BackColor = Color.SpringGreen;
                     this.tBColorQ.BackColor = Color.Empty;
 
+                    this.tBColorNewSvr.BackColor = Color.Empty;
                     Lb_P_DB.Visible = false;
 
                     Updated_P_DB = false;//操作数据库权限关闭
@@ -1188,6 +1190,7 @@ private void dataGridView4_CellClick(object sender, DataGridViewCellEventArgs e)
 
                     this.tBColorQ.BackColor = Color.Empty;
                     this.tBColorP.BackColor = Color.Empty;
+                    this.tBColorNewSvr.BackColor = Color.Empty;
 
                     Updated_P_DB = true;
                     //MessageBox.Show("Q-Sys 连接参数读取完成");
@@ -1317,6 +1320,30 @@ private void dataGridView4_CellClick(object sender, DataGridViewCellEventArgs e)
                 else
                 {
                     new FrmHUT().Show();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void newServerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (SSQL.DbConn("NewServer") == "ok")
+                {
+
+                    this.tBColorQ.BackColor = Color.Empty;
+                    this.tBColorP.BackColor = Color.Empty;
+                    this.tBColorNewSvr.BackColor = Color.SpringGreen;
+
+                    Lb_P_DB.Visible = false;
+
+                    Updated_P_DB = false;//操作数据库权限关闭
+
+                    //MessageBox.Show("Q-Sys 连接参数读取完成");
                 }
             }
             catch (Exception ex)

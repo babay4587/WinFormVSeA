@@ -3078,66 +3078,23 @@ where mapping.MACHINE_ID like '%{0}%'
             {
                 if (!System.IO.Directory.Exists(path)) //不存在文件夹
                 {
-                    if(FileHelper.MkDir(path))
+                    FileHelper.MkDir(path);
+                         
+                    using (StreamWriter sw1 = new StreamWriter(path + @"\" + DateTime.Now.ToString("yyyy-MM-dd") + ".txt", true))
                     {
-                        if(!System.IO.File.Exists(path+@"\"+ DateTime.Now.ToString("yyyy-MM-dd")+".txt"))
-                        {
-                            FileStream fs1 = new FileStream(path + @"\" + DateTime.Now.ToString("yyyy-MM-dd") + ".txt", FileMode.Create);
-
-                            StreamWriter sw1 = new StreamWriter(fs1, Encoding.UTF8);
-
-                            sw1.WriteLine(txts + ";WriteTime:" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:fff"));
-                            //sw1.WriteLine(Environment.NewLine); //换行
-
-                            sw1.Flush();
-                            //关闭流
-                            sw1.Close();
-                            fs1.Close();
-                        }
-                        else //txt文件存在就 append内容
-                        {
-                            FileStream fs1 = new FileStream(path + @"\" + DateTime.Now.ToString("yyyy-MM-dd") + ".txt", FileMode.Append);
-
-                            StreamWriter sw1 = new StreamWriter(fs1, Encoding.UTF8);
-
-                            sw1.WriteLine(txts+ ";WriteTime:" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:fff"));
-                            //sw1.WriteLine(Environment.NewLine); //换行
-
-                            sw1.Flush();
-                            //关闭流
-                            sw1.Close();
-                            fs1.Close();
-                        }
-                        
+                        sw1.WriteLine(txts + ";WriteTime: " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+                        sw1.WriteLine("-", 0, 10);
+                        sw1.Close();
                     }
+                    
                 }
                 else //文件夹已存在
                 {
-                    if (!System.IO.File.Exists(path + @"\" + DateTime.Now.ToString("yyyy-MM-dd") + ".txt")) //文件不存在 创建
+                    using (StreamWriter sw1 = new StreamWriter(path + @"\" + DateTime.Now.ToString("yyyy-MM-dd") + ".txt", true))
                     {
-                        FileStream fs1 = new FileStream(path + @"\" + DateTime.Now.ToString("yyyy-MM-dd") + ".txt", FileMode.Create);
-
-                        StreamWriter sw1 = new StreamWriter(fs1, Encoding.UTF8);
-
-                        sw1.WriteLine(txts + ";WriteTime:" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:fff"));
-
-                        sw1.Flush();
-                        //关闭流
+                        sw1.WriteLine(txts + ";WriteTime: " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+                        sw1.WriteLine("-", 0, 10);
                         sw1.Close();
-                        fs1.Close();
-                    }
-                    else //txt文件存在就 append内容
-                    {
-                        FileStream fs1 = new FileStream(path + @"\" + DateTime.Now.ToString("yyyy-MM-dd") + ".txt", FileMode.Append);
-
-                        StreamWriter sw1 = new StreamWriter(fs1, Encoding.UTF8);
-
-                        sw1.WriteLine(txts + ";WriteTime:" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:fff"));
-
-                        sw1.Flush();
-                        //关闭流
-                        sw1.Close();
-                        fs1.Close();
                     }
                 }
 

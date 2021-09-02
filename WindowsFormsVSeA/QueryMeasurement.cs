@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.IO;
 
 namespace WindowsFormsVSeA
 {
@@ -132,9 +133,33 @@ namespace WindowsFormsVSeA
 
             DataTable dt = new DataTable();
             dt = Form1.SSQL.Get_Meas_T_Test_SNR(int.Parse(Tb_SQLInterval.Text)); //计时器调用 数据库校验方法
+
             if (dt != null && dt.Rows.Count > 0)
             {
                 ClassQM.Handle_SNRs(dt); //处理返回的序列号
+            }
+            else
+            {
+                string path = System.IO.Directory.GetCurrentDirectory();
+                if (System.IO.Directory.Exists(path + @"\" + "Logs"))
+                {
+                    
+                    using(StreamWriter sw1 = new StreamWriter(path + @"\Logs\" + DateTime.Now.ToString("yyyy-MM-dd") + ".txt",true))
+                    {
+                        sw1.WriteLine("时间段内未有符合的SNR ;WriteTime: " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+                        sw1.Close();
+                    }
+                                        
+                }
+                else //logs文件夹不存在 就创建
+                {
+                    FileHelper.MkDir(path + @"\" + "Logs");
+                    using (StreamWriter sw1 = new StreamWriter(path + @"\Logs\" + DateTime.Now.ToString("yyyy-MM-dd") + ".txt", true))
+                    {
+                        sw1.WriteLine("时间段内未有符合的SNR ;WriteTime: " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+                        sw1.Close();
+                    }
+                }
             }
                        
         }
@@ -144,7 +169,7 @@ namespace WindowsFormsVSeA
             DataTable ddt = new DataTable();
 
             string path =System.IO.Directory.GetCurrentDirectory();
-            path=@"../../TOOLS/T_TEST/Monitor";
+            path=path+@"\TOOLS\T_TEST\Monitor";
 
             try
             {
@@ -152,7 +177,7 @@ namespace WindowsFormsVSeA
                 {
                    ddt= Form1.SSQL.Qty_Meas_T_Test_SNR(DT.Rows[i]["LotName"].ToString());
 
-                    if (ddt == null) //发现没有电测测量值的序列号 写入txt文件。
+                    if (ddt == null) //发现: 不存在电测测量值的序列号 写入txt文件。
                     {
                         if(System.IO.File.Exists(path + @"\" + DateTime.Now.ToString("yyyy-MM-dd") + ".txt")) //如果文件存在 再判断是否有相同内容!
                         {
@@ -164,20 +189,20 @@ namespace WindowsFormsVSeA
                             }
                             else
                             {
-                                FileHelper.WriteTxt(path, "Error: "+DT.Rows[i][0].ToString() + ";" + DT.Rows[i][1].ToString() + ";" + DT.Rows[i][2].ToString()); //处理返回的序列号 写入txt文件
+                                FileHelper.WriteTxt(path, "Error: "+DT.Rows[i][0].ToString() + ";" + DT.Rows[i][1].ToString() + ";" + Convert.ToDateTime(DT.Rows[i][2]).ToString("yyyy-MM-dd HH:mm:ss")); //处理返回的序列号 写入txt文件
                             }
                         }
                         else //文件不存在 直接调用写入方法！
                         {
-                            FileHelper.WriteTxt(path, DT.Rows[i][0].ToString() + ";" + DT.Rows[i][1].ToString() + ";" + DT.Rows[i][2].ToString()); //处理返回的序列号 写入txt文件
+                            FileHelper.WriteTxt(path, "Error: " +DT.Rows[i][0].ToString() + ";" + DT.Rows[i][1].ToString() + ";" + Convert.ToDateTime(DT.Rows[i][2]).ToString("yyyy-MM-dd HH:mm:ss")); //处理返回的序列号 写入txt文件
                         }
                         
                        
                     }
                     else //写入日志，将此SNR及测量值信息写入txt 作为log记录
                     {
-                        FileHelper.WriteTxt(path, "Log: "+DT.Rows[i]["LotName"].ToString() + ";;" + ddt.Rows[i]["ORDER_ID"] + ";;" + ddt.Rows[i]["TERMINAL_ID"]
-                            + ";;" + ddt.Rows[i]["MEASUREMENT_ID"] + ";;" + ddt.Rows[i]["MEASUREMENT"] + ";;" + ddt.Rows[i]["ChinaTime"]);
+                        FileHelper.WriteTxt(path, "Monitor: "+DT.Rows[i]["LotName"].ToString() + ";;" + ddt.Rows[i]["ORDER_ID"] + ";;" + ddt.Rows[i]["TERMINAL_ID"]
+                            + ";;" + ddt.Rows[i]["MEASUREMENT_ID"] + ";;" + "Value: "+ddt.Rows[i]["MEASUREMENT"] + ";;" +Convert.ToDateTime(ddt.Rows[i]["ChinaTime"]).ToString("yyyy-MM-dd HH:mm:ss"));
                         
                     }
                 }
@@ -193,6 +218,7 @@ namespace WindowsFormsVSeA
         private void Btn_MeasMonitorSTOP_Click(object sender, EventArgs e)
         {
             timer_Meas.Stop();
+            MessageBox.Show("监控停止！");
         }
 
         private void Btn_MeasMonitor_Click(object sender, EventArgs e)
@@ -202,7 +228,7 @@ namespace WindowsFormsVSeA
                 if (int.Parse(Tb_timerCount.Text) >= 3)
                 {
                     timer_Meas.Start();
-
+                    MessageBox.Show("监控开始！");
                 }
             }
             else

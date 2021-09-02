@@ -92,6 +92,7 @@
             this.Btn_Temp_Filrer = new System.Windows.Forms.Button();
             this.TB_Temp_SNR = new System.Windows.Forms.TextBox();
             this.label14 = new System.Windows.Forms.Label();
+            this.label25 = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
             this.button6 = new System.Windows.Forms.Button();
             this.label13 = new System.Windows.Forms.Label();
@@ -140,7 +141,9 @@
             this.载具查询ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripContainer2 = new System.Windows.Forms.ToolStripContainer();
             this.Lb_P_DB = new System.Windows.Forms.Label();
-            this.label25 = new System.Windows.Forms.Label();
+            this.newServerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.label26 = new System.Windows.Forms.Label();
+            this.tBColorNewSvr = new System.Windows.Forms.TextBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -831,6 +834,16 @@
             this.label14.TabIndex = 24;
             this.label14.Text = "SNR:";
             // 
+            // label25
+            // 
+            this.label25.AutoSize = true;
+            this.label25.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label25.Location = new System.Drawing.Point(465, 17);
+            this.label25.Name = "label25";
+            this.label25.Size = new System.Drawing.Size(311, 24);
+            this.label25.TabIndex = 27;
+            this.label25.Text = "不勾选后查EC_SETUP_MAT_LABEL表";
+            // 
             // label15
             // 
             this.label15.AutoSize = true;
@@ -1073,7 +1086,8 @@
             this.dBConnectToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.pSYSToolStripMenuItem,
             this.qSYSToolStripMenuItem,
-            this.pACTIVEToolStripMenuItem});
+            this.pACTIVEToolStripMenuItem,
+            this.newServerToolStripMenuItem});
             this.dBConnectToolStripMenuItem.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dBConnectToolStripMenuItem.Name = "dBConnectToolStripMenuItem";
             this.dBConnectToolStripMenuItem.Size = new System.Drawing.Size(123, 28);
@@ -1082,21 +1096,21 @@
             // pSYSToolStripMenuItem
             // 
             this.pSYSToolStripMenuItem.Name = "pSYSToolStripMenuItem";
-            this.pSYSToolStripMenuItem.Size = new System.Drawing.Size(173, 30);
+            this.pSYSToolStripMenuItem.Size = new System.Drawing.Size(252, 30);
             this.pSYSToolStripMenuItem.Text = "P_SYS";
             this.pSYSToolStripMenuItem.Click += new System.EventHandler(this.pSYSToolStripMenuItem_Click);
             // 
             // qSYSToolStripMenuItem
             // 
             this.qSYSToolStripMenuItem.Name = "qSYSToolStripMenuItem";
-            this.qSYSToolStripMenuItem.Size = new System.Drawing.Size(173, 30);
+            this.qSYSToolStripMenuItem.Size = new System.Drawing.Size(252, 30);
             this.qSYSToolStripMenuItem.Text = "Q_SYS";
             this.qSYSToolStripMenuItem.Click += new System.EventHandler(this.qSYSToolStripMenuItem_Click);
             // 
             // pACTIVEToolStripMenuItem
             // 
             this.pACTIVEToolStripMenuItem.Name = "pACTIVEToolStripMenuItem";
-            this.pACTIVEToolStripMenuItem.Size = new System.Drawing.Size(173, 30);
+            this.pACTIVEToolStripMenuItem.Size = new System.Drawing.Size(252, 30);
             this.pACTIVEToolStripMenuItem.Text = "P_ACTIVE";
             this.pACTIVEToolStripMenuItem.Click += new System.EventHandler(this.pACTIVEToolStripMenuItem_Click);
             // 
@@ -1186,7 +1200,7 @@
             this.按工单查询ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.gOODSMOVEMENTToolStripMenuItem1});
             this.按工单查询ToolStripMenuItem.Name = "按工单查询ToolStripMenuItem";
-            this.按工单查询ToolStripMenuItem.Size = new System.Drawing.Size(252, 30);
+            this.按工单查询ToolStripMenuItem.Size = new System.Drawing.Size(229, 30);
             this.按工单查询ToolStripMenuItem.Text = "按工单查询";
             // 
             // gOODSMOVEMENTToolStripMenuItem1
@@ -1199,21 +1213,21 @@
             // gOODSMOVEMENTToolStripMenuItem
             // 
             this.gOODSMOVEMENTToolStripMenuItem.Name = "gOODSMOVEMENTToolStripMenuItem";
-            this.gOODSMOVEMENTToolStripMenuItem.Size = new System.Drawing.Size(252, 30);
+            this.gOODSMOVEMENTToolStripMenuItem.Size = new System.Drawing.Size(229, 30);
             this.gOODSMOVEMENTToolStripMenuItem.Text = "物料101查询";
             this.gOODSMOVEMENTToolStripMenuItem.Click += new System.EventHandler(this.gOODSMOVEMENTToolStripMenuItem_Click);
             // 
             // 接口堵塞监控ToolStripMenuItem
             // 
             this.接口堵塞监控ToolStripMenuItem.Name = "接口堵塞监控ToolStripMenuItem";
-            this.接口堵塞监控ToolStripMenuItem.Size = new System.Drawing.Size(252, 30);
+            this.接口堵塞监控ToolStripMenuItem.Size = new System.Drawing.Size(229, 30);
             this.接口堵塞监控ToolStripMenuItem.Text = "接口堵塞监控";
             this.接口堵塞监控ToolStripMenuItem.Click += new System.EventHandler(this.接口堵塞监控ToolStripMenuItem_Click);
             // 
             // 唯一件装配查询ToolStripMenuItem
             // 
             this.唯一件装配查询ToolStripMenuItem.Name = "唯一件装配查询ToolStripMenuItem";
-            this.唯一件装配查询ToolStripMenuItem.Size = new System.Drawing.Size(252, 30);
+            this.唯一件装配查询ToolStripMenuItem.Size = new System.Drawing.Size(229, 30);
             this.唯一件装配查询ToolStripMenuItem.Text = "唯一件装配查询";
             this.唯一件装配查询ToolStripMenuItem.Click += new System.EventHandler(this.唯一件装配查询ToolStripMenuItem_Click);
             // 
@@ -1292,27 +1306,45 @@
             // 
             this.Lb_P_DB.AutoSize = true;
             this.Lb_P_DB.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.Lb_P_DB.Location = new System.Drawing.Point(6, 333);
+            this.Lb_P_DB.Location = new System.Drawing.Point(6, 352);
             this.Lb_P_DB.Name = "Lb_P_DB";
             this.Lb_P_DB.Size = new System.Drawing.Size(172, 24);
             this.Lb_P_DB.TabIndex = 12;
             this.Lb_P_DB.Text = "P系统DB更新权限！";
             // 
-            // label25
+            // newServerToolStripMenuItem
             // 
-            this.label25.AutoSize = true;
-            this.label25.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label25.Location = new System.Drawing.Point(465, 17);
-            this.label25.Name = "label25";
-            this.label25.Size = new System.Drawing.Size(311, 24);
-            this.label25.TabIndex = 27;
-            this.label25.Text = "不勾选后查EC_SETUP_MAT_LABEL表";
+            this.newServerToolStripMenuItem.Name = "newServerToolStripMenuItem";
+            this.newServerToolStripMenuItem.Size = new System.Drawing.Size(252, 30);
+            this.newServerToolStripMenuItem.Text = "NewServer";
+            this.newServerToolStripMenuItem.Click += new System.EventHandler(this.newServerToolStripMenuItem_Click);
+            // 
+            // label26
+            // 
+            this.label26.AutoSize = true;
+            this.label26.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label26.Location = new System.Drawing.Point(17, 313);
+            this.label26.Name = "label26";
+            this.label26.Size = new System.Drawing.Size(83, 24);
+            this.label26.TabIndex = 13;
+            this.label26.Text = "New-Svr";
+            // 
+            // tBColorNewSvr
+            // 
+            this.tBColorNewSvr.BackColor = System.Drawing.SystemColors.Control;
+            this.tBColorNewSvr.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.tBColorNewSvr.Location = new System.Drawing.Point(99, 316);
+            this.tBColorNewSvr.Name = "tBColorNewSvr";
+            this.tBColorNewSvr.Size = new System.Drawing.Size(79, 21);
+            this.tBColorNewSvr.TabIndex = 14;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1707, 907);
+            this.Controls.Add(this.tBColorNewSvr);
+            this.Controls.Add(this.label26);
             this.Controls.Add(this.Lb_P_DB);
             this.Controls.Add(this.menuStrip2);
             this.Controls.Add(this.toolStripContainer2);
@@ -1484,6 +1516,9 @@
         private System.Windows.Forms.Button Btn_LOI_Verify;
         private System.Windows.Forms.ToolStripMenuItem 载具查询ToolStripMenuItem;
         private System.Windows.Forms.Label label25;
+        private System.Windows.Forms.ToolStripMenuItem newServerToolStripMenuItem;
+        private System.Windows.Forms.Label label26;
+        private System.Windows.Forms.TextBox tBColorNewSvr;
     }
 }
 
