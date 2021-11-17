@@ -350,7 +350,7 @@ namespace WindowsFormsVSeA
 
                     Lb_P_DB.Visible = false;
 
-                    Updated_P_DB = false;//操作数据库权限关闭
+                    Updated_P_DB = true;//Q系统 操作数据库权限开放
 
                     //MessageBox.Show("Q-Sys 连接参数读取完成");
                 }
@@ -365,7 +365,7 @@ namespace WindowsFormsVSeA
         {
             try
             {
-                if (SSQL.DbConn("P_connString") == "ok")
+                if (SSQL.DbConn("NewServer") == "ok")
                 {
                     this.tBColorP.BackColor = Color.SpringGreen;
                     this.tBColorQ.BackColor = Color.Empty;
@@ -1350,6 +1350,11 @@ private void dataGridView4_CellClick(object sender, DataGridViewCellEventArgs e)
             {
                 MessageBox.Show(ex.ToString());
             }
+        }
+
+        private void dBConnectToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

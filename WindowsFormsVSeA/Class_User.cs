@@ -2763,7 +2763,7 @@ where mapping.MACHINE_ID like '%{0}%'
             dt3.Columns.Add("CurrentDateTime", typeof(string));
             dt3.Columns.Add("ProductionLine", typeof(string));
 
-            if (DbConn("P_connString") == "ok")
+            if (DbConn("NewServer") == "ok")
             {
                 if (!string.IsNullOrEmpty(Hut))
                 {
