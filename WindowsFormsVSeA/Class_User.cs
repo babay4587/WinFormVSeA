@@ -2230,6 +2230,46 @@ namespace WindowsFormsVSeA
 
 
         /// <summary>
+        /// 工单的简单字段查询
+        /// </summary>
+        /// <param name="OrderID"></param>
+        /// <returns></returns>
+        public DataTable Qty_Order_Simple(string OrderID)
+        {
+            string sql = string.Format(@"
+                                                        Use SITMesDB
+                SELECT distinct
+                EP.ERP_OPERATION_ID as AVO_ID,
+		        WC.MACHINE_ID as Terminal,
+                POMV_ETRY.pom_entry_type_id as AVO,
+                EP.WO_DESCR as AVO_Desc,
+                EP.WORKFLOW as Workflow,
+		        EP.CONTROL_KEY as CONTROL_KEY,
+        
+                dateadd(hour,8,EP.RowUpdated) as DateTimes
+                FROM POMV_ETRY with(nolock)
+                INNER JOIN [ArchSitMesPomRTF8F959F4-452B-462E-BA33-DB852EFDA899/EC_ENTRY_EXT_PROPERTIES] EP ON POMV_ETRY.pom_entry_pk = EP.MES_RECORD_PK
+                INNER JOIN [Arch_RPT_MGR_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EC_SAP_WORKCENTERS] WC ON POMV_ETRY.ERP_WRKCNTR = WC.WORKCENTER_ID
+                WHERE
+                POMV_ETRY.pom_order_id = '{0}'", OrderID);
+
+            DataTable dt = new DataTable();
+
+            try
+            {
+                dt = SQLSet(sql);
+                return dt;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+
+
+
+        /// <summary>
         /// 通过工单号，SNR号查询测量值数据，序列号可以模糊查询 查询条件可为 %
         /// </summary>
         /// <param name="OrderID"></param>
@@ -2704,7 +2744,7 @@ where mapping.MACHINE_ID like '%{0}%'
                               ,[CurrentDateTime]
                               ,[Remark1]
                           FROM [EC_SitMesDB-Extension].[dbo].[EC_CO_HUT_History] with(nolock)
-                          where HUT_ID like '%{0}%' and convert(char(10),[RowUpdated],120)<='{1}'", Hut, DTimePickerDay);
+                          where HUT_ID like '%{0}%' and convert(char(10),[RowUpdated],120)='{1}'", Hut, DTimePickerDay);
             }
 
             if (!string.IsNullOrEmpty(SNR))

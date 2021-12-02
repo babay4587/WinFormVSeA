@@ -212,8 +212,13 @@ namespace WindowsFormsVSeA
 
                     if(dt!=null && dt.Rows.Count > 0)
                     {
-                        dataGridView2.DataSource = dt;
+                        DataRow dr = dt.NewRow();
+                        dr[4] = "Summary Total:";
+                        dr[5] = dt.Rows.Count;
+                        dt.Rows.Add(dr);
 
+                        dataGridView2.DataSource = dt;
+                                                
                         TB_Mat_Fert.Text = dataGridView2.Rows[0].Cells[0].Value.ToString();
                         TB_MatDesc.Text = dataGridView2.Rows[0].Cells[1].Value.ToString();
 
@@ -240,6 +245,7 @@ namespace WindowsFormsVSeA
                 else
                 {
                     MessageBox.Show("order id is null");
+                    return;
                 }
             }
             catch (Exception ex)
@@ -837,6 +843,11 @@ private void dataGridView4_CellClick(object sender, DataGridViewCellEventArgs e)
                 {
                     dt = SSQL.Qty_Order_SNRs(this.tB_Order.Text);
                 }
+                else
+                {
+                    MessageBox.Show("order id is null");
+                    return;
+                }
 
                 if (dt != null && dt.Rows.Count > 0)
                 {
@@ -872,6 +883,11 @@ private void dataGridView4_CellClick(object sender, DataGridViewCellEventArgs e)
                 if (!string.IsNullOrEmpty(this.tB_Order.Text))
                 {
                     dt = SSQL.Qty_Order_ItlkObj(this.tB_Order.Text);
+                }
+                else
+                {
+                    MessageBox.Show("order id is null");
+                    return;
                 }
 
                 if (dt != null && dt.Rows.Count > 0)
@@ -1355,6 +1371,58 @@ private void dataGridView4_CellClick(object sender, DataGridViewCellEventArgs e)
         private void dBConnectToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void btn_order_simple_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(SSQL.DBConnStr))
+                {
+                    MessageBox.Show("数据库未连接 ！");
+                    return;
+                }
+
+                if (!string.IsNullOrEmpty(this.tB_Order.Text))
+                {
+                    DataTable dt_Simple = new DataTable();
+
+                    dt_Simple = SSQL.Qty_Order_Simple(this.tB_Order.Text);
+
+                    if (dt_Simple != null && dt_Simple.Rows.Count > 0)
+                    {
+                        DataRow dr = dt_Simple.NewRow();
+                        dr[1] = "Summary Total:";
+                        dr[2] = dt_Simple.Rows.Count;
+                        dt_Simple.Rows.Add(dr);
+                        //dataGridView8.AutoGenerateColumns = false;
+                        dataGridView2.DataSource = dt_Simple;
+                        dataGridView2.ColumnHeadersDefaultCellStyle.ForeColor = Color.Purple;
+                        dataGridView2.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                        dataGridView2.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                        dataGridView2.Columns[3].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                        dataGridView2.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                        dataGridView2.Columns[5].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                        dataGridView2.Columns[6].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                    }
+                    else
+                    {
+                        MessageBox.Show("查无数据 ！");
+                        return;
+                    }
+
+                }
+                else
+                {
+                    MessageBox.Show("order id is null");
+                    return;
+                }
+
+            }
+            catch
+            {
+
+            }
         }
     }
 }

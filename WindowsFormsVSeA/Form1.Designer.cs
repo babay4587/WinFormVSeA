@@ -144,6 +144,7 @@
             this.Lb_P_DB = new System.Windows.Forms.Label();
             this.label26 = new System.Windows.Forms.Label();
             this.tBColorNewSvr = new System.Windows.Forms.TextBox();
+            this.btn_order_simple = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -355,6 +356,7 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.btn_order_simple);
             this.tabPage2.Controls.Add(this.Btn_OrderItlk);
             this.tabPage2.Controls.Add(this.Btn_Ordr_detail);
             this.tabPage2.Controls.Add(this.checkBox2);
@@ -1077,7 +1079,7 @@
             this.menuStrip1.Location = new System.Drawing.Point(9, 9);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
-            this.menuStrip1.Size = new System.Drawing.Size(311, 32);
+            this.menuStrip1.Size = new System.Drawing.Size(131, 32);
             this.menuStrip1.TabIndex = 7;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -1097,28 +1099,28 @@
             // pSYSToolStripMenuItem
             // 
             this.pSYSToolStripMenuItem.Name = "pSYSToolStripMenuItem";
-            this.pSYSToolStripMenuItem.Size = new System.Drawing.Size(252, 30);
+            this.pSYSToolStripMenuItem.Size = new System.Drawing.Size(184, 30);
             this.pSYSToolStripMenuItem.Text = "P_SYS";
             this.pSYSToolStripMenuItem.Click += new System.EventHandler(this.pSYSToolStripMenuItem_Click);
             // 
             // qSYSToolStripMenuItem
             // 
             this.qSYSToolStripMenuItem.Name = "qSYSToolStripMenuItem";
-            this.qSYSToolStripMenuItem.Size = new System.Drawing.Size(252, 30);
+            this.qSYSToolStripMenuItem.Size = new System.Drawing.Size(184, 30);
             this.qSYSToolStripMenuItem.Text = "Q_SYS";
             this.qSYSToolStripMenuItem.Click += new System.EventHandler(this.qSYSToolStripMenuItem_Click);
             // 
             // pACTIVEToolStripMenuItem
             // 
             this.pACTIVEToolStripMenuItem.Name = "pACTIVEToolStripMenuItem";
-            this.pACTIVEToolStripMenuItem.Size = new System.Drawing.Size(252, 30);
+            this.pACTIVEToolStripMenuItem.Size = new System.Drawing.Size(184, 30);
             this.pACTIVEToolStripMenuItem.Text = "P_ACTIVE";
             this.pACTIVEToolStripMenuItem.Click += new System.EventHandler(this.pACTIVEToolStripMenuItem_Click);
             // 
             // newServerToolStripMenuItem
             // 
             this.newServerToolStripMenuItem.Name = "newServerToolStripMenuItem";
-            this.newServerToolStripMenuItem.Size = new System.Drawing.Size(252, 30);
+            this.newServerToolStripMenuItem.Size = new System.Drawing.Size(184, 30);
             this.newServerToolStripMenuItem.Text = "NewServer";
             this.newServerToolStripMenuItem.Click += new System.EventHandler(this.newServerToolStripMenuItem_Click);
             // 
@@ -1339,6 +1341,17 @@
             this.tBColorNewSvr.Size = new System.Drawing.Size(79, 21);
             this.tBColorNewSvr.TabIndex = 14;
             // 
+            // btn_order_simple
+            // 
+            this.btn_order_simple.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.btn_order_simple.Location = new System.Drawing.Point(723, 4);
+            this.btn_order_simple.Name = "btn_order_simple";
+            this.btn_order_simple.Size = new System.Drawing.Size(136, 41);
+            this.btn_order_simple.TabIndex = 11;
+            this.btn_order_simple.Text = "工单简单明细";
+            this.btn_order_simple.UseVisualStyleBackColor = true;
+            this.btn_order_simple.Click += new System.EventHandler(this.btn_order_simple_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
@@ -1520,6 +1533,7 @@
         private System.Windows.Forms.ToolStripMenuItem newServerToolStripMenuItem;
         private System.Windows.Forms.Label label26;
         private System.Windows.Forms.TextBox tBColorNewSvr;
+        private System.Windows.Forms.Button btn_order_simple;
     }
 }
 
