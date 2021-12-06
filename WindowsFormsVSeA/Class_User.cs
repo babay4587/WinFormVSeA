@@ -2850,9 +2850,7 @@ where mapping.MACHINE_ID like '%{0}%'
 
                         query.ToList().ForEach(qr => dt3.Rows.Add(qr.P_ArcPK,qr.HutNum, qr.SerialNumber, qr.HutID, qr.RowUpdated,qr.CurrentDateTime,qr.ProdLine));
                     }
-
-
-                                           
+                                                               
                     using (SqlConnection destinationConnection = new SqlConnection(DBConnStr))
                     {
                         destinationConnection.Open();
@@ -2890,12 +2888,56 @@ where mapping.MACHINE_ID like '%{0}%'
         }
 
 
-        /// <summary>
-        /// 监控定子电测及浸漆 测量值
-        /// </summary>
-        /// <param name="Interval"></param>
-        /// <returns></returns>
-        public DataTable Get_Meas_T_Test_SNR(int Interval)
+
+        public DataTable Del_Mat_Lab_Temp(string Orderid,string SNR ,string Unikat)
+        {
+
+            string sql = string.Empty;
+
+            if (DbConn("NewServer") == "ok")
+            {
+                
+                sql = string.Format(@"
+                delete 
+	  FROM [SITMesDB].[dbo].[ARCH_T_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EC_SETUP_MAT_LABEL_TEMP_$102$]
+  where ORDER_ID='{0}' and SERIALNUMBER='{1}' and UNIKAT='{2}' ", Orderid, SNR, Unikat);
+
+            }
+
+            if (DbConn("Q_connString") == "ok")
+            {
+
+                sql = string.Format(@"
+                delete 
+	  FROM [SITMesDB].[dbo].[ARCH_T_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EC_SETUP_MAT_LABEL_TEMP_$102$]
+  where ORDER_ID='{0}' and SERIALNUMBER='{1}' and UNIKAT='{2}' ", Orderid, SNR, Unikat);
+
+            }
+
+            
+            DataTable dt = new DataTable();
+
+            try
+            {
+                dt = SQLSet(sql);
+                return dt;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+
+        }
+      
+
+
+
+    /// <summary>
+    /// 监控定子电测及浸漆 测量值
+    /// </summary>
+    /// <param name="Interval"></param>
+    /// <returns></returns>
+    public DataTable Get_Meas_T_Test_SNR(int Interval)
         {
             //string sql = string.Format(@"select LOT_PK,(select mmlot.LotName FROM [SITMesDB].[dbo].[MMLots] mmlot with(nolock)
             //     where LOT_PK=mmlot.LotPK) LotName,DATEADD(hour,8,RowUpdated) as ChinaTime

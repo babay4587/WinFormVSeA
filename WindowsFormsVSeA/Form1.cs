@@ -491,15 +491,17 @@ private void dataGridView4_CellClick(object sender, DataGridViewCellEventArgs e)
                 if (this.tB_SNR.Text != "" || !string.IsNullOrEmpty(this.tB_SNR.Text))
                 {
                     DataTable dt = new DataTable();
-                    dt = SSQL.Qty_Single_SNR(this.tB_SNR.Text);
 
-                    if (dt != null && dt.Rows.Count > 0)
-                    {
-                        tB_5.Text = dt.Rows[0][2].ToString();
-                        tB_4.Text = dt.Rows[0][1].ToString();
-                        tB_3.Text = dt.Rows[0][0].ToString();
+                    //dt = SSQL.Qty_Single_SNR(this.tB_SNR.Text);
 
-                    }
+                    //if (dt != null && dt.Rows.Count > 0)
+                    //{
+                    //    tB_5.Text = dt.Rows[0][2].ToString();
+                    //    tB_4.Text = dt.Rows[0][1].ToString();
+                    //    tB_3.Text = dt.Rows[0][0].ToString();
+
+                    //}
+                    
 
                     dt=SSQL.Qty_SNR_Rework_Temp(this.tB_SNR.Text);
                     if (dt != null && dt.Rows.Count > 0)
@@ -509,6 +511,12 @@ private void dataGridView4_CellClick(object sender, DataGridViewCellEventArgs e)
                         Class_User.DataGridView_UI_Setup(this.dataGridView5);//设置datagridview显示UI
 
                     }
+                    else
+                    {
+                        MessageBox.Show("未查询到有效数据 请检查SNR是否正确 ！");
+                        
+                        return;
+                    }
 
                     dt.Dispose();
                     
@@ -516,6 +524,7 @@ private void dataGridView4_CellClick(object sender, DataGridViewCellEventArgs e)
                 else
                 {
                     MessageBox.Show("Please input Serial Number first ！");
+                    dataGridView5.Rows.Clear();
                     return;
                 }
             }
@@ -531,6 +540,9 @@ private void dataGridView4_CellClick(object sender, DataGridViewCellEventArgs e)
             {
                 Class_User.DataGridView_UI_Setup(this.dataGridView6);//设置datagridview显示UI
 
+                DataTable dt = new DataTable();
+                DataTable dt1 = new DataTable();
+
                 if (string.IsNullOrEmpty(SSQL.DBConnStr))
                 {
                     MessageBox.Show("数据库未连接 ！");
@@ -539,67 +551,59 @@ private void dataGridView4_CellClick(object sender, DataGridViewCellEventArgs e)
 
                 if (!string.IsNullOrEmpty(this.TB_Temp_Order.Text) || !string.IsNullOrEmpty(this.TB_Temp_SNR.Text))
                 {
-                    DataTable dt = new DataTable();
+                    
 
                     if (checkBox3.CheckState == CheckState.Checked)
                     {
                         dt = SSQL.Qty_Mat_Setup_Temp_Db(this.TB_Temp_Order.Text);
-                    }
-                    else
-                    {
-                        dt = SSQL.Qty_Mat_Setup_Db(this.TB_Temp_Order.Text);
-                    }
 
-                    if (dt != null && dt.Rows.Count > 0)
-                    {
-
-                        dataGridView6.DataSource = dt;
-
-                        if (checkBox3.CheckState != CheckState.Checked)
+                        if (dt != null && dt.Rows.Count > 0)
                         {
+
+                            dataGridView6.DataSource = dt.Copy();
                             dataGridView6.Columns[3].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-                            
+
                             dataGridView6.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                             dataGridView6.Columns[5].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                             dataGridView6.Columns[6].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                             dataGridView6.Columns[8].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
 
+                            DV_RealTrace = dt.DefaultView;
                         }
                         else
                         {
-                            dataGridView6.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-                            //dataGridView6.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-                            dataGridView6.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-                            dataGridView6.Columns[5].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-                            dataGridView6.Columns[9].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-                            dataGridView6.Columns[11].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-                            dataGridView6.Columns[7].Visible = false;
-                            dataGridView6.Columns[1].Visible = false;
+                            MessageBox.Show("查无数据 ！");
+                            return;
                         }
-                      
-                        DV_RealTrace = dt.DefaultView;
-
-                        //if (!string.IsNullOrEmpty(this.TB_Temp_Order.Text)) //如果输入工单号 则不显示工单号列
-                        //{
-                        //    dataGridView6.Columns[0].Visible = false;
-
-                        //}
-                        //if (!string.IsNullOrEmpty(this.TB_Temp_SNR.Text)) //如果输入序列号 则不显示序列号列
-                        //{
-                        //    dataGridView6.Columns[1].Visible = false;
-                        //    this.TB_Temp_SNR.Text = dt.Rows[0][1].ToString();
-                        //    dataGridView6.Columns[0].Visible = false;
-                        //    this.TB_Temp_Order.Text= dt.Rows[0][0].ToString();
-                        //}
-
                     }
                     else
                     {
-                        MessageBox.Show("查无数据 ！");
-                        return;
+                        dt1 = SSQL.Qty_Mat_Setup_Db(this.TB_Temp_Order.Text);
+
+                        if (dt1 != null && dt1.Rows.Count > 0)
+                        {
+                            dataGridView6.DataSource = dt1;
+
+                            dataGridView6.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                            //dataGridView6.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                            dataGridView6.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                            dataGridView6.Columns[3].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                            dataGridView6.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                            dataGridView6.Columns[5].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                            dataGridView6.Columns[6].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                            dataGridView6.Columns[7].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                            dataGridView6.Columns[8].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                            
+                        }
+                        else
+                        {
+                            MessageBox.Show("查无数据 ！");
+                            return;
+                        }
                     }
 
-                    dt.Dispose();
+                    //DV_RealTrace = dt.DefaultView;
+                    
 
                 }
                 else
@@ -607,11 +611,16 @@ private void dataGridView4_CellClick(object sender, DataGridViewCellEventArgs e)
                     MessageBox.Show("Please input Serial Number first ！");
                     return;
                 }
+
+                dt.Dispose();
+                dt1.Dispose();
+                DV_RealTrace.Dispose();
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
             }
+           
         }
 
         private void button7_Click(object sender, EventArgs e)
@@ -1120,6 +1129,8 @@ private void dataGridView4_CellClick(object sender, DataGridViewCellEventArgs e)
 
                     DV_RealTrace.RowFilter = string.Format("SERIALNUMBER='{0}'", this.TB_Temp_SNR.Text.Trim());
                     dataGridView6.DataSource = DV_RealTrace;
+
+                    //dataGridView6.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                 }
                 else
                 {
@@ -1419,9 +1430,114 @@ private void dataGridView4_CellClick(object sender, DataGridViewCellEventArgs e)
                 }
 
             }
-            catch
+            catch (Exception ex)
             {
+                MessageBox.Show(ex.ToString());
+            }
+        }
 
+        private void button8_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                               
+                int rws = dataGridView6.SelectedRows.Count;
+
+                StringBuilder Sbuilder = new StringBuilder();
+
+                DialogResult dr = MessageBox.Show("确定删除 共 " + rws + " 数据吗？", "Title: 删除零时表物料", MessageBoxButtons.OKCancel);
+
+                if (dr == DialogResult.OK)
+                {
+                    if (rws > 0)
+                    {
+                        for (int i = 0; i < rws; i++)
+                        {
+                            Sbuilder.AppendLine(string.Format(@"  delete 
+	    FROM [SITMesDB].[dbo].[ARCH_T_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EC_SETUP_MAT_LABEL_TEMP_$102$]
+        where [$IDArchiveValue]='{0}'  ", dataGridView6.Rows[i].Cells[0].Value.ToString()));
+                        }
+                    }
+
+                    if (Form1.SSQL.RunProc(Sbuilder.ToString()))
+                    {
+                        MessageBox.Show("删除操作执行成功 ！");
+                    }
+                    else
+                    {
+                        MessageBox.Show("数据库执行出现问题 ！");
+                    }
+                }
+            
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void groupBox2_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void tabPage6_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btn_rework_del_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(SSQL.DBConnStr))
+                {
+                    MessageBox.Show("数据库未连接 ！");
+                    return;
+                }
+
+                if (dataGridView5.Rows.Count == 0)
+                {
+                    MessageBox.Show("请先执行 查询 操作再进行清除 ！");
+                    return;
+                }
+
+                string Del_reworkLotpk = dataGridView5.Rows[0].Cells[1].Value.ToString();
+
+                if (!string.IsNullOrEmpty(Del_reworkLotpk))
+                {
+                    StringBuilder Sbuilder = new StringBuilder();
+
+                    DialogResult dr = MessageBox.Show("确定清除 " + this.tB_SNR.Text + " 的返工数据吗？", "Title: 清除返工临时表", MessageBoxButtons.OKCancel);
+
+                    if (dr == DialogResult.OK)
+                    {
+                       
+                      Sbuilder.AppendLine(string.Format(@"  use SITMesDB 
+update [SitMesDB].[dbo].[ARCH_T_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EC_LOT_PROP_EXT_$111$]
+  set [REWORK_DATA_TMP]='',[REWORK_DATA_TMP_2]=''
+  where LOT_PK='{0}'  ", Del_reworkLotpk));
+                            
+
+                        if (Form1.SSQL.RunProc(Sbuilder.ToString()))
+                        {
+                            MessageBox.Show("清除操作执行成功 ！");
+                        }
+                        else
+                        {
+                            MessageBox.Show("数据库执行出现问题 ！");
+                        }
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("未获取到SNR的PK值 不能完成清除 ！");
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
             }
         }
     }

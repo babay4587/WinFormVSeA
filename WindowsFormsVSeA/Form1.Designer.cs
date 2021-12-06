@@ -47,6 +47,7 @@
             this.Tb2 = new System.Windows.Forms.TextBox();
             this.button3 = new System.Windows.Forms.Button();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.btn_order_simple = new System.Windows.Forms.Button();
             this.Btn_OrderItlk = new System.Windows.Forms.Button();
             this.Btn_Ordr_detail = new System.Windows.Forms.Button();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
@@ -89,6 +90,7 @@
             this.tabPage6 = new System.Windows.Forms.TabPage();
             this.checkBox3 = new System.Windows.Forms.CheckBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.button8 = new System.Windows.Forms.Button();
             this.Btn_Temp_Filrer = new System.Windows.Forms.Button();
             this.TB_Temp_SNR = new System.Windows.Forms.TextBox();
             this.label14 = new System.Windows.Forms.Label();
@@ -144,7 +146,7 @@
             this.Lb_P_DB = new System.Windows.Forms.Label();
             this.label26 = new System.Windows.Forms.Label();
             this.tBColorNewSvr = new System.Windows.Forms.TextBox();
-            this.btn_order_simple = new System.Windows.Forms.Button();
+            this.btn_rework_del = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -376,6 +378,17 @@
             this.tabPage2.Text = "工单查询";
             this.tabPage2.UseVisualStyleBackColor = true;
             this.tabPage2.Click += new System.EventHandler(this.tabPage2_Click);
+            // 
+            // btn_order_simple
+            // 
+            this.btn_order_simple.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.btn_order_simple.Location = new System.Drawing.Point(723, 4);
+            this.btn_order_simple.Name = "btn_order_simple";
+            this.btn_order_simple.Size = new System.Drawing.Size(136, 41);
+            this.btn_order_simple.TabIndex = 11;
+            this.btn_order_simple.Text = "工单简单明细";
+            this.btn_order_simple.UseVisualStyleBackColor = true;
+            this.btn_order_simple.Click += new System.EventHandler(this.btn_order_simple_Click);
             // 
             // Btn_OrderItlk
             // 
@@ -661,6 +674,7 @@
             // 
             // tabPage5
             // 
+            this.tabPage5.Controls.Add(this.btn_rework_del);
             this.tabPage5.Controls.Add(this.label10);
             this.tabPage5.Controls.Add(this.label11);
             this.tabPage5.Controls.Add(this.label12);
@@ -682,7 +696,7 @@
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(1010, 34);
+            this.label10.Location = new System.Drawing.Point(1095, 34);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(97, 27);
             this.label10.TabIndex = 19;
@@ -691,7 +705,7 @@
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(690, 34);
+            this.label11.Location = new System.Drawing.Point(775, 34);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(97, 27);
             this.label11.TabIndex = 20;
@@ -700,7 +714,7 @@
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(479, 34);
+            this.label12.Location = new System.Drawing.Point(564, 34);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(94, 27);
             this.label12.TabIndex = 21;
@@ -708,21 +722,21 @@
             // 
             // tB_3
             // 
-            this.tB_3.Location = new System.Drawing.Point(1113, 31);
+            this.tB_3.Location = new System.Drawing.Point(1198, 31);
             this.tB_3.Name = "tB_3";
-            this.tB_3.Size = new System.Drawing.Size(425, 34);
+            this.tB_3.Size = new System.Drawing.Size(376, 34);
             this.tB_3.TabIndex = 16;
             // 
             // tB_4
             // 
-            this.tB_4.Location = new System.Drawing.Point(793, 31);
+            this.tB_4.Location = new System.Drawing.Point(878, 31);
             this.tB_4.Name = "tB_4";
             this.tB_4.Size = new System.Drawing.Size(211, 34);
             this.tB_4.TabIndex = 17;
             // 
             // tB_5
             // 
-            this.tB_5.Location = new System.Drawing.Point(579, 31);
+            this.tB_5.Location = new System.Drawing.Point(664, 31);
             this.tB_5.Name = "tB_5";
             this.tB_5.Size = new System.Drawing.Size(105, 34);
             this.tB_5.TabIndex = 18;
@@ -742,7 +756,7 @@
             // btn_Rework
             // 
             this.btn_Rework.Font = new System.Drawing.Font("微软雅黑", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.btn_Rework.Location = new System.Drawing.Point(344, 26);
+            this.btn_Rework.Location = new System.Drawing.Point(327, 26);
             this.btn_Rework.Name = "btn_Rework";
             this.btn_Rework.Size = new System.Drawing.Size(102, 41);
             this.btn_Rework.TabIndex = 14;
@@ -784,6 +798,7 @@
             this.tabPage6.TabIndex = 5;
             this.tabPage6.Text = "Mat Temp Table Qty";
             this.tabPage6.UseVisualStyleBackColor = true;
+            this.tabPage6.Click += new System.EventHandler(this.tabPage6_Click);
             // 
             // checkBox3
             // 
@@ -798,15 +813,28 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.button8);
             this.groupBox2.Controls.Add(this.Btn_Temp_Filrer);
             this.groupBox2.Controls.Add(this.TB_Temp_SNR);
             this.groupBox2.Controls.Add(this.label14);
             this.groupBox2.Location = new System.Drawing.Point(881, 6);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(571, 65);
+            this.groupBox2.Size = new System.Drawing.Size(589, 65);
             this.groupBox2.TabIndex = 28;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "数据筛选";
+            this.groupBox2.Enter += new System.EventHandler(this.groupBox2_Enter);
+            // 
+            // button8
+            // 
+            this.button8.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.button8.Location = new System.Drawing.Point(475, 22);
+            this.button8.Name = "button8";
+            this.button8.Size = new System.Drawing.Size(108, 35);
+            this.button8.TabIndex = 27;
+            this.button8.Text = "Del唯一号";
+            this.button8.UseVisualStyleBackColor = true;
+            this.button8.Click += new System.EventHandler(this.button8_Click);
             // 
             // Btn_Temp_Filrer
             // 
@@ -893,7 +921,7 @@
             this.dataGridView6.Location = new System.Drawing.Point(20, 77);
             this.dataGridView6.Name = "dataGridView6";
             this.dataGridView6.RowTemplate.Height = 30;
-            this.dataGridView6.Size = new System.Drawing.Size(1507, 684);
+            this.dataGridView6.Size = new System.Drawing.Size(1579, 684);
             this.dataGridView6.TabIndex = 16;
             // 
             // tabPage7
@@ -1341,22 +1369,23 @@
             this.tBColorNewSvr.Size = new System.Drawing.Size(79, 21);
             this.tBColorNewSvr.TabIndex = 14;
             // 
-            // btn_order_simple
+            // btn_rework_del
             // 
-            this.btn_order_simple.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.btn_order_simple.Location = new System.Drawing.Point(723, 4);
-            this.btn_order_simple.Name = "btn_order_simple";
-            this.btn_order_simple.Size = new System.Drawing.Size(136, 41);
-            this.btn_order_simple.TabIndex = 11;
-            this.btn_order_simple.Text = "工单简单明细";
-            this.btn_order_simple.UseVisualStyleBackColor = true;
-            this.btn_order_simple.Click += new System.EventHandler(this.btn_order_simple_Click);
+            this.btn_rework_del.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.btn_rework_del.ForeColor = System.Drawing.Color.Red;
+            this.btn_rework_del.Location = new System.Drawing.Point(449, 26);
+            this.btn_rework_del.Name = "btn_rework_del";
+            this.btn_rework_del.Size = new System.Drawing.Size(95, 39);
+            this.btn_rework_del.TabIndex = 22;
+            this.btn_rework_del.Text = "删除";
+            this.btn_rework_del.UseVisualStyleBackColor = true;
+            this.btn_rework_del.Click += new System.EventHandler(this.btn_rework_del_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1707, 907);
+            this.ClientSize = new System.Drawing.Size(1795, 907);
             this.Controls.Add(this.tBColorNewSvr);
             this.Controls.Add(this.label26);
             this.Controls.Add(this.Lb_P_DB);
@@ -1534,6 +1563,8 @@
         private System.Windows.Forms.Label label26;
         private System.Windows.Forms.TextBox tBColorNewSvr;
         private System.Windows.Forms.Button btn_order_simple;
+        private System.Windows.Forms.Button button8;
+        private System.Windows.Forms.Button btn_rework_del;
     }
 }
 
