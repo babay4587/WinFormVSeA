@@ -151,6 +151,12 @@
     <Compile Include="FrmOrderSetup.Designer.cs">
       <DependentUpon>FrmOrderSetup.cs</DependentUpon>
     </Compile>
+    <Compile Include="FrmQtyWOgetOrder.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmQtyWOgetOrder.Designer.cs">
+      <DependentUpon>FrmQtyWOgetOrder.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrmSAP101.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -215,6 +221,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FrmOrderSetup.resx">
       <DependentUpon>FrmOrderSetup.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmQtyWOgetOrder.resx">
+      <DependentUpon>FrmQtyWOgetOrder.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FrmSAP101.resx">
       <DependentUpon>FrmSAP101.cs</DependentUpon>

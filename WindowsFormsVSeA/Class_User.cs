@@ -1676,10 +1676,11 @@ namespace WindowsFormsVSeA
         public DataTable Qty_Mat_Setup_Temp_Db(string Order)
         {
             string sql = string.Format(@"SELECT	
-                                                    [$IDArchiveValue] as  RecordID,
+                                                    
                                                     ORDER_ID,	
                                                     SERIALNUMBER,	
                                                     [MACHINE_ID]	
+                                                    ,[UNIKAT]	
                                                     ,[PROCESS_STEP]	
                                                     ,[COMPONENT_ID] as MatNumber	
 	                                                    ,(select DefName from
@@ -1688,10 +1689,11 @@ namespace WindowsFormsVSeA
                                                     ,[COMPONENT_POS]	
                                                     ,[LIFNR]	
                                                     ,[PACKID]	
-                                                    ,[UNIKAT]	
+                                                    
                                                     ,[EQUIPMENT_ID]	
                                                     ,dateadd(hour,8,[RowUpdated])as dateTimes	
                                                     ,[SETUP_STATE]
+                                                    ,[$IDArchiveValue] as  RecordID
                                                     FROM [SITMesDB].[dbo].[ARCH_T_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EC_SETUP_MAT_LABEL_TEMP_$102$] Mst with(nolock)	
                                                     where order_id='{0}'", Order);
 
@@ -2153,12 +2155,12 @@ namespace WindowsFormsVSeA
                                                         SELECT distinct
                                                         EP.ERP_OPERATION_ID as AVO_ID,
                                                         POMV_ETRY.pom_entry_type_id as AVO,
-                                                        EP.WO_DESCR as AVO_Desc,
-                                                        EP.WORKFLOW as Workflow,
+                                                        EEES.FHM_ID as S7_Equipment,
                                                         WC.MACHINE_ID as Terminal,
                                                         Mapping.TERMINAL as T_Terminal,
                                                         POMV_ETRY.ERP_WRKCNTR as SAP_OBJID,
-                                                        EEES.FHM_ID as S7_Equipment,
+                                                        EP.WORKFLOW as Workflow,
+                                                         EP.WO_DESCR as AVO_Desc,
                                                         cast(prp2.VAL as Integer) as LoopCycleMax,
                                                         EP.CONTROL_KEY as CONTROL_KEY,
                                                         cast(POMV_ETRY_PRP.VAL as integer) as Interlocking_Code,
@@ -2186,12 +2188,12 @@ namespace WindowsFormsVSeA
                                                         SELECT distinct
                                                         EP.ERP_OPERATION_ID as AVO_ID,
                                                         POMV_ETRY.pom_entry_type_id as AVO,
-                                                        EP.WO_DESCR as AVO_Desc,
-                                                        EP.WORKFLOW as Workflow,
+                                                        EEES.FHM_ID as S7_Equipment,
                                                         WC.MACHINE_ID as Terminal,
                                                         Mapping.TERMINAL as T_Terminal,
                                                         POMV_ETRY.ERP_WRKCNTR as SAP_OBJID,
-                                                        EEES.FHM_ID as S7_Equipment,
+                                                        EP.WORKFLOW as Workflow,
+                                                        EP.WO_DESCR as AVO_Desc,
                                                         cast(prp2.VAL as Integer) as LoopCycleMax,
                                                         EP.CONTROL_KEY as CONTROL_KEY,
                                                         cast(POMV_ETRY_PRP.VAL as integer) as Interlocking_Code,
@@ -2266,6 +2268,49 @@ namespace WindowsFormsVSeA
             }
         }
 
+
+        /// <summary>
+        /// ControlKey 工站ZP01 ZV13 等定义
+        /// WoName EC203.。。 等定义
+        /// </summary>
+        /// <param name="OrderID"></param>
+        /// <param name="ControlKey"></param>
+        /// <param name="WoName"></param>
+        /// <returns></returns>
+        public DataTable Qty_WO_GetOrders(string WOType,string ControlKey,string WoName )
+        {
+            string sql = string.Format(@"
+                                                        Use SITMesDB
+                SELECT 
+				POMV_ETRY.pom_order_id as OrderID,
+				 (select pom_ordr.matl_def_id from [SITMesDB].[dbo].[POMV_ORDR] pom_ordr 
+	                where POMV_ETRY.pom_order_id=pom_ordr.pom_order_id) as FERT_MAT_ID,
+                EP.ERP_OPERATION_ID as AVO_ID,
+		        WC.MACHINE_ID as AVO_Number,
+				POMV_ETRY.pom_entry_type_id as AVO_Name,
+                EP.WORKFLOW as AVO_Type,
+				POMV_ETRY.pom_job_id as ObjectID,
+		        EP.CONTROL_KEY as CTRL_KEY,
+				EP.CONFIRMATION_NO,
+				dateadd(hour,8,EP.RowUpdated) as DateTimes,
+				EP.WO_DESCR as AVO_Desc
+                FROM POMV_ETRY with(nolock)
+                INNER JOIN [ArchSitMesPomRTF8F959F4-452B-462E-BA33-DB852EFDA899/EC_ENTRY_EXT_PROPERTIES] EP with(nolock) ON POMV_ETRY.pom_entry_pk = EP.MES_RECORD_PK 
+                INNER JOIN [Arch_RPT_MGR_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EC_SAP_WORKCENTERS] WC with(nolock) ON POMV_ETRY.ERP_WRKCNTR = WC.WORKCENTER_ID
+                WHERE EP.WORKFLOW like '%{0}%' and EP.CONTROL_KEY like '%{1}%' and WC.MACHINE_ID like '%{2}%' ", WOType, ControlKey, WoName);
+
+            DataTable dt = new DataTable();
+
+            try
+            {
+                dt = SQLSet(sql);
+                return dt;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
 
 
 

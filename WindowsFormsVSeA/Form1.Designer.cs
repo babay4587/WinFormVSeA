@@ -77,6 +77,7 @@
             this.label6 = new System.Windows.Forms.Label();
             this.dataGridView4 = new System.Windows.Forms.DataGridView();
             this.tabPage5 = new System.Windows.Forms.TabPage();
+            this.btn_rework_del = new System.Windows.Forms.Button();
             this.label10 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
@@ -146,7 +147,7 @@
             this.Lb_P_DB = new System.Windows.Forms.Label();
             this.label26 = new System.Windows.Forms.Label();
             this.tBColorNewSvr = new System.Windows.Forms.TextBox();
-            this.btn_rework_del = new System.Windows.Forms.Button();
+            this.button9 = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -358,6 +359,7 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.button9);
             this.tabPage2.Controls.Add(this.btn_order_simple);
             this.tabPage2.Controls.Add(this.Btn_OrderItlk);
             this.tabPage2.Controls.Add(this.Btn_Ordr_detail);
@@ -692,6 +694,18 @@
             this.tabPage5.TabIndex = 4;
             this.tabPage5.Text = "Rework Process";
             this.tabPage5.UseVisualStyleBackColor = true;
+            // 
+            // btn_rework_del
+            // 
+            this.btn_rework_del.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.btn_rework_del.ForeColor = System.Drawing.Color.Red;
+            this.btn_rework_del.Location = new System.Drawing.Point(449, 26);
+            this.btn_rework_del.Name = "btn_rework_del";
+            this.btn_rework_del.Size = new System.Drawing.Size(95, 39);
+            this.btn_rework_del.TabIndex = 22;
+            this.btn_rework_del.Text = "删除";
+            this.btn_rework_del.UseVisualStyleBackColor = true;
+            this.btn_rework_del.Click += new System.EventHandler(this.btn_rework_del_Click);
             // 
             // label10
             // 
@@ -1290,14 +1304,14 @@
             // 工单查询ToolStripMenuItem
             // 
             this.工单查询ToolStripMenuItem.Name = "工单查询ToolStripMenuItem";
-            this.工单查询ToolStripMenuItem.Size = new System.Drawing.Size(234, 30);
+            this.工单查询ToolStripMenuItem.Size = new System.Drawing.Size(252, 30);
             this.工单查询ToolStripMenuItem.Text = "工单号查询";
             this.工单查询ToolStripMenuItem.Click += new System.EventHandler(this.工单查询ToolStripMenuItem_Click);
             // 
             // sNR状态查询ToolStripMenuItem
             // 
             this.sNR状态查询ToolStripMenuItem.Name = "sNR状态查询ToolStripMenuItem";
-            this.sNR状态查询ToolStripMenuItem.Size = new System.Drawing.Size(234, 30);
+            this.sNR状态查询ToolStripMenuItem.Size = new System.Drawing.Size(252, 30);
             this.sNR状态查询ToolStripMenuItem.Text = "SNR状态查询";
             this.sNR状态查询ToolStripMenuItem.Click += new System.EventHandler(this.sNR状态查询ToolStripMenuItem_Click);
             // 
@@ -1305,7 +1319,7 @@
             // 
             this.eC线打印机操作ToolStripMenuItem.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.eC线打印机操作ToolStripMenuItem.Name = "eC线打印机操作ToolStripMenuItem";
-            this.eC线打印机操作ToolStripMenuItem.Size = new System.Drawing.Size(234, 30);
+            this.eC线打印机操作ToolStripMenuItem.Size = new System.Drawing.Size(252, 30);
             this.eC线打印机操作ToolStripMenuItem.Text = "EC线打印机操作";
             this.eC线打印机操作ToolStripMenuItem.Click += new System.EventHandler(this.eC线打印机操作ToolStripMenuItem_Click);
             // 
@@ -1313,7 +1327,7 @@
             // 
             this.eCConfigurationToolStripMenuItem.Font = new System.Drawing.Font("Calibri", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.eCConfigurationToolStripMenuItem.Name = "eCConfigurationToolStripMenuItem";
-            this.eCConfigurationToolStripMenuItem.Size = new System.Drawing.Size(234, 30);
+            this.eCConfigurationToolStripMenuItem.Size = new System.Drawing.Size(252, 30);
             this.eCConfigurationToolStripMenuItem.Text = "EC Configuration";
             this.eCConfigurationToolStripMenuItem.Click += new System.EventHandler(this.eCConfigurationToolStripMenuItem_Click);
             // 
@@ -1369,17 +1383,16 @@
             this.tBColorNewSvr.Size = new System.Drawing.Size(79, 21);
             this.tBColorNewSvr.TabIndex = 14;
             // 
-            // btn_rework_del
+            // button9
             // 
-            this.btn_rework_del.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.btn_rework_del.ForeColor = System.Drawing.Color.Red;
-            this.btn_rework_del.Location = new System.Drawing.Point(449, 26);
-            this.btn_rework_del.Name = "btn_rework_del";
-            this.btn_rework_del.Size = new System.Drawing.Size(95, 39);
-            this.btn_rework_del.TabIndex = 22;
-            this.btn_rework_del.Text = "删除";
-            this.btn_rework_del.UseVisualStyleBackColor = true;
-            this.btn_rework_del.Click += new System.EventHandler(this.btn_rework_del_Click);
+            this.button9.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.button9.Location = new System.Drawing.Point(1129, 50);
+            this.button9.Name = "button9";
+            this.button9.Size = new System.Drawing.Size(148, 34);
+            this.button9.TabIndex = 12;
+            this.button9.Text = "根据工站查询";
+            this.button9.UseVisualStyleBackColor = true;
+            this.button9.Click += new System.EventHandler(this.button9_Click);
             // 
             // Form1
             // 
@@ -1565,6 +1578,7 @@
         private System.Windows.Forms.Button btn_order_simple;
         private System.Windows.Forms.Button button8;
         private System.Windows.Forms.Button btn_rework_del;
+        private System.Windows.Forms.Button button9;
     }
 }
 

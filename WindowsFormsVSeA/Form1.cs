@@ -398,6 +398,8 @@ namespace WindowsFormsVSeA
             Lb_P_DB.Visible = false;
             Lb_P_DB.BackColor = Color.RosyBrown;
             this.Size = new Size(1340, 675);
+                        
+
         }
 
         private void button5_Click(object sender, EventArgs e)
@@ -560,6 +562,7 @@ private void dataGridView4_CellClick(object sender, DataGridViewCellEventArgs e)
                         if (dt != null && dt.Rows.Count > 0)
                         {
 
+                            dataGridView6.DataSource = null;
                             dataGridView6.DataSource = dt.Copy();
                             dataGridView6.Columns[3].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
 
@@ -582,6 +585,8 @@ private void dataGridView4_CellClick(object sender, DataGridViewCellEventArgs e)
 
                         if (dt1 != null && dt1.Rows.Count > 0)
                         {
+
+                            dataGridView6.DataSource = null;
                             dataGridView6.DataSource = dt1;
 
                             dataGridView6.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
@@ -614,7 +619,7 @@ private void dataGridView4_CellClick(object sender, DataGridViewCellEventArgs e)
 
                 dt.Dispose();
                 dt1.Dispose();
-                DV_RealTrace.Dispose();
+                
             }
             catch (Exception ex)
             {
@@ -906,6 +911,7 @@ private void dataGridView4_CellClick(object sender, DataGridViewCellEventArgs e)
                     dr[2] = dt.Rows.Count;
                     dt.Rows.Add(dr);
                     //dataGridView8.AutoGenerateColumns = false;
+                    dataGridView2.DataSource = null;
                     dataGridView2.DataSource = dt;
                     dataGridView2.ColumnHeadersDefaultCellStyle.ForeColor = Color.Purple;
                     dataGridView2.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
@@ -1117,6 +1123,11 @@ private void dataGridView4_CellClick(object sender, DataGridViewCellEventArgs e)
         private void tabPage2_Click(object sender, EventArgs e)
         {
             Class_User.DataGridView_UI_Setup(this.dataGridView2);//设置datagridview显示UI
+
+            if (Form1.CUModel.OrderID != "" || !string.IsNullOrEmpty(Form1.CUModel.OrderID))
+            {
+                this.tB_Order.Text = Form1.CUModel.OrderID;
+            }
 
         }
 
@@ -1540,5 +1551,41 @@ update [SitMesDB].[dbo].[ARCH_T_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4B
                 MessageBox.Show(ex.ToString());
             }
         }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+            
+            CUModel.OrderID = this.tB_Order.Text;
+
+            ttst pc = new ttst();
+            pc.or1 = "D321244";
+            pc.c1 = 32325;
+            pc.or2 = "FileDialogCustomPlacesCollection.";
+
+            try
+            {
+                if (string.IsNullOrEmpty(Form1.SSQL.DBConnStr))
+                {
+                    MessageBox.Show("数据库未连接 ！");
+                    return;
+                }
+                else
+                {
+                    new FrmQtyWOgetOrder().Show();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        public class ttst
+        {
+            public string or1 { get; set; }
+            public int c1 { get; set; }
+            public string or2 { get; set; }
+        }
+    
     }
 }
