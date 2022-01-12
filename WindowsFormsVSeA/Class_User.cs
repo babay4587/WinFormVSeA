@@ -35,6 +35,7 @@ namespace WindowsFormsVSeA
             private string Order_ID;
             private List<string> LstStr;
             private List<string> all_files;
+            private DataTable datatable;//private 内部使用的变量名，封装在内部
 
             public string EquipmentID
             {
@@ -75,6 +76,13 @@ namespace WindowsFormsVSeA
                 set { all_files = value; }
                 get { return all_files; }
             }
+
+            public DataTable CUModel_DateTable
+            {
+                set { datatable = value; }
+                get { return datatable; }
+            }
+
         }
 
         public void DataGridView_UI_Setup(DataGridView GV)
@@ -401,6 +409,134 @@ namespace WindowsFormsVSeA
                     }
                 }
                 return tableList;
+            }
+            catch (Exception e)
+            {
+                if (fs != null)
+                {
+                    fs.Close();
+                }
+                return null;
+            }
+        }
+
+
+        public static DataTable ExcelToDataTableNew(string filePath, int sheetCount, bool isColumnName)
+        {
+            
+            DataTable dataTable = null;
+            FileStream fs = null;
+            DataColumn column = null;
+            DataRow dataRow = null;
+            IWorkbook workbook = null;
+            ISheet sheet = null;
+            IRow row = null;
+            ICell cell = null;
+            int startRow = 0;
+            try
+            {
+                using (fs = File.OpenRead(filePath))
+                {
+                    // 2007版本  
+                    if (filePath.IndexOf(".xlsx") >= 0)
+                        workbook = new XSSFWorkbook(fs);
+                    // 2003版本  
+                    else if (filePath.IndexOf(".xls") >= 0)
+                        workbook = new HSSFWorkbook(fs);
+
+                    if (workbook != null)
+                    {
+                        
+                        for (int k = 0; k < sheetCount; k++)
+                        {
+                            sheet = workbook.GetSheetAt(k);//读取第k个sheet//读取第一个sheet，当然也可以循环读取每个sheet  
+                            dataTable = new DataTable();
+                            if (sheet != null)
+                            {
+                                int rowCount = sheet.LastRowNum;//总行数  
+                                if (rowCount > 0)
+                                {
+                                    IRow firstRow = sheet.GetRow(0);//第一行  
+                                    int cellCount = firstRow.LastCellNum;//列数  
+
+                                    //构建datatable的列  
+                                    if (isColumnName)
+                                    {
+
+                                        IRow firstRowt = sheet.GetRow(1);//第一行  
+                                        int cellCountt = firstRow.LastCellNum;//列数  
+                                        startRow = 2;//如果第一行是列名，则从第二行开始读取  
+                                        for (int i = firstRowt.FirstCellNum; i < cellCount; ++i)
+                                        {
+                                            cell = firstRowt.GetCell(i);
+                                            if (cell != null)
+                                            {
+
+                                                {
+                                                    column = new DataColumn(cell.ToString());
+                                                    dataTable.Columns.Add(column);
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        for (int i = firstRow.FirstCellNum; i < cellCount; ++i)
+                                        {
+                                            column = new DataColumn("column" + (i + 1));
+                                            dataTable.Columns.Add(column);
+                                        }
+                                    }
+
+                                    //填充行  
+                                    for (int i = startRow; i <= rowCount; ++i)
+                                    {
+                                        row = sheet.GetRow(i);
+                                        if (row == null) continue;
+
+                                        dataRow = dataTable.NewRow();
+                                        for (int j = row.FirstCellNum; j < cellCount; ++j)
+                                        {
+                                            cell = row.GetCell(j);
+                                            if (cell == null)
+                                            {
+                                                dataRow[j] = "";
+                                            }
+                                            else
+                                            {
+                                                //CellType(Unknown = -1,Numeric = 0,String = 1,Formula = 2,Blank = 3,Boolean = 4,Error = 5,)  
+                                                switch (cell.CellType)
+                                                {
+                                                    case CellType.Blank:
+                                                        dataRow[j] = "";
+                                                        break;
+                                                    case CellType.Numeric:
+                                                        short format = cell.CellStyle.DataFormat;
+                                                        //对时间格式（2015.12.5、2015/12/5、2015-12-5等）的处理  
+                                                        if (format == 14 || format == 22 || format == 31 || format == 57 || format == 58)
+                                                            dataRow[j] = cell.DateCellValue;
+                                                        else
+                                                            dataRow[j] = cell.NumericCellValue;
+                                                        break;
+                                                    case CellType.String:
+                                                        dataRow[j] = cell.StringCellValue;
+                                                        break;
+                                                    default:
+                                                        dataRow[j] = cell.StringCellValue;
+                                                        break;
+                                                }
+                                            }
+                                        }
+                                        dataTable.Rows.Add(dataRow);
+                                    }
+                                }
+                            }
+                            
+                        }
+
+                    }
+                }
+                return dataTable;
             }
             catch (Exception e)
             {
@@ -2285,15 +2421,18 @@ namespace WindowsFormsVSeA
 				POMV_ETRY.pom_order_id as OrderID,
 				 (select pom_ordr.matl_def_id from [SITMesDB].[dbo].[POMV_ORDR] pom_ordr 
 	                where POMV_ETRY.pom_order_id=pom_ordr.pom_order_id) as FERT_MAT_ID,
+                (select mmlot.defname from [SitMesDB].[dbo].[MMDefinitions] mmlot
+	                                        where mmlot.DefID in (select pom_ordr.matl_def_id from [SITMesDB].[dbo].[POMV_ORDR] pom_ordr 
+		                                        where POMV_ETRY.pom_order_id=pom_ordr.pom_order_id)) as FERT_Name,
                 EP.ERP_OPERATION_ID as AVO_ID,
 		        WC.MACHINE_ID as AVO_Number,
 				POMV_ETRY.pom_entry_type_id as AVO_Name,
                 EP.WORKFLOW as AVO_Type,
 				POMV_ETRY.pom_job_id as ObjectID,
 		        EP.CONTROL_KEY as CTRL_KEY,
-				EP.CONFIRMATION_NO,
 				dateadd(hour,8,EP.RowUpdated) as DateTimes,
-				EP.WO_DESCR as AVO_Desc
+				EP.WO_DESCR as AVO_Desc,
+                EP.CONFIRMATION_NO
                 FROM POMV_ETRY with(nolock)
                 INNER JOIN [ArchSitMesPomRTF8F959F4-452B-462E-BA33-DB852EFDA899/EC_ENTRY_EXT_PROPERTIES] EP with(nolock) ON POMV_ETRY.pom_entry_pk = EP.MES_RECORD_PK 
                 INNER JOIN [Arch_RPT_MGR_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EC_SAP_WORKCENTERS] WC with(nolock) ON POMV_ETRY.ERP_WRKCNTR = WC.WORKCENTER_ID
@@ -3138,6 +3277,37 @@ where mapping.MACHINE_ID like '%{0}%'
                 return null;
             }
         }
+
+        public DataTable Qty_MES_ParaConfig()
+        {
+            string sql = string.Format(@"
+                 select   
+                  distinct
+                  WC.[MACHINE_ID],
+                  WC.[WORKCENTER_ID] as Object_ID,
+                  ML.PROCESS_STEP,
+                  mapping.TERMINAL,
+                  mapping.EQUIPMENT_ID
+                  FROM [SitMesDB].[dbo].[Arch_RPT_MGR_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EC_SAP_WORKCENTERS] WC with(nolock)
+                  INNER JOIN [SITMesDB].[dbo].[ARCH_T_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/ML_PROCESS_MACHINE_GROUP_$8$] ML with(nolock)
+                  on WC.MACHINE_ID=ML.MACHINE_ID  
+                  left join [SITMesDB].[dbo].[ARCH_T_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EC_TERMINAL_MAPPING_$91$] mapping with(nolock)
+                  on mapping.MACHINE_ID=WC.MACHINE_ID
+                ");
+
+            DataTable dt = new DataTable();
+
+            try
+            {
+                dt = SQLSet(sql);
+                return dt;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
     }
 
 
@@ -3230,6 +3400,232 @@ where mapping.MACHINE_ID like '%{0}%'
             catch (Exception)
             {
                 return false;
+            }
+        }
+
+
+        /// <summary>
+        /// 合并2个DataTable 两个datatable参数1 和 2 结构可以不同
+        /// </summary>
+        /// <param name="dt1"></param>
+        /// <param name="dt2"></param>
+        /// <returns>合并后的DataTable</returns>
+        public DataTable DatatableToCombin(DataTable dt1,DataTable dt2)
+        {
+            try
+            {
+
+                #region //按列合并Datatable
+
+                DataTable newdatatable =dt1.Clone(); //先克隆表1的结构
+                int ColNum = dt1.Columns.Count;
+
+                for(int i = 0; i < dt2.Columns.Count; i++) //此循环完成表2的结构
+                {
+                    newdatatable.Columns.Add(dt2.Columns[i].ColumnName+(ColNum + 1).ToString());
+                }
+
+                object[] obj1 = new object[newdatatable.Columns.Count];
+
+                for(int j = 0; j<dt1.Rows.Count; j++)    //写表1数据
+                {
+                    dt1.Rows[j].ItemArray.CopyTo(obj1, 0);
+                    newdatatable.Rows.Add(obj1);
+                }
+
+                for(int k = 0; k < dt2.Rows.Count; k++) //写表2数据
+                {
+                    for(int h = 0; h < dt2.Columns.Count; h++)
+                    {
+                        newdatatable.Rows[k][h + dt1.Columns.Count] = dt2.Rows[k][h].ToString(); //在dt1的最后列添加dt2的列
+                    }
+                }
+
+                return newdatatable;
+                #endregion
+
+
+                #region //按行合并Datatable表
+
+                //List<DataTable> Tablelist = new List<DataTable>();
+                //Tablelist.Add(dt1);
+                //Tablelist.Add(dt2);
+
+                //DataTable TempDatetable = Tablelist[0].Clone();
+                //object[] obj = new object[TempDatetable.Columns.Count];
+
+                //foreach(DataTable Di in Tablelist)
+                //{
+                    
+                //    for(int i = 0; i < Di.Rows.Count; i++)
+                //    {
+                //        Di.Rows[i].ItemArray.CopyTo(obj, 0);
+                //        TempDatetable.Rows.Add(obj);
+                //    }
+                    
+                //}
+
+
+                //return TempDatetable;
+
+                #endregion
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+                return null;
+            }
+        }
+
+
+        public DataTable DatatableToCombinN1(DataTable dt1, DataTable dt2)
+        {
+            try
+            {
+
+                #region //按列合并Datatable
+
+                DataTable newdatatable = dt1.Clone(); //先克隆表1的结构
+                int ColNum = dt1.Columns.Count;
+
+                for (int i = 0; i < dt2.Columns.Count; i++) //此循环完成表2的结构
+                {
+                    newdatatable.Columns.Add(dt2.Columns[i].ColumnName);
+                }
+
+                object[] obj = new object[newdatatable.Columns.Count];
+
+                for (int j = 0; j < dt1.Rows.Count; j++)    //写表1数据
+                {
+                    dt1.Rows[j].ItemArray.CopyTo(obj, 0);
+                    newdatatable.Rows.Add(obj);
+                }
+
+                if(dt1.Rows.Count>=dt2.Rows.Count)
+                {
+                    for(int ii=0;ii< dt2.Rows.Count; ii++)
+                    {
+                        for(int jj=0;jj< dt2.Columns.Count; jj++)
+                        {
+                            newdatatable.Rows[ii][jj + dt1.Columns.Count] = dt2.Rows[ii][jj].ToString();
+                        }
+                    }
+                }
+                else
+                {
+                    DataRow dr3;
+                    for(int kk=0;kk<dt2.Rows.Count- dt1.Rows.Count; kk++)
+                    {
+                        dr3 = newdatatable.NewRow();
+                        newdatatable.Rows.Add(dr3);
+                    }
+                }
+                for(int i3 = 0; i3 < dt2.Rows.Count; i3++)
+                {
+                    for (int j3 = 0; j3 < dt2.Columns.Count; j3++)
+                    {
+                        newdatatable.Rows[i3][j3 + dt1.Columns.Count] = dt2.Rows[i3][j3].ToString();
+                    }
+                }
+
+                
+                return newdatatable;
+                #endregion
+
+
+                #region //按行合并Datatable表
+
+                //List<DataTable> Tablelist = new List<DataTable>();
+                //Tablelist.Add(dt1);
+                //Tablelist.Add(dt2);
+
+                //DataTable TempDatetable = Tablelist[0].Clone();
+                //object[] obj = new object[TempDatetable.Columns.Count];
+
+                //foreach(DataTable Di in Tablelist)
+                //{
+
+                //    for(int i = 0; i < Di.Rows.Count; i++)
+                //    {
+                //        Di.Rows[i].ItemArray.CopyTo(obj, 0);
+                //        TempDatetable.Rows.Add(obj);
+                //    }
+
+                //}
+
+
+                //return TempDatetable;
+
+                #endregion
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+                return null;
+            }
+        }
+
+
+        /// <summary>
+        /// 将SourceDt 中指定列复制到新datatable表中 并返回！ 
+        /// </summary>
+        /// <param name="SourceDt"></param>
+        /// <param name="col1"></param>
+        /// <param name="col2"></param>
+        /// <returns></returns>
+        public DataTable Dt_ToNewDtByCol(DataTable SourceDt, string col1,string col2,string col3)
+        {
+            try
+            {
+
+                #region //原表3列组成新的datatable表 并返回
+
+                DataTable newdatatable = SourceDt.DefaultView.ToTable(false,new string[] { col1,col2,col3});
+
+                return newdatatable;
+               
+                #endregion
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+                return null;
+            }
+        }
+
+        public DataTable RemoveEmptyRow(DataTable dt)
+        {
+            try
+            {
+                List<DataRow> RmList = new List<DataRow>();
+
+                for(int i = 0; i < dt.Rows.Count; i++)
+                {
+                    bool EmptyRow = true;
+                    if (!string.IsNullOrEmpty(dt.Rows[i][0].ToString().Trim()))
+                    {
+                        EmptyRow = false;
+                    }
+                    if (EmptyRow)
+                    {
+                        RmList.Add(dt.Rows[i]);
+                    }
+                }
+
+                for(int j = 0; j < RmList.Count; j++)
+                {
+                    dt.Rows.Remove(RmList[j]);
+                }
+
+                return dt;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+                return null;
             }
         }
 

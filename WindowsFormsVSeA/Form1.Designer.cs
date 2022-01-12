@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
@@ -47,6 +48,7 @@
             this.Tb2 = new System.Windows.Forms.TextBox();
             this.button3 = new System.Windows.Forms.Button();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.button9 = new System.Windows.Forms.Button();
             this.btn_order_simple = new System.Windows.Forms.Button();
             this.Btn_OrderItlk = new System.Windows.Forms.Button();
             this.Btn_Ordr_detail = new System.Windows.Forms.Button();
@@ -147,7 +149,9 @@
             this.Lb_P_DB = new System.Windows.Forms.Label();
             this.label26 = new System.Windows.Forms.Label();
             this.tBColorNewSvr = new System.Windows.Forms.TextBox();
-            this.button9 = new System.Windows.Forms.Button();
+            this.label27 = new System.Windows.Forms.Label();
+            this.配置校验ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.参数配置校验ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -189,6 +193,7 @@
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(1683, 930);
             this.tabControl1.TabIndex = 0;
+            this.tabControl1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.tabControl1_MouseClick);
             // 
             // tabPage1
             // 
@@ -381,6 +386,17 @@
             this.tabPage2.UseVisualStyleBackColor = true;
             this.tabPage2.Click += new System.EventHandler(this.tabPage2_Click);
             // 
+            // button9
+            // 
+            this.button9.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.button9.Location = new System.Drawing.Point(1096, 45);
+            this.button9.Name = "button9";
+            this.button9.Size = new System.Drawing.Size(148, 41);
+            this.button9.TabIndex = 12;
+            this.button9.Text = "根据工站查询";
+            this.button9.UseVisualStyleBackColor = true;
+            this.button9.Click += new System.EventHandler(this.button9_Click);
+            // 
             // btn_order_simple
             // 
             this.btn_order_simple.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
@@ -471,6 +487,8 @@
             this.tB_Order.Name = "tB_Order";
             this.tB_Order.Size = new System.Drawing.Size(124, 34);
             this.tB_Order.TabIndex = 6;
+            this.tB_Order.TextChanged += new System.EventHandler(this.tB_Order_TextChanged);
+            this.tB_Order.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.tB_Order_MouseDoubleClick);
             // 
             // button2
             // 
@@ -799,6 +817,7 @@
             // 
             this.tabPage6.Controls.Add(this.checkBox3);
             this.tabPage6.Controls.Add(this.groupBox2);
+            this.tabPage6.Controls.Add(this.label27);
             this.tabPage6.Controls.Add(this.label25);
             this.tabPage6.Controls.Add(this.label15);
             this.tabPage6.Controls.Add(this.button6);
@@ -824,6 +843,7 @@
             this.checkBox3.TabIndex = 33;
             this.checkBox3.Text = "Setup MAT Temp";
             this.checkBox3.UseVisualStyleBackColor = true;
+            this.checkBox3.CheckedChanged += new System.EventHandler(this.checkBox3_CheckedChanged);
             // 
             // groupBox2
             // 
@@ -833,7 +853,7 @@
             this.groupBox2.Controls.Add(this.label14);
             this.groupBox2.Location = new System.Drawing.Point(881, 6);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(589, 65);
+            this.groupBox2.Size = new System.Drawing.Size(588, 65);
             this.groupBox2.TabIndex = 28;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "数据筛选";
@@ -925,6 +945,7 @@
             this.TB_Temp_Order.Name = "TB_Temp_Order";
             this.TB_Temp_Order.Size = new System.Drawing.Size(113, 34);
             this.TB_Temp_Order.TabIndex = 22;
+            this.TB_Temp_Order.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.TB_Temp_Order_MouseDoubleClick);
             // 
             // dataGridView6
             // 
@@ -1104,6 +1125,14 @@
             // 
             this.dataGridView7.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.ColumnHeader;
             this.dataGridView7.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedHeaders;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("微软雅黑", 10F);
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridView7.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.dataGridView7.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView7.EnableHeadersVisualStyles = false;
             this.dataGridView7.Location = new System.Drawing.Point(6, 119);
@@ -1228,10 +1257,11 @@
             this.sAPToolStripMenuItem,
             this.celianghziToolStripMenuItem,
             this.工单管理ToolStripMenuItem,
-            this.载具查询ToolStripMenuItem});
+            this.载具查询ToolStripMenuItem,
+            this.配置校验ToolStripMenuItem});
             this.menuStrip2.Location = new System.Drawing.Point(225, 9);
             this.menuStrip2.Name = "menuStrip2";
-            this.menuStrip2.Size = new System.Drawing.Size(388, 33);
+            this.menuStrip2.Size = new System.Drawing.Size(668, 33);
             this.menuStrip2.TabIndex = 10;
             this.menuStrip2.Text = "SAP 报工";
             this.menuStrip2.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.menuStrip2_ItemClicked);
@@ -1383,16 +1413,32 @@
             this.tBColorNewSvr.Size = new System.Drawing.Size(79, 21);
             this.tBColorNewSvr.TabIndex = 14;
             // 
-            // button9
+            // label27
             // 
-            this.button9.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.button9.Location = new System.Drawing.Point(1129, 50);
-            this.button9.Name = "button9";
-            this.button9.Size = new System.Drawing.Size(148, 34);
-            this.button9.TabIndex = 12;
-            this.button9.Text = "根据工站查询";
-            this.button9.UseVisualStyleBackColor = true;
-            this.button9.Click += new System.EventHandler(this.button9_Click);
+            this.label27.AutoSize = true;
+            this.label27.BackColor = System.Drawing.Color.LightCoral;
+            this.label27.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label27.Location = new System.Drawing.Point(1481, 33);
+            this.label27.Name = "label27";
+            this.label27.Size = new System.Drawing.Size(118, 24);
+            this.label27.TabIndex = 27;
+            this.label27.Text = "必须选中整行";
+            this.label27.Click += new System.EventHandler(this.label27_Click);
+            // 
+            // 配置校验ToolStripMenuItem
+            // 
+            this.配置校验ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.参数配置校验ToolStripMenuItem});
+            this.配置校验ToolStripMenuItem.Name = "配置校验ToolStripMenuItem";
+            this.配置校验ToolStripMenuItem.Size = new System.Drawing.Size(100, 29);
+            this.配置校验ToolStripMenuItem.Text = "配置校验";
+            // 
+            // 参数配置校验ToolStripMenuItem
+            // 
+            this.参数配置校验ToolStripMenuItem.Name = "参数配置校验ToolStripMenuItem";
+            this.参数配置校验ToolStripMenuItem.Size = new System.Drawing.Size(252, 30);
+            this.参数配置校验ToolStripMenuItem.Text = "参数配置校验";
+            this.参数配置校验ToolStripMenuItem.Click += new System.EventHandler(this.参数配置校验ToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -1579,6 +1625,9 @@
         private System.Windows.Forms.Button button8;
         private System.Windows.Forms.Button btn_rework_del;
         private System.Windows.Forms.Button button9;
+        private System.Windows.Forms.Label label27;
+        private System.Windows.Forms.ToolStripMenuItem 配置校验ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 参数配置校验ToolStripMenuItem;
     }
 }
 

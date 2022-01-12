@@ -67,6 +67,8 @@ namespace WindowsFormsVSeA
                     {
                         dataGridView1.DataSource = Ddt;
 
+                        CUModel.CUModel_DateTable = Ddt;
+
                         Class_User.DataGridView_UI_Setup(this.dataGridView1);//设置datagridview显示UI
 
                         dataGridView1.Columns[3].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
@@ -426,6 +428,7 @@ namespace WindowsFormsVSeA
                     
                     if (dt != null && dt.Rows.Count > 0)
                     {
+                        dataGridView4.DataSource = null;
                         dataGridView4.DataSource = dt;
 
                         TB_Mat_Fert.Text = dataGridView4.Rows[0].Cells[0].Value.ToString();
@@ -438,6 +441,7 @@ namespace WindowsFormsVSeA
                         dataGridView4.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                         dataGridView4.Columns[3].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                         dataGridView4.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                        dataGridView4.Columns[7].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
 
                     }
                     else
@@ -559,6 +563,8 @@ private void dataGridView4_CellClick(object sender, DataGridViewCellEventArgs e)
                     {
                         dt = SSQL.Qty_Mat_Setup_Temp_Db(this.TB_Temp_Order.Text);
 
+                        button8.Enabled = true;
+
                         if (dt != null && dt.Rows.Count > 0)
                         {
 
@@ -581,6 +587,9 @@ private void dataGridView4_CellClick(object sender, DataGridViewCellEventArgs e)
                     }
                     else
                     {
+
+                        button8.Enabled = false;
+
                         dt1 = SSQL.Qty_Mat_Setup_Db(this.TB_Temp_Order.Text);
 
                         if (dt1 != null && dt1.Rows.Count > 0)
@@ -651,9 +660,9 @@ private void dataGridView4_CellClick(object sender, DataGridViewCellEventArgs e)
                         dr[2] = dt.Rows.Count;
                         dt.Rows.Add(dr);
 
+                        dataGridView7.DataSource = null;
                         dataGridView7.DataSource = dt;
-
-                        Class_User.DataGridView_UI_Setup(this.dataGridView7);//设置datagridview显示UI
+                                               
 
                         dataGridView7.Columns[0].Visible = false;
                         dataGridView7.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
@@ -662,6 +671,8 @@ private void dataGridView4_CellClick(object sender, DataGridViewCellEventArgs e)
                         dataGridView7.Columns[9].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                         dataGridView7.Columns[11].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
 
+                        
+                        Class_User.DataGridView_UI_Setup(this.dataGridView7);//设置datagridview显示UI
                     }
 
                     DV_RealTrace = dt.DefaultView;
@@ -1124,10 +1135,7 @@ private void dataGridView4_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             Class_User.DataGridView_UI_Setup(this.dataGridView2);//设置datagridview显示UI
 
-            if (Form1.CUModel.OrderID != "" || !string.IsNullOrEmpty(Form1.CUModel.OrderID))
-            {
-                this.tB_Order.Text = Form1.CUModel.OrderID;
-            }
+           
 
         }
 
@@ -1452,23 +1460,35 @@ private void dataGridView4_CellClick(object sender, DataGridViewCellEventArgs e)
             try
             {
                                
-                int rws = dataGridView6.SelectedRows.Count;
+                int rws = dataGridView6.Rows.Count;
+                int delRow = 0;
+
+                if (rws < 0)
+                {
+                    MessageBox.Show("没有要删除的数据记录 ！");
+                    return;
+                }
+
+                for (int i = 0; i < rws; i++)
+                {
+                    if (dataGridView6.Rows[i].Selected == true)
+                    {
+                        delRow = i;
+                    }
+                }
 
                 StringBuilder Sbuilder = new StringBuilder();
 
-                DialogResult dr = MessageBox.Show("确定删除 共 " + rws + " 数据吗？", "Title: 删除零时表物料", MessageBoxButtons.OKCancel);
+                DialogResult dr = MessageBox.Show("确定删除 : " + dataGridView6.Rows[delRow].Cells[1].Value.ToString() +
+                    " ; "+ dataGridView6.Rows[delRow].Cells[3].Value.ToString() + "  数据吗？", "Title: 删除零时表物料", MessageBoxButtons.OKCancel);
 
                 if (dr == DialogResult.OK)
                 {
-                    if (rws > 0)
-                    {
-                        for (int i = 0; i < rws; i++)
-                        {
+                    
                             Sbuilder.AppendLine(string.Format(@"  delete 
 	    FROM [SITMesDB].[dbo].[ARCH_T_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EC_SETUP_MAT_LABEL_TEMP_$102$]
-        where [$IDArchiveValue]='{0}'  ", dataGridView6.Rows[i].Cells[0].Value.ToString()));
-                        }
-                    }
+        where [$IDArchiveValue]='{0}'  ", dataGridView6.Rows[delRow].Cells[13].Value.ToString()));
+                        
 
                     if (Form1.SSQL.RunProc(Sbuilder.ToString()))
                     {
@@ -1479,7 +1499,12 @@ private void dataGridView4_CellClick(object sender, DataGridViewCellEventArgs e)
                         MessageBox.Show("数据库执行出现问题 ！");
                     }
                 }
-            
+                if (dr == DialogResult.Cancel)
+                {
+                    delRow = 0;
+                }
+
+
             }
             catch (Exception ex)
             {
@@ -1494,7 +1519,7 @@ private void dataGridView4_CellClick(object sender, DataGridViewCellEventArgs e)
 
         private void tabPage6_Click(object sender, EventArgs e)
         {
-
+            
         }
 
         private void btn_rework_del_Click(object sender, EventArgs e)
@@ -1585,6 +1610,77 @@ update [SitMesDB].[dbo].[ARCH_T_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4B
             public string or1 { get; set; }
             public int c1 { get; set; }
             public string or2 { get; set; }
+        }
+
+        private void tB_Order_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (Form1.CUModel.OrderID != "" || !string.IsNullOrEmpty(Form1.CUModel.OrderID))
+            {
+                this.tB_Order.Text = Form1.CUModel.OrderID;
+            }
+
+            if (Form1.CUModel.OrderID != "" || !string.IsNullOrEmpty(Form1.CUModel.OrderID))
+            {
+                this.TB_Mat_Real_Trace.Text = Form1.CUModel.OrderID;
+            }
+
+        }
+
+        private void TB_Temp_Order_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (Form1.CUModel.OrderID != "" || !string.IsNullOrEmpty(Form1.CUModel.OrderID))
+            {
+                this.TB_Temp_Order.Text = Form1.CUModel.OrderID;
+            }
+
+                        
+        }
+
+        private void tB_Order_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void tabControl1_MouseClick(object sender, MouseEventArgs e)
+        {
+            this.button8.Enabled = false;
+        }
+
+        private void checkBox3_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox3.CheckState == CheckState.Checked)
+            {
+                button8.Enabled = true;
+            }
+            else
+            {
+                button8.Enabled = false;
+            }
+        }
+
+        private void label27_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void 参数配置校验ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(Form1.SSQL.DBConnStr))
+                {
+                    MessageBox.Show("数据库未连接 ！");
+                    return;
+                }
+                else
+                {
+                    new ParameterCheck().Show();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
         }
     
     }

@@ -102,6 +102,7 @@ namespace WindowsFormsVSeA
                         Form1.Class_User.DataGridView_UI_Setup(this.dataGV_WoGet);//设置datagridview显示UI
                         dataGV_WoGet.ColumnHeadersDefaultCellStyle.ForeColor = Color.Purple;
                         dataGV_WoGet.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                        dataGV_WoGet.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                         dataGV_WoGet.Columns[3].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                         dataGV_WoGet.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                         dataGV_WoGet.Columns[8].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
@@ -112,6 +113,11 @@ namespace WindowsFormsVSeA
 
                         this.TBRowCount.Text = dt.Rows.Count.ToString();
 
+                    }
+                    else
+                    {
+                        MessageBox.Show("查无数据! ");
+                        return;
                     }
 
                 }

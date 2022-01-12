@@ -28,7 +28,7 @@ namespace WindowsFormsVSeA
                     MessageBox.Show("请输入要查询的成品料号！");
                     return;
                 }
-
+                
                 DataTable dt = new DataTable();
                 dt = Form1.SSQL.Qty_GetOrderFromMat(this.TB_FrmOrd_Mat.Text);
                 if (dt != null && dt.Rows.Count > 0)
