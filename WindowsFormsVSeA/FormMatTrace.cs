@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.IO;
 
 namespace WindowsFormsVSeA
 {
@@ -15,7 +16,8 @@ namespace WindowsFormsVSeA
 
         public Class_User.UserModel UserUModel = new Class_User.UserModel();
 
-        public DataTable dt = new DataTable();
+        public DataTable dtSNRs = new DataTable();
+
         public FormMatTrace()
         {
             InitializeComponent();
@@ -24,103 +26,15 @@ namespace WindowsFormsVSeA
         private void FormMatTrace_Load(object sender, EventArgs e)
         {
             
-            TB_SNR.Text = Form1.CUModel.TranSerialNumber;
-            TBunicode.Text = Form1.CUModel.UniqueMatCode;
-            TBMatDesc.Text = Form1.CUModel.MaterialDesc;
+            //TB_SNR.Text = Form1.CUModel.TranSerialNumber;
+            //TBunicode.Text = Form1.CUModel.UniqueMatCode;
+            //TBMatDesc.Text = Form1.CUModel.MaterialDesc;
             string ddb = Form1.SSQL.DBConnStr;
-
-            
-            if (this.TB_SNR.Text != "" || !string.IsNullOrEmpty(this.TB_SNR.Text))
-            {
-                
-                dt =Form1.SSQL.Qty_MMlot_TargetPK2SNR(this.TB_SNR.Text);
-
-                if (dt != null && dt.Rows.Count > 0)
-                {
-
-                    TBAssembleTo.Text = dt.Rows[0][1].ToString();
-                    string MaDesc = dt.Rows[0][0].ToString().Split('_')[0];
-
-                    //TB_TargetMatDesc.Text= TB_TargetMatDesc.Text.Split('_')[0];
-
-                    if ( !string.IsNullOrEmpty(MaDesc))
-                    {
-                        DataTable dtDefName = new DataTable();
-                        dtDefName = Form1.SSQL.Qty_MMwDefVers_MatDesc(MaDesc);
-                        this.TB_TargetMatDesc.Text = dtDefName.Rows[0][2].ToString();
-                    }
-
-                }
-                else
-                {
-                    MessageBox.Show("未查询到 物料追溯 数据");
-                }
-            }
-        }
-
-        /// <summary>
-        /// 点击 操作TreeView控件
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void BtnTreeAct_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                DataTable DtTre = new DataTable();
-
-                if (string.IsNullOrEmpty(TBAssembleTo.Text))
-                {
-                    MessageBox.Show("无可追溯数据");
-                    return;
-                }
-
-                TreeNode tn = new TreeNode("RootCode");
-                //tn.Name = "全部";
-                //tn.Text = "全部";
-                TreeV1.Nodes.Add(tn);
-
-                if (string.IsNullOrEmpty(TBunicode.Text.Split('_')[1].ToString()))
-                {
-                    MessageBox.Show("唯一码：物料号不存在；应该为 : MaterialNumber_UniqueCode 格式");
-                    return;
-                }
-
-                DtTre = Form1.SSQL.Qty_CTEMat(TBunicode.Text.Split('_')[1].ToString());
-
-                if (DtTre.Rows.Count > 0 || dt != null)
-                {
-                    foreach (DataRow Row in DtTre.Rows)
-                    {
-                        string strValue = Row["SerialNumber"].ToString()+";"+Row["changetime"].ToString();
-
-                        TreeNode tn1 = new TreeNode(strValue);
                         
-                        TreeV1.Nodes.Add(tn1);
-                        //if (tn.Nodes.Count > 0)
-                        //{
-                        //    if (!tn.Nodes.ContainsKey(strValue))
-                        //    {
-                        //        BindTreeData(tn, DtTre, strValue);
-                        //    }
-                        //}
-                        //else
-                        //{
-                        //    BindTreeData(tn, DtTre, strValue);
-                        //}
-                    }
-                }
 
-               
-                TreeV1.ExpandAll();
-
-            }
-            catch(Exception ex)
-            {
-                MessageBox.Show(ex.ToString());
-            }
-            
         }
+
+       
 
         private void BindTreeData(TreeNode tn, DataTable dtData, string strValue)
         {
@@ -142,5 +56,193 @@ namespace WindowsFormsVSeA
             }
         }
 
+        private void checkBox_WO_Start_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox_WO_Start.CheckState == CheckState.Checked)
+            {
+                try
+                {
+                    if (string.IsNullOrEmpty(Form1.SSQL.DBConnStr))
+                    {
+                        MessageBox.Show("数据库未连接 ！");
+                        return;
+                    }
+
+
+                    DataTable dtWOStr = new DataTable();
+
+                    if (this.tb_WOStr.Text == "" || string.IsNullOrEmpty(this.tb_WOStr.Text))
+                    {
+                        MessageBox.Show("需要先输入 要查询已过站工站的短名，可 %模糊查询");
+                        return;
+                    }
+
+                    dtWOStr = Form1.SSQL.Qty_NG_ShortName(tb_WOStr.Text.ToUpper());
+                    if (dtWOStr != null || dtWOStr.Rows.Count > 0)
+                    {
+                        this.dataGridView1.DataSource = null;
+                        this.dataGridView1.DataSource = dtWOStr;
+
+                        Form1.Class_User.DataGridView_UI_Setup(this.dataGridView1);//设置datagridview显示UI
+                        this.dataGridView1.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.ToString());
+                }
+            }
+        }
+
+        private void checkBox_WO_End_CheckedChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (checkBox_WO_End.CheckState == CheckState.Checked)
+                {
+
+                    if (string.IsNullOrEmpty(Form1.SSQL.DBConnStr))
+                    {
+                        MessageBox.Show("数据库未连接 ！");
+                        return;
+                    }
+
+
+                    DataTable dtWOEnd = new DataTable();
+
+                    if (this.tb_WOEnd.Text == "" || string.IsNullOrEmpty(this.tb_WOEnd.Text))
+                    {
+                        MessageBox.Show("需要先输入 要查询未开始工站的短名，可 %模糊查询");
+                        return;
+                    }
+
+                    dtWOEnd = Form1.SSQL.Qty_NG_ShortName(tb_WOEnd.Text.ToUpper());
+                    if (dtWOEnd != null || dtWOEnd.Rows.Count > 0)
+                    {
+                        this.dataGridView1.DataSource = null;
+                        this.dataGridView1.DataSource = dtWOEnd;
+
+                        Form1.Class_User.DataGridView_UI_Setup(this.dataGridView1);//设置datagridview显示UI
+                        this.dataGridView1.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(Form1.SSQL.DBConnStr))
+                {
+                    MessageBox.Show("数据库未连接 ！");
+                    return;
+                }
+
+                if (this.tb_WOStr.Text == "" || string.IsNullOrEmpty(this.tb_WOStr.Text))
+                {
+                    MessageBox.Show("需要先输入 已过站工站的短名");
+                    return;
+                }
+
+                if (this.tb_WOEnd.Text == "" || string.IsNullOrEmpty(this.tb_WOEnd.Text))
+                {
+                    MessageBox.Show("需要先输入 未开始工站的短名");
+                    return;
+                }
+
+                string StrDate = DTPicker_WOStartT.Value.ToString("yyyy-MM-dd");
+                string EndDate = DTPicker_WOEndT.Value.ToString("yyyy-MM-dd");
+
+                if (DTPicker_WOStartT.Value >= DTPicker_WOEndT.Value)
+                {
+                    MessageBox.Show("开始时间不能大于结束时间 ！");
+                    return;
+                }
+
+                StrDate = StrDate + " 00:00:00";
+                EndDate = EndDate + " 23:59:59";
+
+                
+                
+                dtSNRs = Form1.SSQL.Qty_WO_End2Start_SNRs(this.tb_WOStr.Text, this.tb_WOEnd.Text, StrDate, EndDate);
+
+                if (dtSNRs == null || dtSNRs.Rows.Count < 0)
+                {
+                    MessageBox.Show("查无数据 ！");
+                    return;
+                }
+                else
+                {
+                    this.dataGridView1.DataSource = null;
+                    this.dataGridView1.DataSource = dtSNRs;
+
+                    Form1.Class_User.DataGridView_UI_Setup(this.dataGridView1);//设置datagridview显示UI
+
+                    dataGridView1.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                    dataGridView1.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                    dataGridView1.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                    
+                    this.label6.Text = dtSNRs.Rows.Count.ToString() + "  行";
+
+                    
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+                {
+                    string localFilePath = saveFileDialog1.FileName.ToString(); //获得文件路径
+                    string FilePath = localFilePath.Substring(0, localFilePath.LastIndexOf("\\")); //获取文件路径，不带文件名
+                    string fileNameExt = localFilePath.Substring(localFilePath.LastIndexOf("\\") + 1); //获取文件名，不带路径
+                    string newFileName = fileNameExt+"_"+DateTime.Now.ToString("yyyyMMdd") ;
+
+                    this.textBox_path.Text = Path.Combine(FilePath, newFileName + ".xlsx");
+
+                    DataTable dt2Exl = new DataTable();
+                    dt2Exl.Columns.Add("SNR", typeof(string));
+
+                    if (dtSNRs == null || dtSNRs.Rows.Count < 0)
+                    {
+                        MessageBox.Show("未查询到数据，不能导出" );
+                        return;
+                    }
+                    else
+                    {
+                        for (int i = 0; i < dtSNRs.Rows.Count; i++)
+                        {
+                            DataRow newRow = dt2Exl.NewRow();
+                            newRow["SNR"] = dataGridView1.Rows[i].Cells[1].Value.ToString(); //默认是第二列
+                            dt2Exl.Rows.Add(newRow);
+
+                        }
+                    }
+
+                    int WriteRows = ExcelHelper.DataTableToExcel(dt2Exl, this.textBox_path.Text);
+                    MessageBox.Show("写入 EXCEL文件共：" + WriteRows.ToString() + " 行");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
     }
 }

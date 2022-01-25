@@ -421,6 +421,13 @@ namespace WindowsFormsVSeA
         }
 
 
+        /// <summary>
+        /// 从Excel文件读取数据至DataTable;文件路径，几个sheet，是否有表头
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <param name="sheetCount"></param>
+        /// <param name="isColumnName"></param>
+        /// <returns></returns>
         public static DataTable ExcelToDataTableNew(string filePath, int sheetCount, bool isColumnName)
         {
             
@@ -550,6 +557,216 @@ namespace WindowsFormsVSeA
 
         #endregion
 
+       public static int DataTableToExcel(DataTable dataTable,string filePath)
+        {
+            var Dt = dataTable;
+            int WriteRowCount = 0;
+
+            try
+            {
+                using (var fileStream = new FileStream(filePath, FileMode.Create,FileAccess.Write))
+                {
+                    var workBook = new XSSFWorkbook();
+                    var sheet = workBook.CreateSheet("sheet1");
+
+                    #region
+
+                    IRow headRow = sheet.CreateRow(0);//写入列名
+                    for(int col_Index=0; col_Index < Dt.Columns.Count; col_Index++)
+                    {
+                        headRow.CreateCell(col_Index).SetCellValue(Dt.Columns[col_Index].ColumnName);
+                    }
+
+                    WriteRowCount++;
+
+                    for (int row = 0; row < Dt.Rows.Count; row++)
+                    {
+                        IRow newrow = sheet.CreateRow(WriteRowCount);
+                        for(int col = 0; col < Dt.Columns.Count; col++)
+                        {
+                            newrow.CreateCell(col).SetCellValue(Dt.Rows[row][col].ToString());
+                        }
+
+                        WriteRowCount++; //写下一行
+                    }
+
+                    workBook.Write(fileStream);
+                    workBook.Clear();
+                    workBook.Close();
+
+                    #endregion
+
+                    #region
+                    //for(int i = 0; i < Dt.Columns.Count; i++)
+                    //{
+                    //    ICell cell = headRow.CreateCell(i);
+                    //    cell.SetCellValue(Dt.Columns[i] == null ? "" : Dt.Columns[i].ToString());
+                    //}
+                    //if (Dt.Rows.Count > 0 || Dt != null)
+                    //{
+                    //    for(int j = 0; j < Dt.Rows.Count; j++)
+                    //    {
+                    //        IRow newRow = sheet.CreateRow(j+ 1);
+                    //        for (int k= 0; k < Dt.Columns.Count; k++)
+                    //        {
+                    //            ICell cell = newRow.CreateCell(j);
+                    //            cell.SetCellValue(Dt.Rows[j][k] == null ? "" : Dt.Rows[j][k].ToString());
+                    //        }
+                    //    }
+                    //}
+
+                    //workBook.Write(fileStream);
+                    //workBook.Clear();
+                    //workBook.Close();
+                    #endregion
+
+
+
+
+                }
+                return WriteRowCount;
+            }
+            catch (Exception e)
+            {
+               
+                return 0;
+            }
+        }
+
+
+        /// <summary>
+        /// 按模板导出数据到Excel
+        /// </summary>
+        /// <param name="dtSource">数据源</param>
+        /// <param name="strTemplateFileName">模板路径、文件名</param>
+        /// <param name="sheetName">sheet名称</param>
+        /// <returns></returns>
+        public static MemoryStream ExportExcelForDtByNPOI(DataTable dtSource, string strTemplateFileName, string sheetName)
+        {
+            int rowIndex = 1;       // 起始行
+            FileStream file = new FileStream(strTemplateFileName, FileMode.Open, FileAccess.Read);//读入excel模板
+            XSSFWorkbook workbook = new XSSFWorkbook(file);
+            ISheet sheet = workbook.GetSheet(sheetName);
+            #region 右击文件 属性信息
+            //{
+            //    DocumentSummaryInformation dsi = PropertySetFactory.CreateDocumentSummaryInformation();
+            //    dsi.Company = "中电二所";
+            //    workbook..DocumentSummaryInformation = dsi;
+            //    SummaryInformation si = PropertySetFactory.CreateSummaryInformation();
+            //    si.Author = "中电二所"; //填加xls文件作者信息
+            //    si.ApplicationName = "中电二所MES系统"; //填加xls文件创建程序信息
+            //    si.LastAuthor = "中电二所"; //填加xls文件最后保存者信息
+            //    si.Comments = "中电二所"; //填加xls文件作者信息
+            //    si.Title = "物料主数据导入模板"; //填加xls文件标题信息
+            //    si.Subject = "物料主数据导入模板";//填加文件主题信息
+            //    si.CreateDateTime = DateTime.Now;
+            //    workbook.SummaryInformation = si;
+            //}
+            #endregion
+
+            foreach (DataRow row in dtSource.Rows)
+            {
+                #region 填充内容
+                IRow dataRow = sheet.GetRow(rowIndex);
+                if (dataRow == null)
+                {
+                    dataRow = sheet.CreateRow(rowIndex);
+                }
+
+                int columnIndex = 0;        // 开始列（0为标题列，从1开始）
+                foreach (DataColumn column in dtSource.Columns)
+                {
+                    // 列序号赋值
+                    if (columnIndex >= dtSource.Columns.Count)
+                        break;
+
+                    ICell newCell = dataRow.GetCell(columnIndex);
+                    if (newCell == null)
+                        newCell = dataRow.CreateCell(columnIndex);
+
+                    string drValue = row[column].ToString();
+
+                    switch (column.DataType.ToString())
+                    {
+                        case "System.String"://字符串类型
+                            newCell.SetCellValue(drValue);
+                            break;
+                        case "System.DateTime"://日期类型
+                            DateTime dateV;
+                            DateTime.TryParse(drValue, out dateV);
+                            newCell.SetCellValue(dateV);
+
+                            break;
+                        case "System.Boolean"://布尔型
+                            bool boolV = false;
+                            bool.TryParse(drValue, out boolV);
+                            newCell.SetCellValue(boolV);
+                            break;
+                        case "System.Int16"://整型
+                        case "System.Int32":
+                        case "System.Int64":
+                        case "System.Byte":
+                            int intV = 0;
+                            int.TryParse(drValue, out intV);
+                            newCell.SetCellValue(intV);
+                            break;
+                        case "System.Decimal"://浮点型
+                        case "System.Double":
+                            double doubV = 0;
+                            double.TryParse(drValue, out doubV);
+                            newCell.SetCellValue(doubV);
+                            break;
+                        case "System.DBNull"://空值处理
+                            newCell.SetCellValue("");
+                            break;
+                        default:
+                            newCell.SetCellValue("");
+                            break;
+                    }
+                    columnIndex++;
+                }
+                #endregion
+
+                rowIndex++;
+            }
+
+            using (MemoryStream ms = new MemoryStream())
+            {
+                workbook.Write(ms);
+                ms.Flush();
+                ms.Position = 0;
+                sheet = null;
+                workbook = null;
+                ms.Close();
+                ms.Dispose();
+                //sheet.Dispose();
+                //workbook.Dispose();//一般只用写这一个就OK了，他会遍历并释放所有资源，但当前版本有问题所以只释放sheet
+                return ms;
+            }
+        }
+
+
+        public static MemoryStream ExportExcelForDtByNPOINO(DataTable dtSource, string strTemplateFileName, string sheetName)
+        {
+
+            FileStream file = new FileStream(strTemplateFileName, FileMode.Open, FileAccess.Read);//读入excel模板
+            XSSFWorkbook workbook = new XSSFWorkbook(file);
+            ISheet sheet = workbook.GetSheet(sheetName);
+
+            using (MemoryStream ms = new MemoryStream())
+            {
+                workbook.Write(ms);
+                ms.Flush();
+                ms.Position = 0;
+                sheet = null;
+                workbook = null;
+                ms.Close();
+                ms.Dispose();
+                //sheet.Dispose();
+                //workbook.Dispose();//一般只用写这一个就OK了，他会遍历并释放所有资源，但当前版本有问题所以只释放sheet
+                return ms;
+            }
+        }
 
     }
 
@@ -1890,15 +2107,16 @@ namespace WindowsFormsVSeA
                                         ,EEP.ERP_OPERATION_ID as AVO_ID, POMV_ETRY.pom_entry_type_id as WorkOperationID
                                         ,gen.COMPONENT_ID as MatNumber
                                         ,MMwDefVers.DefName as MatName
+                                        , gen.LOT_ID as UniqueCode
                                         ,gen.LIFNR
                                         , gen.PACKID
-                                        , gen.LOT_ID as UniqueCode
+                                        
                                         , gen.QUANTITY as BoM_QUANTITY
                                         , dateadd(hour,8,gen.RowUpdated)as dateTimes
-                                        from [ArchSitMesPomRTF8F959F4-452B-462E-BA33-DB852EFDA899/EC_ENTRY_EXT_GENEALOGY_MATLABEL] gen		
-                                        INNER JOIN POMV_ETRY on gen.MES_RECORD_PK = POMV_ETRY.pom_entry_pk		
-                                        INNER JOIN [ArchSitMesPomRTF8F959F4-452B-462E-BA33-DB852EFDA899/EC_ENTRY_EXT_PROPERTIES] EEP on POMV_ETRY.pom_entry_pk = EEP.MES_RECORD_PK		
-                                        INNER JOIN MMwDefVers ON MMwDefVers.DefID = gen.COMPONENT_ID		
+                                        from [ArchSitMesPomRTF8F959F4-452B-462E-BA33-DB852EFDA899/EC_ENTRY_EXT_GENEALOGY_MATLABEL] gen	with(nolock)	
+                                        INNER JOIN POMV_ETRY with(nolock)	 on gen.MES_RECORD_PK = POMV_ETRY.pom_entry_pk		
+                                        INNER JOIN [ArchSitMesPomRTF8F959F4-452B-462E-BA33-DB852EFDA899/EC_ENTRY_EXT_PROPERTIES] EEP with(nolock)	 on POMV_ETRY.pom_entry_pk = EEP.MES_RECORD_PK		
+                                        INNER JOIN MMwDefVers with(nolock)	 ON MMwDefVers.DefID = gen.COMPONENT_ID		
                                         where		
                                         POMV_ETRY.pom_order_id='{0}'",  Order);
 
@@ -1928,9 +2146,10 @@ namespace WindowsFormsVSeA
                                         ,EEP.ERP_OPERATION_ID as AVO_ID, POMV_ETRY.pom_entry_type_id as WorkOperationID
                                         ,gen.COMPONENT_ID as MatNumber
                                         ,MMwDefVers.DefName as MatName
+                                        , gen.LOT_ID as UniqueCode
                                         ,gen.LIFNR
                                         , gen.PACKID
-                                        , gen.LOT_ID as UniqueCode
+                                        
                                         , gen.QUANTITY as BoM_QUANTITY
                                         , dateadd(hour,8,gen.RowUpdated)as dateTimes
                                         from [ArchSitMesPomRTF8F959F4-452B-462E-BA33-DB852EFDA899/EC_ENTRY_EXT_GENEALOGY_MATLABEL] gen		
@@ -2755,6 +2974,164 @@ namespace WindowsFormsVSeA
                 return null;
             }
         }
+
+
+        /// <summary>
+        /// 通过唯一码 递归查询所有父节点；参数：唯一码
+        /// </summary>
+        /// <param name="UniqueCode">唯一码</param>
+        /// <returns>数据表datatable</returns>
+        public DataTable Qty_Unique_Digui(string UniqueCode)
+        {
+            string sql = string.Format(@"
+                    with 
+                    CTE 
+                    as 
+                    (
+                    select 
+                        snr.LotID,
+	                    snr.LotName ,
+	                    snr.targetlotpk 
+                      ,dateadd(hour,8,snr.RowUpdated) changetime
+                       FROM [SitMesDb].[dbo].[MMLots] snr
+                       with(nolock)
+                       where snr.LotName= '{0}'
+                       union all
+                       select 
+	
+	                    sun.LotID,
+	                    sun.LotName ,
+	                    sun.targetlotpk
+                      ,dateadd(hour,8,sun.RowUpdated) changetime
+                       FROM [SitMesDb].[dbo].[MMLots] sun
+                       with(nolock)
+                       inner join CTE on sun.LotPK=CTE.targetlotpk
+   
+                    )
+                    select LotID,
+                    substring(LotID,1,len(LotID)-CHARINDEX('_',REVERSE(LotID))) as FinalMat,
+                    (select MMdef.DefName from [SitMesDb].[dbo].MMwDefVers MMdef with(nolock)
+                    where MMdef.DefID=substring(CTE.LotID,1,len(CTE.LotID)-CHARINDEX('_',REVERSE(CTE.LotID)))) as FertMatName,
+                    LotName,targetlotpk,changetime from CTE with(nolock)
+                     ", UniqueCode);    
+
+            DataTable dt = new DataTable();
+
+            try
+            {
+                dt = SQLSet(sql);
+                return dt;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+
+        /// <summary>
+        /// shortname工站短名称，可 % 模糊查询
+        /// </summary>
+        /// <param name="shortname">通过工站短名 模糊查询</param>
+        /// <returns>Datatable</returns>
+        public DataTable Qty_NG_ShortName(string shortname)
+        {
+            string sql = string.Format(@"select id as WO_ShortName,pom_entry_type_pk as WO_ID,DATEADD(hour,8,RowUpdated) as UpdateTime
+                    from [SITMesDB].[dbo].POM_ENTRY_TYPE with(nolock)
+                    where id like '%{0}%' ", shortname);
+
+            DataTable dt = new DataTable();
+
+            try
+            {
+                dt = SQLSet(sql);
+                return dt;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+
+        /// <summary>
+        /// 通过开始，结束时间，工站短名 查询所有NG的SNRs
+        /// </summary>
+        /// <param name="StartT"></param>
+        /// <param name="EndT"></param>
+        /// <param name="WO_Name"></param>
+        /// <returns></returns>
+        public DataTable Qty_WO_NG_SNRs(string StartT,string EndT,string WO_Name)
+        {
+            string sql = string.Format(@"
+                    use[SITMesDB]
+                    SELECT
+                    MMLots.LotName as SerialNumber,
+                    POM_ENTRY_TYPE.id as WorkCenterName, 
+                    MMLots.LotStatusPK,
+                    lotRoute .ROUTE_POS, 
+                    lotRoute.ROUTE_POS_STATUS , 
+                    dateadd(hour,8,lotRoute.RowUpdated) as RowUpdated
+                    FROM
+                    [ARCH_T_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EC_LOT_ROUTE_$112$] lotRoute with(nolock)
+                    INNER JOIN MMLots with(nolock) ON lotRoute.LOT_PK = MMLots.LotPK 
+                    INNER JOIN POM_ENTRY_TYPE with(nolock) ON lotRoute.ENTRY_TYPE_PK = POM_ENTRY_TYPE.pom_entry_type_pk
+                    INNER JOIN [ARCH_T_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/STANDARD_WORK_OPERATION_$7$] swo with(nolock) ON POM_ENTRY_TYPE.id = swo.SHORT_TEXT
+                    where POM_ENTRY_TYPE.id='{2}'
+                    and DATEADD(hour,8,lotRoute.RowUpdated)>='{0}' and DATEADD(hour,8,lotRoute.RowUpdated)<='{1}'
+                    and lotRoute.ROUTE_POS_STATUS='qc' and LotStatusPK=6 and FLAG_REWORK<>1
+                    order by RowUpdated desc
+                    ", StartT,EndT, WO_Name);
+
+            DataTable dt = new DataTable();
+
+            try
+            {
+                dt = SQLSet(sql);
+                return dt;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+
+
+        public DataTable Qty_WO_End2Start_SNRs(string StartWO, string EndWO, string StartTime,string EndTime)
+        {
+            string sql = string.Format(@"
+                    use[SITMesDB]
+                    
+                    select LOT_PK,(select mmlot.LotName FROM [SITMesDB].[dbo].[MMLots] mmlot with(nolock)
+	                    where LOT_PK=mmlot.LotPK) LotName,DATEADD(hour,8,rt.RowUpdated) as Dates
+                      FROM [SitMesDb].[dbo].[ARCH_T_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EC_LOT_ROUTE_$112$] rt with(nolock)
+                      inner join [SITMesDB].[dbo].[POM_ENTRY_TYPE] ETRY_TYP with(nolock) on ETRY_TYP.pom_entry_type_pk=rt.entry_type_pk
+                      and ETRY_TYP.id='{0}' and ROUTE_POS_STATUS='prcs' 
+                       and DATEADD(hour,8,rt.RowUpdated)>= '{2}' and DATEADD(hour,8,rt.RowUpdated)<='{3}'
+                       and LOT_PK in 
+                       (select LOT_PK
+	                      FROM [SitMesDb].[dbo].[ARCH_T_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EC_LOT_ROUTE_$112$] im with(nolock)
+	                      inner join [SITMesDB].[dbo].[POM_ENTRY_TYPE] ETRY_TYP with(nolock) on ETRY_TYP.pom_entry_type_pk=im.entry_type_pk
+	                      where ETRY_TYP.id='{1}' and ROUTE_POS_STATUS='' 
+	                       and DATEADD(hour,8,im.RowUpdated)>=  '{2}'  and DATEADD(hour,8,im.RowUpdated)<='{3}'
+		                    )
+    
+                    ", StartWO, EndWO, StartTime, EndTime);
+
+            DataTable dt = new DataTable();
+
+            try
+            {
+                dt = SQLSet(sql);
+                return dt;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
 
 
         /// <summary>

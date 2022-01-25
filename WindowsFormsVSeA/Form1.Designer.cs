@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
@@ -74,8 +73,20 @@
             this.Btn_eCar_Report = new System.Windows.Forms.Button();
             this.dataGridView8 = new System.Windows.Forms.DataGridView();
             this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.label31 = new System.Windows.Forms.Label();
+            this.checkBox_toExcel = new System.Windows.Forms.CheckBox();
+            this.checkBox_NG = new System.Windows.Forms.CheckBox();
+            this.btn_Uni_find = new System.Windows.Forms.Button();
+            this.DTPicker_UniEndT = new System.Windows.Forms.DateTimePicker();
+            this.DTPicker_UniStartT = new System.Windows.Forms.DateTimePicker();
+            this.btn_importExcel = new System.Windows.Forms.Button();
             this.button5 = new System.Windows.Forms.Button();
+            this.textBox_ExcelPath = new System.Windows.Forms.TextBox();
+            this.textBox_shortName = new System.Windows.Forms.TextBox();
             this.TB_UniMat = new System.Windows.Forms.TextBox();
+            this.label30 = new System.Windows.Forms.Label();
+            this.label29 = new System.Windows.Forms.Label();
+            this.label28 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.dataGridView4 = new System.Windows.Forms.DataGridView();
             this.tabPage5 = new System.Windows.Forms.TabPage();
@@ -97,6 +108,7 @@
             this.Btn_Temp_Filrer = new System.Windows.Forms.Button();
             this.TB_Temp_SNR = new System.Windows.Forms.TextBox();
             this.label14 = new System.Windows.Forms.Label();
+            this.label27 = new System.Windows.Forms.Label();
             this.label25 = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
             this.button6 = new System.Windows.Forms.Button();
@@ -145,13 +157,13 @@
             this.eC线打印机操作ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.eCConfigurationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.载具查询ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.配置校验ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.参数配置校验ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripContainer2 = new System.Windows.Forms.ToolStripContainer();
             this.Lb_P_DB = new System.Windows.Forms.Label();
             this.label26 = new System.Windows.Forms.Label();
             this.tBColorNewSvr = new System.Windows.Forms.TextBox();
-            this.label27 = new System.Windows.Forms.Label();
-            this.配置校验ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.参数配置校验ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.button10 = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -637,8 +649,21 @@
             // 
             // tabPage4
             // 
+            this.tabPage4.Controls.Add(this.button10);
+            this.tabPage4.Controls.Add(this.label31);
+            this.tabPage4.Controls.Add(this.checkBox_toExcel);
+            this.tabPage4.Controls.Add(this.checkBox_NG);
+            this.tabPage4.Controls.Add(this.btn_Uni_find);
+            this.tabPage4.Controls.Add(this.DTPicker_UniEndT);
+            this.tabPage4.Controls.Add(this.DTPicker_UniStartT);
+            this.tabPage4.Controls.Add(this.btn_importExcel);
             this.tabPage4.Controls.Add(this.button5);
+            this.tabPage4.Controls.Add(this.textBox_ExcelPath);
+            this.tabPage4.Controls.Add(this.textBox_shortName);
             this.tabPage4.Controls.Add(this.TB_UniMat);
+            this.tabPage4.Controls.Add(this.label30);
+            this.tabPage4.Controls.Add(this.label29);
+            this.tabPage4.Controls.Add(this.label28);
             this.tabPage4.Controls.Add(this.label6);
             this.tabPage4.Controls.Add(this.dataGridView4);
             this.tabPage4.Location = new System.Drawing.Point(4, 36);
@@ -648,11 +673,88 @@
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "Unique Mat Query";
             this.tabPage4.UseVisualStyleBackColor = true;
+            this.tabPage4.Click += new System.EventHandler(this.tabPage4_Click);
+            // 
+            // label31
+            // 
+            this.label31.AutoSize = true;
+            this.label31.Font = new System.Drawing.Font("微软雅黑", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label31.Location = new System.Drawing.Point(1295, 69);
+            this.label31.Name = "label31";
+            this.label31.Size = new System.Drawing.Size(17, 21);
+            this.label31.TabIndex = 17;
+            this.label31.Text = "\\";
+            // 
+            // checkBox_toExcel
+            // 
+            this.checkBox_toExcel.AutoSize = true;
+            this.checkBox_toExcel.Font = new System.Drawing.Font("微软雅黑", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.checkBox_toExcel.Location = new System.Drawing.Point(1158, 68);
+            this.checkBox_toExcel.Name = "checkBox_toExcel";
+            this.checkBox_toExcel.Size = new System.Drawing.Size(131, 25);
+            this.checkBox_toExcel.TabIndex = 16;
+            this.checkBox_toExcel.Text = "导出至EXCEL";
+            this.checkBox_toExcel.UseVisualStyleBackColor = true;
+            this.checkBox_toExcel.CheckedChanged += new System.EventHandler(this.checkBox_toExcel_CheckedChanged);
+            // 
+            // checkBox_NG
+            // 
+            this.checkBox_NG.AutoSize = true;
+            this.checkBox_NG.Font = new System.Drawing.Font("微软雅黑", 8F);
+            this.checkBox_NG.Location = new System.Drawing.Point(199, 68);
+            this.checkBox_NG.Name = "checkBox_NG";
+            this.checkBox_NG.Size = new System.Drawing.Size(189, 25);
+            this.checkBox_NG.TabIndex = 15;
+            this.checkBox_NG.Text = "此工站所有NG的SNR";
+            this.checkBox_NG.UseVisualStyleBackColor = true;
+            this.checkBox_NG.CheckedChanged += new System.EventHandler(this.checkBox_NG_CheckedChanged);
+            // 
+            // btn_Uni_find
+            // 
+            this.btn_Uni_find.Font = new System.Drawing.Font("微软雅黑", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.btn_Uni_find.Location = new System.Drawing.Point(994, 63);
+            this.btn_Uni_find.Name = "btn_Uni_find";
+            this.btn_Uni_find.Size = new System.Drawing.Size(158, 33);
+            this.btn_Uni_find.TabIndex = 14;
+            this.btn_Uni_find.Text = "查找SNR";
+            this.btn_Uni_find.UseVisualStyleBackColor = true;
+            this.btn_Uni_find.Click += new System.EventHandler(this.btn_Uni_find_Click);
+            // 
+            // DTPicker_UniEndT
+            // 
+            this.DTPicker_UniEndT.CalendarFont = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.DTPicker_UniEndT.Font = new System.Drawing.Font("微软雅黑", 8F);
+            this.DTPicker_UniEndT.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.DTPicker_UniEndT.Location = new System.Drawing.Point(803, 65);
+            this.DTPicker_UniEndT.Name = "DTPicker_UniEndT";
+            this.DTPicker_UniEndT.Size = new System.Drawing.Size(171, 29);
+            this.DTPicker_UniEndT.TabIndex = 13;
+            // 
+            // DTPicker_UniStartT
+            // 
+            this.DTPicker_UniStartT.CalendarFont = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.DTPicker_UniStartT.Font = new System.Drawing.Font("微软雅黑", 8F);
+            this.DTPicker_UniStartT.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.DTPicker_UniStartT.Location = new System.Drawing.Point(498, 65);
+            this.DTPicker_UniStartT.Name = "DTPicker_UniStartT";
+            this.DTPicker_UniStartT.Size = new System.Drawing.Size(171, 29);
+            this.DTPicker_UniStartT.TabIndex = 13;
+            // 
+            // btn_importExcel
+            // 
+            this.btn_importExcel.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.btn_importExcel.Location = new System.Drawing.Point(612, 16);
+            this.btn_importExcel.Name = "btn_importExcel";
+            this.btn_importExcel.Size = new System.Drawing.Size(158, 37);
+            this.btn_importExcel.TabIndex = 12;
+            this.btn_importExcel.Text = "从Excel文件导入";
+            this.btn_importExcel.UseVisualStyleBackColor = true;
+            this.btn_importExcel.Click += new System.EventHandler(this.btn_importExcel_Click);
             // 
             // button5
             // 
-            this.button5.Font = new System.Drawing.Font("微软雅黑", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button5.Location = new System.Drawing.Point(507, 16);
+            this.button5.Font = new System.Drawing.Font("微软雅黑", 9F);
+            this.button5.Location = new System.Drawing.Point(448, 16);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(102, 38);
             this.button5.TabIndex = 11;
@@ -660,20 +762,67 @@
             this.button5.UseVisualStyleBackColor = true;
             this.button5.Click += new System.EventHandler(this.button5_Click);
             // 
+            // textBox_ExcelPath
+            // 
+            this.textBox_ExcelPath.Font = new System.Drawing.Font("微软雅黑", 9F);
+            this.textBox_ExcelPath.Location = new System.Drawing.Point(952, 20);
+            this.textBox_ExcelPath.Name = "textBox_ExcelPath";
+            this.textBox_ExcelPath.Size = new System.Drawing.Size(336, 31);
+            this.textBox_ExcelPath.TabIndex = 10;
+            // 
+            // textBox_shortName
+            // 
+            this.textBox_shortName.Font = new System.Drawing.Font("微软雅黑", 9F);
+            this.textBox_shortName.Location = new System.Drawing.Point(10, 63);
+            this.textBox_shortName.Name = "textBox_shortName";
+            this.textBox_shortName.Size = new System.Drawing.Size(172, 31);
+            this.textBox_shortName.TabIndex = 10;
+            // 
             // TB_UniMat
             // 
+            this.TB_UniMat.Font = new System.Drawing.Font("微软雅黑", 9F);
             this.TB_UniMat.Location = new System.Drawing.Point(102, 19);
             this.TB_UniMat.Name = "TB_UniMat";
-            this.TB_UniMat.Size = new System.Drawing.Size(365, 34);
+            this.TB_UniMat.Size = new System.Drawing.Size(331, 31);
             this.TB_UniMat.TabIndex = 10;
+            // 
+            // label30
+            // 
+            this.label30.AutoSize = true;
+            this.label30.Font = new System.Drawing.Font("微软雅黑", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label30.Location = new System.Drawing.Point(699, 69);
+            this.label30.Name = "label30";
+            this.label30.Size = new System.Drawing.Size(78, 21);
+            this.label30.TabIndex = 9;
+            this.label30.Text = "结束时间:";
+            // 
+            // label29
+            // 
+            this.label29.AutoSize = true;
+            this.label29.Font = new System.Drawing.Font("微软雅黑", 8F);
+            this.label29.Location = new System.Drawing.Point(394, 69);
+            this.label29.Name = "label29";
+            this.label29.Size = new System.Drawing.Size(78, 21);
+            this.label29.TabIndex = 9;
+            this.label29.Text = "开始时间:";
+            // 
+            // label28
+            // 
+            this.label28.AutoSize = true;
+            this.label28.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label28.Location = new System.Drawing.Point(799, 23);
+            this.label28.Name = "label28";
+            this.label28.Size = new System.Drawing.Size(147, 24);
+            this.label28.TabIndex = 9;
+            this.label28.Text = "保存Excel文件名:";
             // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("微软雅黑", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label6.Location = new System.Drawing.Point(19, 26);
+            this.label6.Font = new System.Drawing.Font("微软雅黑", 9F);
+            this.label6.Location = new System.Drawing.Point(28, 22);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(77, 27);
+            this.label6.Size = new System.Drawing.Size(68, 24);
             this.label6.TabIndex = 9;
             this.label6.Text = "唯一码:";
             // 
@@ -683,10 +832,10 @@
             this.dataGridView4.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedHeaders;
             this.dataGridView4.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView4.EnableHeadersVisualStyles = false;
-            this.dataGridView4.Location = new System.Drawing.Point(6, 104);
+            this.dataGridView4.Location = new System.Drawing.Point(6, 114);
             this.dataGridView4.Name = "dataGridView4";
             this.dataGridView4.RowTemplate.Height = 30;
-            this.dataGridView4.Size = new System.Drawing.Size(1505, 684);
+            this.dataGridView4.Size = new System.Drawing.Size(1505, 674);
             this.dataGridView4.TabIndex = 6;
             this.dataGridView4.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView4_CellClick);
             this.dataGridView4.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView4_CellContentClick);
@@ -897,6 +1046,18 @@
             this.label14.Size = new System.Drawing.Size(58, 27);
             this.label14.TabIndex = 24;
             this.label14.Text = "SNR:";
+            // 
+            // label27
+            // 
+            this.label27.AutoSize = true;
+            this.label27.BackColor = System.Drawing.Color.LightCoral;
+            this.label27.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label27.Location = new System.Drawing.Point(1481, 33);
+            this.label27.Name = "label27";
+            this.label27.Size = new System.Drawing.Size(118, 24);
+            this.label27.TabIndex = 27;
+            this.label27.Text = "必须选中整行";
+            this.label27.Click += new System.EventHandler(this.label27_Click);
             // 
             // label25
             // 
@@ -1125,14 +1286,6 @@
             // 
             this.dataGridView7.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.ColumnHeader;
             this.dataGridView7.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedHeaders;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("微软雅黑", 10F);
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridView7.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.dataGridView7.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView7.EnableHeadersVisualStyles = false;
             this.dataGridView7.Location = new System.Drawing.Point(6, 119);
@@ -1261,7 +1414,7 @@
             this.配置校验ToolStripMenuItem});
             this.menuStrip2.Location = new System.Drawing.Point(225, 9);
             this.menuStrip2.Name = "menuStrip2";
-            this.menuStrip2.Size = new System.Drawing.Size(668, 33);
+            this.menuStrip2.Size = new System.Drawing.Size(488, 33);
             this.menuStrip2.TabIndex = 10;
             this.menuStrip2.Text = "SAP 报工";
             this.menuStrip2.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.menuStrip2_ItemClicked);
@@ -1334,14 +1487,14 @@
             // 工单查询ToolStripMenuItem
             // 
             this.工单查询ToolStripMenuItem.Name = "工单查询ToolStripMenuItem";
-            this.工单查询ToolStripMenuItem.Size = new System.Drawing.Size(252, 30);
+            this.工单查询ToolStripMenuItem.Size = new System.Drawing.Size(234, 30);
             this.工单查询ToolStripMenuItem.Text = "工单号查询";
             this.工单查询ToolStripMenuItem.Click += new System.EventHandler(this.工单查询ToolStripMenuItem_Click);
             // 
             // sNR状态查询ToolStripMenuItem
             // 
             this.sNR状态查询ToolStripMenuItem.Name = "sNR状态查询ToolStripMenuItem";
-            this.sNR状态查询ToolStripMenuItem.Size = new System.Drawing.Size(252, 30);
+            this.sNR状态查询ToolStripMenuItem.Size = new System.Drawing.Size(234, 30);
             this.sNR状态查询ToolStripMenuItem.Text = "SNR状态查询";
             this.sNR状态查询ToolStripMenuItem.Click += new System.EventHandler(this.sNR状态查询ToolStripMenuItem_Click);
             // 
@@ -1349,7 +1502,7 @@
             // 
             this.eC线打印机操作ToolStripMenuItem.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.eC线打印机操作ToolStripMenuItem.Name = "eC线打印机操作ToolStripMenuItem";
-            this.eC线打印机操作ToolStripMenuItem.Size = new System.Drawing.Size(252, 30);
+            this.eC线打印机操作ToolStripMenuItem.Size = new System.Drawing.Size(234, 30);
             this.eC线打印机操作ToolStripMenuItem.Text = "EC线打印机操作";
             this.eC线打印机操作ToolStripMenuItem.Click += new System.EventHandler(this.eC线打印机操作ToolStripMenuItem_Click);
             // 
@@ -1357,7 +1510,7 @@
             // 
             this.eCConfigurationToolStripMenuItem.Font = new System.Drawing.Font("Calibri", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.eCConfigurationToolStripMenuItem.Name = "eCConfigurationToolStripMenuItem";
-            this.eCConfigurationToolStripMenuItem.Size = new System.Drawing.Size(252, 30);
+            this.eCConfigurationToolStripMenuItem.Size = new System.Drawing.Size(234, 30);
             this.eCConfigurationToolStripMenuItem.Text = "EC Configuration";
             this.eCConfigurationToolStripMenuItem.Click += new System.EventHandler(this.eCConfigurationToolStripMenuItem_Click);
             // 
@@ -1367,6 +1520,21 @@
             this.载具查询ToolStripMenuItem.Size = new System.Drawing.Size(100, 29);
             this.载具查询ToolStripMenuItem.Text = "载具查询";
             this.载具查询ToolStripMenuItem.Click += new System.EventHandler(this.载具查询ToolStripMenuItem_Click);
+            // 
+            // 配置校验ToolStripMenuItem
+            // 
+            this.配置校验ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.参数配置校验ToolStripMenuItem});
+            this.配置校验ToolStripMenuItem.Name = "配置校验ToolStripMenuItem";
+            this.配置校验ToolStripMenuItem.Size = new System.Drawing.Size(100, 29);
+            this.配置校验ToolStripMenuItem.Text = "配置校验";
+            // 
+            // 参数配置校验ToolStripMenuItem
+            // 
+            this.参数配置校验ToolStripMenuItem.Name = "参数配置校验ToolStripMenuItem";
+            this.参数配置校验ToolStripMenuItem.Size = new System.Drawing.Size(210, 30);
+            this.参数配置校验ToolStripMenuItem.Text = "参数配置校验";
+            this.参数配置校验ToolStripMenuItem.Click += new System.EventHandler(this.参数配置校验ToolStripMenuItem_Click);
             // 
             // toolStripContainer2
             // 
@@ -1413,32 +1581,16 @@
             this.tBColorNewSvr.Size = new System.Drawing.Size(79, 21);
             this.tBColorNewSvr.TabIndex = 14;
             // 
-            // label27
+            // button10
             // 
-            this.label27.AutoSize = true;
-            this.label27.BackColor = System.Drawing.Color.LightCoral;
-            this.label27.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label27.Location = new System.Drawing.Point(1481, 33);
-            this.label27.Name = "label27";
-            this.label27.Size = new System.Drawing.Size(118, 24);
-            this.label27.TabIndex = 27;
-            this.label27.Text = "必须选中整行";
-            this.label27.Click += new System.EventHandler(this.label27_Click);
-            // 
-            // 配置校验ToolStripMenuItem
-            // 
-            this.配置校验ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.参数配置校验ToolStripMenuItem});
-            this.配置校验ToolStripMenuItem.Name = "配置校验ToolStripMenuItem";
-            this.配置校验ToolStripMenuItem.Size = new System.Drawing.Size(100, 29);
-            this.配置校验ToolStripMenuItem.Text = "配置校验";
-            // 
-            // 参数配置校验ToolStripMenuItem
-            // 
-            this.参数配置校验ToolStripMenuItem.Name = "参数配置校验ToolStripMenuItem";
-            this.参数配置校验ToolStripMenuItem.Size = new System.Drawing.Size(252, 30);
-            this.参数配置校验ToolStripMenuItem.Text = "参数配置校验";
-            this.参数配置校验ToolStripMenuItem.Click += new System.EventHandler(this.参数配置校验ToolStripMenuItem_Click);
+            this.button10.Font = new System.Drawing.Font("微软雅黑", 9F);
+            this.button10.Location = new System.Drawing.Point(1320, 17);
+            this.button10.Name = "button10";
+            this.button10.Size = new System.Drawing.Size(158, 35);
+            this.button10.TabIndex = 18;
+            this.button10.Text = "查询过站未开始";
+            this.button10.UseVisualStyleBackColor = true;
+            this.button10.Click += new System.EventHandler(this.button10_Click);
             // 
             // Form1
             // 
@@ -1628,6 +1780,19 @@
         private System.Windows.Forms.Label label27;
         private System.Windows.Forms.ToolStripMenuItem 配置校验ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 参数配置校验ToolStripMenuItem;
+        private System.Windows.Forms.Button btn_importExcel;
+        private System.Windows.Forms.TextBox textBox_ExcelPath;
+        private System.Windows.Forms.Label label28;
+        private System.Windows.Forms.Label label29;
+        private System.Windows.Forms.Button btn_Uni_find;
+        private System.Windows.Forms.DateTimePicker DTPicker_UniEndT;
+        private System.Windows.Forms.DateTimePicker DTPicker_UniStartT;
+        private System.Windows.Forms.Label label30;
+        private System.Windows.Forms.CheckBox checkBox_NG;
+        private System.Windows.Forms.TextBox textBox_shortName;
+        private System.Windows.Forms.CheckBox checkBox_toExcel;
+        private System.Windows.Forms.Label label31;
+        private System.Windows.Forms.Button button10;
     }
 }
 

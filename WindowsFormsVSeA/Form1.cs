@@ -472,16 +472,16 @@ private void dataGridView4_CellClick(object sender, DataGridViewCellEventArgs e)
 
         private void dataGridView4_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-            string SNR = dataGridView4.Rows[e.RowIndex].Cells[0].Value.ToString();
-            string Unicode= dataGridView4.Rows[e.RowIndex].Cells[4].Value.ToString();
-            string MatDesc = dataGridView4.Rows[e.RowIndex].Cells[3].Value.ToString();
+            //string SNR = dataGridView4.Rows[e.RowIndex].Cells[0].Value.ToString();
+            //string Unicode= dataGridView4.Rows[e.RowIndex].Cells[4].Value.ToString();
+            //string MatDesc = dataGridView4.Rows[e.RowIndex].Cells[3].Value.ToString();
 
-            CUModel.TranSerialNumber = SNR;
-            CUModel.MaterialDesc = MatDesc;
-            CUModel.UniqueMatCode = Unicode;
+            //CUModel.TranSerialNumber = SNR;
+            //CUModel.MaterialDesc = MatDesc;
+            //CUModel.UniqueMatCode = Unicode;
 
 
-            new FormMatTrace().Show();
+            //new FormMatTrace().Show();
         }
 
         private void btn_Rework_Click(object sender, EventArgs e)
@@ -1058,12 +1058,10 @@ private void dataGridView4_CellClick(object sender, DataGridViewCellEventArgs e)
 
                     if (dt != null && dt.Rows.Count > 0)
                     {
-                        
-                        dataGridView7.DataSource = dt;
-
-                        dataGridView7.ColumnHeadersDefaultCellStyle.Font = new Font("雅黑", 10, FontStyle.Bold);
-                        dataGridView7.ColumnHeadersDefaultCellStyle.ForeColor = Color.Purple;
-
+                        dataGridView7.DataSource = null;
+                         dataGridView7.DataSource = dt;
+                                                
+                        Class_User.DataGridView_UI_Setup(this.dataGridView7);//设置datagridview显示UI
                         dataGridView7.Columns[0].Visible = false;
                         dataGridView7.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                         dataGridView7.Columns[5].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
@@ -1682,6 +1680,445 @@ update [SitMesDB].[dbo].[ARCH_T_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4B
                 MessageBox.Show(ex.ToString());
             }
         }
-    
+
+        private void btn_importExcel_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(SSQL.DBConnStr))
+                {
+                    MessageBox.Show("数据库未连接 ！");
+                    return;
+                }
+
+                if (openFileDialog1.ShowDialog() == DialogResult.OK)
+                {
+                    string GetFullPath_Filename = openFileDialog1.FileName;
+
+                    string Fn = string.Empty;
+                    Fn = Path.GetExtension(openFileDialog1.FileName);
+
+                    string ExlPath = Path.GetDirectoryName(GetFullPath_Filename);
+
+                    string ExcelSaveFile = string.Empty;
+
+                    if (!string.IsNullOrEmpty(this.textBox_ExcelPath.Text)|| this.textBox_ExcelPath.Text!="")
+                    {
+                        ExcelSaveFile = Path.Combine(ExlPath, this.textBox_ExcelPath.Text+".xlsx");
+                    }
+                    else
+                    {
+                        MessageBox.Show("输入要保存的Excel文件名!");
+                        return;
+                    }
+                    
+
+                    DataTable DtUniqueList = new DataTable();
+
+                    if (Fn.ToUpper() == ".XLSX")
+                    {
+
+                        if (!string.IsNullOrEmpty(GetFullPath_Filename))
+                        {
+
+                            DtUniqueList = ExcelHelper.ExcelToDataTableNew(GetFullPath_Filename, 1, false);
+                            DtUniqueList.Rows.RemoveAt(0); //去掉表头行
+
+                            DataTable dt = new DataTable();
+                            dt.Columns.Add("LotID", typeof(string));
+                            dt.Columns.Add("FinalMat", typeof(string));
+                            dt.Columns.Add("FertMatName", typeof(string));
+                            dt.Columns.Add("LotName", typeof(string));
+                            dt.Columns.Add("targetlotpk", typeof(Int32));
+                            dt.Columns.Add("changetime", typeof(DateTime));
+
+                            //DataTable dt = ToDataTable1(DTExcel);
+                            if (DtUniqueList != null && DtUniqueList.Rows.Count > 0)
+                            {
+                                DataSet DtSet = new DataSet();
+                                
+                                for(int i=0;i< DtUniqueList.Rows.Count; i++)
+                                {
+                                    dt=SSQL.Qty_Unique_Digui(DtUniqueList.Rows[i][0].ToString());
+
+                                    if (dt==null || dt.Rows.Count == 0) //如没有查到数据，插入SNR，写“No result”
+                                    {
+                                        dt = new DataTable(); //没有数据时，被方法初始化，只能再次new 新的对象 并在下面添加列。
+                                        dt.Columns.Add("LotID", typeof(string));
+                                        dt.Columns.Add("FinalMat", typeof(string));
+                                        dt.Columns.Add("FertMatName", typeof(string));
+                                        dt.Columns.Add("LotName", typeof(string));
+                                        dt.Columns.Add("targetlotpk", typeof(Int32));
+                                        dt.Columns.Add("changetime", typeof(DateTime));
+
+                                        DataRow newRow = dt.NewRow();
+                                        newRow["LotID"] = "查询的唯一码:" + DtUniqueList.Rows[i][0].ToString();
+                                        newRow["FinalMat"] = "未装配";
+                                        newRow["FertMatName"] = "";
+                                        newRow["LotName"] = "";
+                                        newRow["targetlotpk"] = 0;
+                                        newRow["changetime"] = DateTime.Now;
+                                        dt.Rows.Add(newRow);
+
+                                        DtSet.Tables.Add(dt); //查到数据加载到Dataset 中
+                                    }
+                                    else
+                                    {
+                                        DataRow newRow = dt.NewRow();
+                                        newRow["LotID"] ="查询的唯一码:"+ DtUniqueList.Rows[i][0].ToString();
+                                        newRow["FinalMat"] = "装配参考LotName列:";
+                                        newRow["FertMatName"] = "";
+                                        newRow["LotName"] = "";
+                                        newRow["targetlotpk"] = dt.Rows.Count;
+                                        newRow["changetime"] = DateTime.Now;
+                                        dt.Rows.Add(newRow);
+
+                                        DtSet.Tables.Add(dt); //查到数据加载到Dataset 中
+                                    }
+                                                                     
+                                 
+                                }
+                                DataTable newdts = new DataTable();
+                                newdts.Columns.Add("LotID", typeof(string));
+                                newdts.Columns.Add("FinalMat", typeof(string));
+                                newdts.Columns.Add("FertMatName", typeof(string));
+                                newdts.Columns.Add("LotName", typeof(string));
+                                newdts.Columns.Add("targetlotpk", typeof(Int32));
+                                newdts.Columns.Add("changetime", typeof(DateTime));
+
+                                for (int j = 0; j < DtSet.Tables.Count; j++) //合并Dataset中所有的表
+                                {
+                                    
+                                        newdts = combinDt(DtSet.Tables[j], newdts);
+                                     
+                                }
+
+                                this.dataGridView4.DataSource = newdts;
+
+                                Form1.Class_User.DataGridView_UI_Setup(this.dataGridView4);//设置datagridview显示UI
+                                this.dataGridView4.ColumnHeadersDefaultCellStyle.ForeColor = Color.Purple;
+
+                                dataGridView4.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                                dataGridView4.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                                dataGridView4.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                                dataGridView4.Columns[3].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                                dataGridView4.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                                dataGridView4.Columns[5].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+
+                                //DTExcel.Columns["column9"].SetOrdinal(4);
+                                //DTExcel.Columns["column5"].SetOrdinal(8);
+
+                                //DGV_fromExcel.DataSource = null;
+                                //DGV_fromExcel.DataSource = DTExcel;
+
+
+                                //Class_Dv_Filter.DataviewFilter_MachineID = DTExcel.DefaultView;
+                                this.textBox_ExcelPath.Text = ExcelSaveFile;
+                                int WriteRows = ExcelHelper.DataTableToExcel(newdts, ExcelSaveFile);
+                                MessageBox.Show("写入 EXCEL文件共："+ WriteRows.ToString()+" 行");
+                            }
+
+                        }
+                        else
+                        {
+                            MessageBox.Show("Excel文件路径必须存在!");
+                        }
+
+                    }
+                    else
+                    {
+                        MessageBox.Show("非 Excel 文件");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+
+             
+        }
+
+        public DataTable combinDt(DataTable DT1, DataTable DT2)
+        {
+            DataTable NewDT = DT1.Clone();
+
+            object[] obj = new object[NewDT.Columns.Count];
+
+            for(int i = 0; i < DT1.Rows.Count; i++)
+            {
+                DT1.Rows[i].ItemArray.CopyTo(obj, 0);
+                NewDT.Rows.Add(obj);
+            }
+            for (int i = 0; i < DT2.Rows.Count; i++)
+            {
+                DT2.Rows[i].ItemArray.CopyTo(obj, 0);
+                NewDT.Rows.Add(obj);
+            }
+
+            return NewDT;
+
+        }
+
+        private void btn_Uni_find_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(SSQL.DBConnStr))
+                {
+                    MessageBox.Show("数据库未连接 ！");
+                    return;
+                }
+
+                string StrDate = DTPicker_UniStartT.Value.ToString("yyyy-MM-dd");
+                string EndDate = DTPicker_UniEndT.Value.ToString("yyyy-MM-dd");
+                
+                if (DTPicker_UniStartT.Value >= DTPicker_UniEndT.Value)
+                {
+                    MessageBox.Show("开始时间不能大于结束时间 ！");
+                    return;
+                }
+
+                StrDate = StrDate + " 00:00:00";
+                EndDate = EndDate + " 23:59:59";
+
+                if (this.textBox_shortName.Text == "" || string.IsNullOrEmpty(this.textBox_shortName.Text))
+                {
+                    MessageBox.Show("工站的短名为空！从查询结果界面复制到TextBox");
+                    return;
+                }
+
+                DataTable dt_SNRs = new DataTable();
+
+                dt_SNRs=SSQL.Qty_WO_NG_SNRs(StrDate, EndDate, this.textBox_shortName.Text);
+
+                if (dt_SNRs == null || dt_SNRs.Rows.Count < 0)
+                {
+                    MessageBox.Show("查无数据 ！");
+                    return;
+                }
+                else
+                {
+                    this.dataGridView4.DataSource = null;
+                    this.dataGridView4.DataSource = dt_SNRs;
+
+                    Class_User.DataGridView_UI_Setup(this.dataGridView4);//设置datagridview显示UI
+
+                    dataGridView4.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                    dataGridView4.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                    dataGridView4.Columns[5].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                    this.label31.Text = ":";
+                    this.label31.Text = dt_SNRs.Rows.Count.ToString()+"  行";
+
+                    CUModel.CUModel_DateTable = dt_SNRs.Copy();
+
+                }
+
+               
+               
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void checkBox_NG_CheckedChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (checkBox_NG.CheckState == CheckState.Checked)
+                {
+
+                    if (string.IsNullOrEmpty(SSQL.DBConnStr))
+                    {
+                        MessageBox.Show("数据库未连接 ！");
+                        return;
+                    }
+
+                    DataTable dt_NG = new DataTable();
+
+                    if (this.textBox_shortName.Text == "" || string.IsNullOrEmpty(this.textBox_shortName.Text))
+                    {
+                        MessageBox.Show("需要先输入 要查询NG序列号工站的短名，可模糊查询");
+                        return;
+                    }
+
+                    dt_NG = SSQL.Qty_NG_ShortName(textBox_shortName.Text.ToUpper());
+
+                    if (dt_NG != null || dt_NG.Rows.Count > 0)
+                    {
+                        this.dataGridView4.DataSource = null;
+                        this.dataGridView4.DataSource = dt_NG;
+
+                        Class_User.DataGridView_UI_Setup(this.dataGridView4);//设置datagridview显示UI
+
+                        dataGridView4.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                        dataGridView4.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+
+                        textBox_shortName.Text = "";
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void checkBox_toExcel_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox_toExcel.CheckState == CheckState.Checked)
+            {
+                openFileDialog1.Title = "选择要保存的路径，可以选择一个文件，只是获取其路径";
+                if (openFileDialog1.ShowDialog() == DialogResult.OK)
+                {
+                    string GetFullPath_Filename = openFileDialog1.FileName;
+
+                    string Fn = string.Empty;
+                    Fn = Path.GetExtension(openFileDialog1.FileName);
+
+                    string ExlPath = Path.GetDirectoryName(GetFullPath_Filename);
+
+                    string ExcelSaveFile = string.Empty;
+
+                    if (!string.IsNullOrEmpty(this.textBox_ExcelPath.Text) || this.textBox_ExcelPath.Text != "")
+                    {
+                        ExcelSaveFile = Path.Combine(ExlPath, this.textBox_ExcelPath.Text + ".xlsx");
+                    }
+                    else
+                    {
+                        MessageBox.Show("输入要保存的Excel文件名!");
+                        return;
+                    }
+
+                    if (CUModel.CUModel_DateTable == null || CUModel.CUModel_DateTable.Copy().Rows.Count < 0)
+                    {
+                        MessageBox.Show("到导入的原始DATa Table表为空！ 在“查找SNR”按钮中是否未获取到数据？");
+                        return;
+                    }
+
+                    DataTable Dt_DtUnikat2Excel = CUModel.CUModel_DateTable.Copy();
+
+                    #region //To Excel文件操作部分
+                    if (!string.IsNullOrEmpty(GetFullPath_Filename))
+                    {
+                                               
+                        DataTable dt = new DataTable();
+                        dt.Columns.Add("LotID", typeof(string));
+                        dt.Columns.Add("FinalMat", typeof(string));
+                        dt.Columns.Add("FertMatName", typeof(string));
+                        dt.Columns.Add("LotName", typeof(string));
+                        dt.Columns.Add("targetlotpk", typeof(Int32));
+                        dt.Columns.Add("changetime", typeof(DateTime));
+
+                        //DataTable dt = ToDataTable1(DTExcel);
+                        if (Dt_DtUnikat2Excel != null && Dt_DtUnikat2Excel.Rows.Count > 0)
+                        {
+                            DataSet DtSet = new DataSet();
+
+                            for (int i = 0; i < Dt_DtUnikat2Excel.Rows.Count; i++)
+                            {
+                                dt = SSQL.Qty_Unique_Digui(Dt_DtUnikat2Excel.Rows[i][0].ToString());
+
+                                if (dt == null || dt.Rows.Count == 0) //如没有查到数据，插入SNR，写“No result”
+                                {
+                                    dt = new DataTable(); //没有数据时，被方法初始化，只能再次new 新的对象 并在下面添加列。
+                                    dt.Columns.Add("LotID", typeof(string));
+                                    dt.Columns.Add("FinalMat", typeof(string));
+                                    dt.Columns.Add("FertMatName", typeof(string));
+                                    dt.Columns.Add("LotName", typeof(string));
+                                    dt.Columns.Add("targetlotpk", typeof(Int32));
+                                    dt.Columns.Add("changetime", typeof(DateTime));
+
+                                    DataRow newRow = dt.NewRow();
+                                    newRow["LotID"] = "查询的唯一码:" + Dt_DtUnikat2Excel.Rows[i][0].ToString();
+                                    newRow["FinalMat"] = "未装配";
+                                    newRow["FertMatName"] = "";
+                                    newRow["LotName"] = "";
+                                    newRow["targetlotpk"] = 0;
+                                    newRow["changetime"] = DateTime.Now;
+                                    dt.Rows.Add(newRow);
+
+                                    DtSet.Tables.Add(dt); //查到数据加载到Dataset 中
+                                }
+                                else
+                                {
+                                    DataRow newRow = dt.NewRow();
+                                    newRow["LotID"] = "查询的唯一码:" + Dt_DtUnikat2Excel.Rows[i][0].ToString();
+                                    newRow["FinalMat"] = "装配参考LotName列:";
+                                    newRow["FertMatName"] = "";
+                                    newRow["LotName"] = "";
+                                    newRow["targetlotpk"] = dt.Rows.Count;
+                                    newRow["changetime"] = DateTime.Now;
+                                    dt.Rows.Add(newRow);
+
+                                    DtSet.Tables.Add(dt); //查到数据加载到Dataset 中
+                                }
+
+
+                            }
+                            DataTable newdts = new DataTable();
+                            newdts.Columns.Add("LotID", typeof(string));
+                            newdts.Columns.Add("FinalMat", typeof(string));
+                            newdts.Columns.Add("FertMatName", typeof(string));
+                            newdts.Columns.Add("LotName", typeof(string));
+                            newdts.Columns.Add("targetlotpk", typeof(Int32));
+                            newdts.Columns.Add("changetime", typeof(DateTime));
+
+                            for (int j = 0; j < DtSet.Tables.Count; j++) //合并Dataset中所有的表
+                            {
+
+                                newdts = combinDt(DtSet.Tables[j], newdts);
+
+                            }
+
+                            this.dataGridView4.DataSource = newdts;
+
+                            Form1.Class_User.DataGridView_UI_Setup(this.dataGridView4);//设置datagridview显示UI
+                            this.dataGridView4.ColumnHeadersDefaultCellStyle.ForeColor = Color.Purple;
+
+                            dataGridView4.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                            dataGridView4.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                            dataGridView4.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                            dataGridView4.Columns[3].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                            dataGridView4.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                            dataGridView4.Columns[5].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+
+                            //DTExcel.Columns["column9"].SetOrdinal(4);
+                            //DTExcel.Columns["column5"].SetOrdinal(8);
+
+                            //DGV_fromExcel.DataSource = null;
+                            //DGV_fromExcel.DataSource = DTExcel;
+
+
+                            //Class_Dv_Filter.DataviewFilter_MachineID = DTExcel.DefaultView;
+                            this.textBox_ExcelPath.Text = ExcelSaveFile;
+                            int WriteRows = ExcelHelper.DataTableToExcel(newdts, ExcelSaveFile);
+                            MessageBox.Show("写入 EXCEL文件共：" + WriteRows.ToString() + " 行");
+                        }
+
+                    }
+                    else
+                    {
+                        MessageBox.Show("Excel文件路径必须存在!");
+                    }
+
+                    #endregion
+
+                }
+            }
+        }
+
+        private void tabPage4_Click(object sender, EventArgs e)
+        {
+            this.label31.Text = ":";
+        }
+
+        private void button10_Click(object sender, EventArgs e)
+        {
+            new FormMatTrace().Show();
+        }
     }
 }
