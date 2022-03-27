@@ -41,6 +41,8 @@ namespace WindowsFormsVSeA
 
         Color colorTmp = Color.White;
 
+        public DataView Dv_SNRs_Filter = new DataView();
+
         public Form1()
         {
             InitializeComponent();
@@ -219,6 +221,7 @@ namespace WindowsFormsVSeA
                         dr[5] = dt.Rows.Count;
                         dt.Rows.Add(dr);
 
+                        dataGridView2.DataSource = null;
                         dataGridView2.DataSource = dt;
                                                 
                         TB_Mat_Fert.Text = dataGridView2.Rows[0].Cells[0].Value.ToString();
@@ -400,8 +403,8 @@ namespace WindowsFormsVSeA
             Lb_P_DB.Visible = false;
             Lb_P_DB.BackColor = Color.RosyBrown;
             this.Size = new Size(1340, 675);
-                        
 
+            checkBox4.Enabled = false;
         }
 
         private void button5_Click(object sender, EventArgs e)
@@ -886,6 +889,11 @@ private void dataGridView4_CellClick(object sender, DataGridViewCellEventArgs e)
                     dataGridView2.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                     dataGridView2.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                     dataGridView2.Columns[5].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                    dataGridView2.Columns[6].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+
+                    Dv_SNRs_Filter = dt.DefaultView;
+
+                    checkBox4.Enabled = true;
                 }
                 else
                 {
@@ -1133,7 +1141,7 @@ private void dataGridView4_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             Class_User.DataGridView_UI_Setup(this.dataGridView2);//设置datagridview显示UI
 
-           
+            
 
         }
 
@@ -2119,6 +2127,21 @@ update [SitMesDB].[dbo].[ARCH_T_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4B
         private void button10_Click(object sender, EventArgs e)
         {
             new FormMatTrace().Show();
+        }
+
+        private void checkBox4_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox4.CheckState == CheckState.Checked)
+            {
+                if (this.dataGridView2.Rows.Count != 0)
+                {
+                    
+                    Dv_SNRs_Filter.RowFilter = string.Format("SNR_Status<>'{0}'", "prcs");
+                    this.dataGridView2.DataSource = Dv_SNRs_Filter;
+
+                }
+            }
+            
         }
     }
 }

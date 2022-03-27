@@ -177,6 +177,7 @@ namespace WindowsFormsVSeA
                 if (dtSNRs == null || dtSNRs.Rows.Count < 0)
                 {
                     MessageBox.Show("查无数据 ！");
+                    this.dataGridView1.DataSource = null;
                     return;
                 }
                 else

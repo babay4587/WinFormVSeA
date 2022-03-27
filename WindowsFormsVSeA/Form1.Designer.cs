@@ -73,6 +73,7 @@
             this.Btn_eCar_Report = new System.Windows.Forms.Button();
             this.dataGridView8 = new System.Windows.Forms.DataGridView();
             this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.button10 = new System.Windows.Forms.Button();
             this.label31 = new System.Windows.Forms.Label();
             this.checkBox_toExcel = new System.Windows.Forms.CheckBox();
             this.checkBox_NG = new System.Windows.Forms.CheckBox();
@@ -163,7 +164,7 @@
             this.Lb_P_DB = new System.Windows.Forms.Label();
             this.label26 = new System.Windows.Forms.Label();
             this.tBColorNewSvr = new System.Windows.Forms.TextBox();
-            this.button10 = new System.Windows.Forms.Button();
+            this.checkBox4 = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -376,6 +377,7 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.checkBox4);
             this.tabPage2.Controls.Add(this.button9);
             this.tabPage2.Controls.Add(this.btn_order_simple);
             this.tabPage2.Controls.Add(this.Btn_OrderItlk);
@@ -674,6 +676,17 @@
             this.tabPage4.Text = "Unique Mat Query";
             this.tabPage4.UseVisualStyleBackColor = true;
             this.tabPage4.Click += new System.EventHandler(this.tabPage4_Click);
+            // 
+            // button10
+            // 
+            this.button10.Font = new System.Drawing.Font("微软雅黑", 9F);
+            this.button10.Location = new System.Drawing.Point(1320, 17);
+            this.button10.Name = "button10";
+            this.button10.Size = new System.Drawing.Size(158, 35);
+            this.button10.TabIndex = 18;
+            this.button10.Text = "查询过站未开始";
+            this.button10.UseVisualStyleBackColor = true;
+            this.button10.Click += new System.EventHandler(this.button10_Click);
             // 
             // label31
             // 
@@ -1581,16 +1594,17 @@
             this.tBColorNewSvr.Size = new System.Drawing.Size(79, 21);
             this.tBColorNewSvr.TabIndex = 14;
             // 
-            // button10
+            // checkBox4
             // 
-            this.button10.Font = new System.Drawing.Font("微软雅黑", 9F);
-            this.button10.Location = new System.Drawing.Point(1320, 17);
-            this.button10.Name = "button10";
-            this.button10.Size = new System.Drawing.Size(158, 35);
-            this.button10.TabIndex = 18;
-            this.button10.Text = "查询过站未开始";
-            this.button10.UseVisualStyleBackColor = true;
-            this.button10.Click += new System.EventHandler(this.button10_Click);
+            this.checkBox4.AutoSize = true;
+            this.checkBox4.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.checkBox4.Location = new System.Drawing.Point(915, 10);
+            this.checkBox4.Name = "checkBox4";
+            this.checkBox4.Size = new System.Drawing.Size(199, 28);
+            this.checkBox4.TabIndex = 13;
+            this.checkBox4.Text = "SNR筛选非正常状态";
+            this.checkBox4.UseVisualStyleBackColor = true;
+            this.checkBox4.CheckedChanged += new System.EventHandler(this.checkBox4_CheckedChanged);
             // 
             // Form1
             // 
@@ -1793,6 +1807,7 @@
         private System.Windows.Forms.CheckBox checkBox_toExcel;
         private System.Windows.Forms.Label label31;
         private System.Windows.Forms.Button button10;
+        private System.Windows.Forms.CheckBox checkBox4;
     }
 }
 

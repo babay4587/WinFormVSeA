@@ -1815,14 +1815,14 @@ namespace WindowsFormsVSeA
                                         FHM.FHM_ID as EquipmentID,
                                         isnull(POMV_MATL_SPEC_ITM.def_id,'-') as Matnr,
                                         isnull(MMwDefVers.DefName,'-') as Mat_Description,
-                                        isnull(POMV_MATL_SPEC_ITM.uom_id,'-') as UoM,
-                                        isnull(POMV_MATL_SPEC_ITM.seq,0) as Sort,
                                         isnull(MMwDefVerPrpVals.PValue,'-') as Traceability,
-                                        isnull(pmlpv7.pom_cf_value,'-') as Dummy,
-                                        isnull(POMV_MATL_SPEC_ITM.quantity,0) as Quantity,
+                                        isnull(v2.PValue,'-') as ProcType,
                                         isnull(MMwDefVers.ClassID,'-') as CLASS,
                                         isnull(MMwDefVers.TypeID,'-') as Mat_TYPE,
-                                        isnull(v2.PValue,'-') as ProcType
+                                        isnull(pmlpv7.pom_cf_value,'-') as Dummy,
+                                        isnull(POMV_MATL_SPEC_ITM.quantity,0) as Quantity,
+                                        isnull(POMV_MATL_SPEC_ITM.uom_id,'-') as UoM,
+                                        isnull(POMV_MATL_SPEC_ITM.seq,0) as Sort                                        
                                         FROM 
                                         POMV_ETRY with(nolock)
                                         LEFT JOIN POMV_MATL_SPEC_ITM on POMV_ETRY.pom_entry_id = POMV_MATL_SPEC_ITM.pom_entry_id
@@ -2363,7 +2363,20 @@ namespace WindowsFormsVSeA
                                                         MMLotStatuses.LotStatusID AS SNR_Status,
                                                         POM_ENTRY.initial_qty AS Quantity, 
                                                         dateadd(hour,8,POM_ORDER.RowUpdated) as LatestChange,
-                                                        dateadd(hour,8,oep.RowUpdated) as ImportDate
+                                                        dateadd(hour,8,oep.RowUpdated) as ImportDate,
+                                                        (
+						                                            SELECT top 1
+						                                            --SubMMLots.LotName,
+						                                            POM_ENTRY_TYPE.id
+						                                            --dateadd(hour,8,lotRoute.RowUpdated) as RowUpdated
+						                                            FROM
+						                                            [ARCH_T_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EC_LOT_ROUTE_$112$] lotRoute with(nolock)
+						                                            INNER JOIN MMLots as SubMMLots with(nolock) ON lotRoute.LOT_PK = SubMMLots.LotPK 
+						                                            INNER JOIN POM_ENTRY_TYPE with(nolock) ON lotRoute.ENTRY_TYPE_PK = POM_ENTRY_TYPE.pom_entry_type_pk
+
+						                                            WHERE     (SubMMLots.LotName = MMLots.LotName)
+						                                            order by lotRoute.RowUpdated desc 
+			                                            ) as Last_Pass_WO
                                                         FROM
                                                         POM_ORDER 
                                                         INNER JOIN POM_ORDER_STATUS ON POM_ORDER.pom_order_status_pk = POM_ORDER_STATUS.pom_order_status_pk 
@@ -2375,6 +2388,36 @@ namespace WindowsFormsVSeA
                                                         inner JOIN MMDefinitions on MMDefinitions.DefID = POM_ENTRY.matl_def_id
                                                         INNER JOIN [ArchSitMesPomRTF8F959F4-452B-462E-BA33-DB852EFDA899/EC_ORDER_EXT_PROPERTIES] oep on oep.MES_RECORD_PK = POM_ORDER.pom_order_pk
                                                         where POM_ORDER.pom_order_id like '%{0}%'", Orderid);
+
+            //string sql = string.Format(@"Use SITMesDB
+            //                    SELECT
+            //                                MMLots.LotName AS SerialNumber, 
+            //                                POM_ORDER_STATUS.id AS Order_Status,
+            //                                MMLotStatuses.LotStatusID AS SNR_Status,
+            //                                POM_ENTRY.initial_qty AS Quantity, 
+            //                                dateadd(hour,8,POM_ORDER.RowUpdated) as LatestChange,
+            //                                dateadd(hour,8,oep.RowUpdated) as ImportDate,
+            //                       (
+            //                          SELECT top 1
+            //                          --SubMMLots.LotName,
+            //                          POM_ENTRY_TYPE.id
+            //                          --dateadd(hour,8,lotRoute.RowUpdated) as RowUpdated
+            //                          FROM
+            //                          [ARCH_T_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EC_LOT_ROUTE_$112$] lotRoute with(nolock)
+            //                          INNER JOIN MMLots as SubMMLots with(nolock) ON lotRoute.LOT_PK = SubMMLots.LotPK 
+            //                          INNER JOIN POM_ENTRY_TYPE with(nolock) ON lotRoute.ENTRY_TYPE_PK = POM_ENTRY_TYPE.pom_entry_type_pk
+
+            //                          WHERE     (SubMMLots.LotName = MMLots.LotName)
+            //                          order by lotRoute.RowUpdated desc 
+            //                       ) as Last_Pass_WO
+            //                    FROM
+            //                                POM_ORDER
+            //                       INNER JOIN POM_ORDER_STATUS ON POM_ORDER.pom_order_status_pk = POM_ORDER_STATUS.pom_order_status_pk 
+            //                       INNER JOIN MMLotCommitTo ON POM_ORDER.pom_order_id = MMLotCommitTo.CommitTo
+            //                       INNER JOIN MMLots ON MMLotCommitTo.LotPK = MMLots.LotPK
+            //                       INNER JOIN POM_ENTRY ON POM_ORDER.pom_order_pk = POM_ENTRY.pom_order_pk AND POM_ENTRY.order_extended_data = N'Y' 
+            //                       INNER JOIN MMLotStatuses ON MMLotStatuses.LotStatusPK = MMLots.LotStatusPK
+            //                       where POM_ORDER.pom_order_id like '{0}'", Orderid);
 
             DataTable dt = new DataTable();
 

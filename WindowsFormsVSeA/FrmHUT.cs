@@ -24,11 +24,11 @@ namespace WindowsFormsVSeA
 
             Btn_HUT_Del.Enabled = false;
 
-            if (Form1.Updated_P_DB)
-            {
-                Btn_HUT_Del.Enabled = true;//无数据库更新权限 不能点击。
-            }
-            
+            //if (Form1.Updated_P_DB)
+            //{
+            //    Btn_HUT_Del.Enabled = true;//无数据库更新权限 不能点击。
+            //}
+
         }
 
         private void Btn_Hut_Qty_Click(object sender, EventArgs e)
@@ -53,6 +53,8 @@ namespace WindowsFormsVSeA
                     DataGridV_Hut.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                     DataGridV_Hut.Columns[3].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                     Class_User.DataGridView_UI_Setup(this.DataGridV_Hut);//设置datagridview显示UI
+
+                    Btn_HUT_Del.Enabled = true;
                 }
                 else
                 {
