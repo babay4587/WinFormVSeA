@@ -3703,16 +3703,16 @@ where mapping.MACHINE_ID like '%{0}%'
             string sql = string.Format(@"
                  select   
                   distinct
-                  WC.[MACHINE_ID],
+                  WC.[WORKCENTER_NAME] as MACHINE_ID,
                   WC.[WORKCENTER_ID] as Object_ID,
                   ML.PROCESS_STEP,
                   mapping.TERMINAL,
                   mapping.EQUIPMENT_ID
                   FROM [SitMesDB].[dbo].[Arch_RPT_MGR_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EC_SAP_WORKCENTERS] WC with(nolock)
                   INNER JOIN [SITMesDB].[dbo].[ARCH_T_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/ML_PROCESS_MACHINE_GROUP_$8$] ML with(nolock)
-                  on WC.MACHINE_ID=ML.MACHINE_ID  
+                  on WC.WORKCENTER_NAME=ML.MACHINE_ID  
                   left join [SITMesDB].[dbo].[ARCH_T_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4BD2402/EC_TERMINAL_MAPPING_$91$] mapping with(nolock)
-                  on mapping.MACHINE_ID=WC.MACHINE_ID
+                  on mapping.MACHINE_ID=WC.WORKCENTER_NAME
                 ");
 
             DataTable dt = new DataTable();

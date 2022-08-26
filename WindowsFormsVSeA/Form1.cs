@@ -869,7 +869,7 @@ private void dataGridView4_CellClick(object sender, DataGridViewCellEventArgs e)
 
                 if (!string.IsNullOrEmpty(this.tB_Order.Text))
                 {
-                    dt = SSQL.Qty_Order_SNRs(this.tB_Order.Text);
+                    dt = SSQL.Qty_Order_SNRs(this.tB_Order.Text.Trim());
                 }
                 else
                 {
@@ -2136,9 +2136,9 @@ update [SitMesDB].[dbo].[ARCH_T_SitMesComponentRT1A8997AF-5067-47d5-80DB-AF14C4B
                 if (this.dataGridView2.Rows.Count != 0)
                 {
                     
-                    Dv_SNRs_Filter.RowFilter = string.Format("SNR_Status<>'{0}'", "prcs");
+                    Dv_SNRs_Filter.RowFilter = string.Format("SNR_Status<>'{0}' and SNR_Status<>'{1}'", "prcs","cmplt");
                     this.dataGridView2.DataSource = Dv_SNRs_Filter;
-
+                  
                 }
             }
             
